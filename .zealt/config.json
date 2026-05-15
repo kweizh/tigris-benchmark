@@ -1,5 +1,5 @@
 {
-  "title": "Agent Kit Benchmark",
-  "description": "Performance results of AI coding models on Agent Kit tasks, measuring success rate and execution time with high precision.",
+  "title": "Tigris Benchmark",
+  "description": "Performance results of AI coding models on Tigris tasks, measuring success rate and execution time with high precision.",
   "github_repo": "https://github.com/kweizh/tigris-benchmark"
 }
