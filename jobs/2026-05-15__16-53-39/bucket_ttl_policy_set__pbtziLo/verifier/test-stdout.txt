@@ -1,0 +1,79 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 19ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 2 items
+
+tests/test_final_state.py FF                                             [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_bucket_appears_in_list __________________________
+
+    def test_bucket_appears_in_list():
+        """Priority 1: confirm via Tigris CLI that the new bucket exists."""
+        bucket_name = _bucket_name()
+        result = _run_tigris(["buckets", "list", "--format", "json"])
+        assert result.returncode == 0, (
+            f"'tigris buckets list --format json' failed: returncode="
+            f"{result.returncode}, stderr={result.stderr!r}"
+        )
+        try:
+            payload = json.loads(result.stdout)
+        except json.JSONDecodeError as exc:
+            pytest.fail(
+                f"'tigris buckets list --format json' returned invalid JSON: {exc}. "
+                f"stdout={result.stdout!r}"
+            )
+        if isinstance(payload, dict):
+            buckets = payload.get("items", []) or payload.get("buckets", [])
+        else:
+            buckets = payload
+        bucket_names = [b.get("name") for b in buckets if isinstance(b, dict)]
+>       assert bucket_name in bucket_names, (
+            f"Expected bucket {bucket_name!r} to be present after the task completed, "
+            f"but it was not found. Existing buckets: {bucket_names}"
+        )
+E       AssertionError: Expected bucket 'harbor-ttl-bucket_ttl_policy_set__pbtziLo' to be present after the task completed, but it was not found. Existing buckets: ['abs-1778783572', 'abs-1778783584', 'abs-1778783601', 'agent-corpus-final', 'agent-test-ckpt', 'archive-bucket-1778783355', 'archive-bucket-1778783424', 'archive-bucket-1778783449', 'archive-bucket-1778783473', 'archive-bucket-1778783545', 'archive-bucket-1778783599', 'archive-bucket-fg7ys', 'archive-bucket-s-1778783516', 'archive-bucket-snap', 'archive-bucket-snap-1778783558', 'eval-dispatch-0', 'eval-dispatch-1', 'gold-eval-dataset-2', 'gold-source-1', 'gold-source-2', 'harbor-awscli-aws-cli-s3-putobject-basic--hnw7tz3', 'harbor-awscli-aws-cli-s3-putobject-basic--q2qs9sh', 'harbor-awscli-aws-cli-s3-putobject-basic-q2qs9sh', 'harbor-base-checkpoint-create-then-restore-f-bwx9qda', 'harbor-boto3-boto3-object-roundtrip--qeje7yv', 'harbor-bulk-bulk-concurrent-object-upload--gphuj4q', 'harbor-dst-bucket-to-bucket-copy-via-sdk--axypubd', 'harbor-dst-bucket-to-bucket-copy-via-sdk--jga7dcd', 'harbor-dst-buckettobucketcopyviasdkaxypubd', 'harbor-meta-object-user-metadata-persistence--ghnhxwe', 'harbor-mpu-multipart-upload-completion--6t9iywv', 'harbor-mpu-multipart-upload-completion--isis93v', 'harbor-prefix-cli-object-prefix-listing--ue5phwg', 'harbor-snap-test-123', 'harbor-snap-test-456', 'harbor-snap-test-789', 'harbor-snap-test-no-snap', 'harbor-tssdk-typescript-sdk-putobject-workflo--t5ue36g', 'harbor-tssdk-typescript-sdk-putobject-workflo--vmnhrtw', 'harbor-tssdk-typescript-sdk-putobject-workflo--xqwk7gn', 'harbor-ttl-bucket-ttl-policy-set--pbtzilo', 'harbor-ttl-simple', 'harbor-ttl-test-123', 'my-test-bucket-1778783317', 'non-existent-bucket-123', 'non-existent-bucket-1234', 'pipeline-state-1778782703', 'pipeline-state-test-123', 'pipeline-state-test-1778782730', 'pipeline-state-test-1778782739', 'pipeline-state-test-1778782757', 'pipeline-state-test-1778782770', 'pipeline-state-test123', 'seed-corpus-7awfji', 'seed-corpus-iofrt0', 'seed-corpus-pochi', 'source-bucket', 'test-bucket-100', 'test-bucket-1234', 'test-bucket-12345', 'test-bucket-123456', 'test-bucket-pochi-123', 'test-snap-3', 'test-snap-4', 'test-snap-5', 'test-snap-6', 'test-snap-enabled', 'test-snap-enabled-2', 'test-snap-enabled-3', 'test-snap-update', 'test-source-1778782912519', 'test-ws', 'test-ws-123', 'test-ws-1778783711019', 'test-ws-random-12345']
+E       assert 'harbor-ttl-bucket_ttl_policy_set__pbtziLo' in ['abs-1778783572', 'abs-1778783584', 'abs-1778783601', 'agent-corpus-final', 'agent-test-ckpt', 'archive-bucket-1778783355', ...]
+
+tests/test_final_state.py:80: AssertionError
+________________________ test_bucket_ttl_is_seven_days _________________________
+
+    def test_bucket_ttl_is_seven_days():
+        """Priority 1: confirm via Tigris CLI that the bucket's TTL is 7 days.
+    
+        The Tigris CLI documents `tigris buckets set-ttl <name> --days 7` as the
+        canonical way to set a bucket's object-expiration TTL. The verifier
+        inspects the bucket configuration with `tigris buckets get --format json`
+        and asserts that a TTL/expiration-related property reflects a 7-day
+        window.
+        """
+        bucket_name = _bucket_name()
+        result = _run_tigris(["buckets", "get", bucket_name, "--format", "json"])
+>       assert result.returncode == 0, (
+            f"'tigris buckets get {bucket_name} --format json' failed: returncode="
+            f"{result.returncode}, stderr={result.stderr!r}"
+        )
+E       AssertionError: 'tigris buckets get harbor-ttl-bucket_ttl_policy_set__pbtziLo --format json' failed: returncode=1, stderr='{"error":{"message":"The specified bucket does not exist","code":1,"category":"general"}}\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['tigris', 'buckets', 'get', 'harbor-ttl-bucket_ttl_policy_set__pbtziLo', '--format', 'json'], r...ode=1, stdout='', stderr='{"error":{"message":"The specified bucket does not exist","code":1,"category":"general"}}\n').returncode
+
+tests/test_final_state.py:116: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_final_state.py::test_bucket_appears_in_list - AssertionErro...
+FAILED tests/test_final_state.py::test_bucket_ttl_is_seven_days - AssertionEr...
+============================== 2 failed in 4.04s ===============================

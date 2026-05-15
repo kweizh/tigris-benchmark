@@ -1,0 +1,62 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 0,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778836460.8164032,
+            "stop": 1778836466.5717444
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_bucket_exists_via_cli",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.8500081710517406,
+                "start": 1778836460.8285697,
+                "stop": 1778836462.6959565,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "bucket_name = 'harbor-meta-object_user_metadata_persistence__gHNHXwE'\n\n    def test_bucket_exists_via_cli(bucket_name):\n        \"\"\"Priority 1: use the AWS CLI against Tigris to verify the bucket exists.\"\"\"\n        result = subprocess.run(\n            [\"aws\", \"s3api\", \"head-bucket\", \"--bucket\", bucket_name],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"Expected bucket {bucket_name!r} to exist on Tigris, but \"\n            f\"'aws s3api head-bucket' failed with exit code {result.returncode}: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: Expected bucket 'harbor-meta-object_user_metadata_persistence__gHNHXwE' to exist on Tigris, but 'aws s3api head-bucket' failed with exit code 254: stdout='' stderr='\\naws: [ERROR]: An error occurred (404) when calling the HeadBucket operation: Not Found\\n'\nE       assert 254 == 0\nE        +  where 254 = CompletedProcess(args=['aws', 's3api', 'head-bucket', '--bucket', 'harbor-meta-object_user_metadata_persistence__gHNHX...de=254, stdout='', stderr='\\naws: [ERROR]: An error occurred (404) when calling the HeadBucket operation: Not Found\\n').returncode\n\ntests/test_final_state.py:75: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_user_metadata_owner_is_alice",
+                "status": "failed",
+                "duration": 1.7952408958226442,
+                "start": 1778836462.6962337,
+                "stop": 1778836464.4949114,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "bucket_name = 'harbor-meta-object_user_metadata_persistence__gHNHXwE'\n\n    @pytest.fixture(scope=\"module\")\n    def head_object_json(bucket_name):\n        \"\"\"Priority 1: use the AWS CLI against Tigris to fetch the object's\n        metadata via `aws s3api head-object` and return the parsed JSON.\"\"\"\n        result = subprocess.run(\n            [\n                \"aws\",\n                \"s3api\",\n                \"head-object\",\n                \"--bucket\",\n                bucket_name,\n                \"--key\",\n                OBJECT_KEY,\n                \"--output\",\n                \"json\",\n            ],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"'aws s3api head-object --bucket {bucket_name} --key {OBJECT_KEY}' \"\n            f\"failed with exit code {result.returncode}: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: 'aws s3api head-object --bucket harbor-meta-object_user_metadata_persistence__gHNHXwE --key reports/q1.txt' failed with exit code 254: stdout='' stderr='\\naws: [ERROR]: An error occurred (403) when calling the HeadObject operation: Forbidden\\n'\nE       assert 254 == 0\nE        +  where 254 = CompletedProcess(args=['aws', 's3api', 'head-object', '--bucket', 'harbor-meta-object_user_metadata_persistence__gHNHX...de=254, stdout='', stderr='\\naws: [ERROR]: An error occurred (403) when calling the HeadObject operation: Forbidden\\n').returncode\n\ntests/test_final_state.py:53: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_user_metadata_team_is_research",
+                "status": "failed",
+                "duration": 0.00036032404750585556,
+                "start": 1778836464.4951105,
+                "stop": 1778836464.4990008,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "bucket_name = 'harbor-meta-object_user_metadata_persistence__gHNHXwE'\n\n    @pytest.fixture(scope=\"module\")\n    def head_object_json(bucket_name):\n        \"\"\"Priority 1: use the AWS CLI against Tigris to fetch the object's\n        metadata via `aws s3api head-object` and return the parsed JSON.\"\"\"\n        result = subprocess.run(\n            [\n                \"aws\",\n                \"s3api\",\n                \"head-object\",\n                \"--bucket\",\n                bucket_name,\n                \"--key\",\n                OBJECT_KEY,\n                \"--output\",\n                \"json\",\n            ],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"'aws s3api head-object --bucket {bucket_name} --key {OBJECT_KEY}' \"\n            f\"failed with exit code {result.returncode}: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: 'aws s3api head-object --bucket harbor-meta-object_user_metadata_persistence__gHNHXwE --key reports/q1.txt' failed with exit code 254: stdout='' stderr='\\naws: [ERROR]: An error occurred (403) when calling the HeadObject operation: Forbidden\\n'\nE       assert 254 == 0\nE        +  where 254 = CompletedProcess(args=['aws', 's3api', 'head-object', '--bucket', 'harbor-meta-object_user_metadata_persistence__gHNHX...de=254, stdout='', stderr='\\naws: [ERROR]: An error occurred (403) when calling the HeadObject operation: Forbidden\\n').returncode\n\ntests/test_final_state.py:53: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_object_content_type_is_text_markdown",
+                "status": "failed",
+                "duration": 2.0686275893822312,
+                "start": 1778836464.4992745,
+                "stop": 1778836466.5715115,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "bucket_name = 'harbor-meta-object_user_metadata_persistence__gHNHXwE'\n\n    @pytest.fixture(scope=\"module\")\n    def head_object_json(bucket_name):\n        \"\"\"Priority 1: use the AWS CLI against Tigris to fetch the object's\n        metadata via `aws s3api head-object` and return the parsed JSON.\"\"\"\n        result = subprocess.run(\n            [\n                \"aws\",\n                \"s3api\",\n                \"head-object\",\n                \"--bucket\",\n                bucket_name,\n                \"--key\",\n                OBJECT_KEY,\n                \"--output\",\n                \"json\",\n            ],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"'aws s3api head-object --bucket {bucket_name} --key {OBJECT_KEY}' \"\n            f\"failed with exit code {result.returncode}: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: 'aws s3api head-object --bucket harbor-meta-object_user_metadata_persistence__gHNHXwE --key reports/q1.txt' failed with exit code 254: stdout='' stderr='\\naws: [ERROR]: An error occurred (403) when calling the HeadObject operation: Forbidden\\n'\nE       assert 254 == 0\nE        +  where 254 = CompletedProcess(args=['aws', 's3api', 'head-object', '--bucket', 'harbor-meta-object_user_metadata_persistence__gHNHX...de=254, stdout='', stderr='\\naws: [ERROR]: An error occurred (403) when calling the HeadObject operation: Forbidden\\n').returncode\n\ntests/test_final_state.py:53: AssertionError"
+            }
+        ]
+    }
+}

@@ -1,0 +1,68 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 0,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778836579.1423445,
+            "stop": 1778836583.4684727
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_local_file_exists",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0007127132266759872,
+                "start": 1778836579.158634,
+                "stop": 1778836579.173991,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_local_file_exists():\n>       assert os.path.isfile(LOCAL_TARGET), (\n            f\"Expected the agent to have downloaded the object to {LOCAL_TARGET}, \"\n            \"but the file does not exist.\"\n        )\nE       AssertionError: Expected the agent to have downloaded the object to /home/user/tigris-task/welcome.md, but the file does not exist.\nE       assert False\nE        +  where False = <function isfile at 0x7b017387c220>('/home/user/tigris-task/welcome.md')\nE        +    where <function isfile at 0x7b017387c220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:60: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_local_file_content_matches_exact_bytes",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005427529104053974,
+                "start": 1778836579.1742089,
+                "stop": 1778836579.1772199,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_local_file_content_matches_exact_bytes():\n        \"\"\"Priority 3: read the local file and verify its bytes equal EXACTLY\n        `# Welcome to Tigris\\\\n`.\"\"\"\n>       assert os.path.isfile(LOCAL_TARGET), (\n            f\"Local file {LOCAL_TARGET} is missing; cannot verify content.\"\n        )\nE       AssertionError: Local file /home/user/tigris-task/welcome.md is missing; cannot verify content.\nE       assert False\nE        +  where False = <function isfile at 0x7b017387c220>('/home/user/tigris-task/welcome.md')\nE        +    where <function isfile at 0x7b017387c220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:69: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_object_still_present_in_bucket",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.4691959922201931,
+                "start": 1778836579.1774082,
+                "stop": 1778836580.6500313,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_source_object_still_present_in_bucket():\n        \"\"\"Priority 1: use the Tigris CLI to confirm the source object was NOT\n        deleted/moved by the agent \u2014 `tigris ls` on the exact object key must\n        still succeed and reference the key.\"\"\"\n        bucket = _bucket_name()\n        result = _run_tigris([\"ls\", f\"t3://{bucket}/assets/welcome.md\"])\n>       assert result.returncode == 0, (\n            f\"'tigris ls t3://{bucket}/assets/welcome.md' failed: returncode=\"\n            f\"{result.returncode} stderr={result.stderr!r} stdout={result.stdout!r}. \"\n            \"The agent must NOT have moved or deleted the source object.\"\n        )\nE       AssertionError: 'tigris ls t3://harbor-download-download_object_to_local_disk__4pn8YRC/assets/welcome.md' failed: returncode=1 stderr='\\nError: Unable to list objects The specified bucket does not exist\\n' stdout=''. The agent must NOT have moved or deleted the source object.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['tigris', 'ls', 't3://harbor-download-download_object_to_local_disk__4pn8YRC/assets/welcome.md'], returncode=1, stdout='', stderr='\\nError: Unable to list objects The specified bucket does not exist\\n').returncode\n\ntests/test_final_state.py:86: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_object_still_listed_under_assets_prefix",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.814942579716444,
+                "start": 1778836580.6503015,
+                "stop": 1778836583.4682226,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_source_object_still_listed_under_assets_prefix():\n        \"\"\"Priority 1: also verify via a prefix-scoped `tigris ls` that the source\n        object is still discoverable under the `assets/` prefix.\"\"\"\n        bucket = _bucket_name()\n        result = _run_tigris([\"ls\", f\"t3://{bucket}/assets/\"])\n>       assert result.returncode == 0, (\n            f\"'tigris ls t3://{bucket}/assets/' failed: returncode=\"\n            f\"{result.returncode} stderr={result.stderr!r} stdout={result.stdout!r}\"\n        )\nE       AssertionError: 'tigris ls t3://harbor-download-download_object_to_local_disk__4pn8YRC/assets/' failed: returncode=1 stderr='\\nError: Unable to list objects The specified bucket does not exist\\n' stdout=''\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['tigris', 'ls', 't3://harbor-download-download_object_to_local_disk__4pn8YRC/assets/'], returncode=1, stdout='', stderr='\\nError: Unable to list objects The specified bucket does not exist\\n').returncode\n\ntests/test_final_state.py:103: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

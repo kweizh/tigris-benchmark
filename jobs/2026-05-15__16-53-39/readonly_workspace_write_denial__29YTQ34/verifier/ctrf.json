@@ -1,0 +1,68 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 4,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778837090.5841086,
+            "stop": 1778837093.7664485
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_required_sdks",
+                "status": "passed",
+                "duration": 0.0006157662719488144,
+                "start": 1778837090.60011,
+                "stop": 1778837090.6009362,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_write_denial_log_contains_access_keyword",
+                "status": "passed",
+                "duration": 0.0004541650414466858,
+                "start": 1778837090.6011324,
+                "stop": 1778837090.6017234,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_readback_txt_matches_expected_body",
+                "status": "passed",
+                "duration": 0.00042031193152070045,
+                "start": 1778837090.6018963,
+                "stop": 1778837090.6024435,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_workspace_welcome_object_present_with_expected_body",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 3.1362642934545875,
+                "start": 1778837090.6026113,
+                "stop": 1778837093.7654498,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'harbor-ro-readonly_workspace_write_denial__29YTQ34': {'error': 'Unable to remove bucket The specified bu...f the object', 'status': None}, 'workspace_welcome': {'code': 'Error', 'error': 'The specified bucket does not exist'}}\n\n    def test_workspace_welcome_object_present_with_expected_body(verify_payload):\n        entry = verify_payload.get(\"workspace_welcome\", {})\n>       assert \"error\" not in entry, (\n            f\"Failed to GET notes/welcome.txt from the editor workspace bucket \"\n            f\"{_workspace_bucket()}: {entry.get('error')}\"\n        )\nE       AssertionError: Failed to GET notes/welcome.txt from the editor workspace bucket harbor-ro-readonly_workspace_write_denial__29YTQ34: The specified bucket does not exist\nE       assert 'error' not in {'code': 'Error', 'error': 'The specified bucket does not exist'}\n\ntests/test_final_state.py:185: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_fork_forbidden_object_does_not_exist",
+                "status": "passed",
+                "duration": 0.00045393407344818115,
+                "start": 1778837093.7656841,
+                "stop": 1778837093.766284,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

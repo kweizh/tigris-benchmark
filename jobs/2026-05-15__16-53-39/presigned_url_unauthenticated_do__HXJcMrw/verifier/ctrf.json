@@ -1,0 +1,89 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 5,
+            "failed": 2,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778837267.1623933,
+            "stop": 1778837267.8379033
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_boto3_installed_in_verifier",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0146025400608778,
+                "start": 1778837267.1764283,
+                "stop": 1778837267.2083228,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_boto3_installed_in_verifier():\n        \"\"\"The verifier itself relies on boto3 \u2014 make sure the import works.\"\"\"\n        result = subprocess.run(\n            [\"python3\", \"-c\", \"import boto3; print(boto3.__version__)\"],\n            capture_output=True,\n            text=True,\n            timeout=60,\n        )\n>       assert result.returncode == 0, (\n            f\"boto3 must be importable in the verifier env. stderr={result.stderr!r}\"\n        )\nE       AssertionError: boto3 must be importable in the verifier env. stderr='Traceback (most recent call last):\\n  File \"<string>\", line 1, in <module>\\nModuleNotFoundError: No module named \\'boto3\\'\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['python3', '-c', 'import boto3; print(boto3.__version__)'], returncode=1, stdout='', stderr='Tr...ck (most recent call last):\\n  File \"<string>\", line 1, in <module>\\nModuleNotFoundError: No module named \\'boto3\\'\\n').returncode\n\ntests/test_final_state.py:85: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_presigned_url_file_exists_and_nonempty",
+                "status": "passed",
+                "duration": 0.000567371491342783,
+                "start": 1778837267.208572,
+                "stop": 1778837267.2092931,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_presigned_url_targets_tigris_host",
+                "status": "passed",
+                "duration": 0.0004956591874361038,
+                "start": 1778837267.2094824,
+                "stop": 1778837267.2101243,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_presigned_url_has_sigv4_signature_query_param",
+                "status": "passed",
+                "duration": 0.0006411327049136162,
+                "start": 1778837267.2103748,
+                "stop": 1778837267.2111478,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_presigned_url_downloads_with_curl_unauthenticated",
+                "status": "passed",
+                "duration": 0.6196950916200876,
+                "start": 1778837267.2113671,
+                "stop": 1778837267.8312688,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_local_downloaded_file_matches",
+                "status": "passed",
+                "duration": 0.00047098612412810326,
+                "start": 1778837267.8314943,
+                "stop": 1778837267.8320987,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_object_body_matches_remote_via_boto3",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0008819522336125374,
+                "start": 1778837267.8323107,
+                "stop": 1778837267.8377075,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_object_body_matches_remote_via_boto3():\n        \"\"\"Priority 1: independently fetch the object via boto3 to prove it\n        actually exists in the Tigris bucket the agent claimed to populate.\"\"\"\n>       client = _s3_client()\n                 ^^^^^^^^^^^^\n\ntests/test_final_state.py:185: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    def _s3_client():\n        \"\"\"Build a boto3 S3 client targeting Tigris using the verifier's env.\"\"\"\n>       import boto3\nE       ModuleNotFoundError: No module named 'boto3'\n\ntests/test_final_state.py:26: ModuleNotFoundError",
+                "message": "The test failed in the call phase"
+            }
+        ]
+    }
+}

@@ -1,0 +1,65 @@
+{
+    "id": "dff162bc-7839-438d-a552-b2f2b223a068",
+    "started_at": "2026-05-15T16:53:45.119458",
+    "finished_at": "2026-05-15T17:33:00.835649",
+    "n_total_trials": 21,
+    "stats": {
+        "n_trials": 21,
+        "n_errors": 10,
+        "evals": {
+            "pochi__gemini-3-flash__tasks": {
+                "n_trials": 20,
+                "n_errors": 10,
+                "metrics": [
+                    {
+                        "mean": 0.047619047619047616
+                    }
+                ],
+                "reward_stats": {
+                    "reward": {
+                        "0.0": [
+                            "cli_sdk_interop_bucket_lifecycle__fgCfxnC",
+                            "cli_list_bucket_snapshots__wR8eTsN",
+                            "typescript_sdk_putobject_workflo__XQwk7gn",
+                            "multipart_upload_completion__iSiS93v",
+                            "aws_cli_s3_putobject_basic__q2qS9SH",
+                            "cli_object_prefix_listing__Ue5PhWg",
+                            "bucket_to_bucket_copy_via_sdk__axyPuBd",
+                            "download_object_to_local_disk__4pn8YRC",
+                            "checkpoint_create_then_restore_f__bWX9qda",
+                            "bucket_ttl_policy_set__pbtziLo",
+                            "object_user_metadata_persistence__gHNHXwE",
+                            "boto3_object_roundtrip__qeje7Yv",
+                            "coordination_finished_extension__8o2htuq",
+                            "bulk_concurrent_object_upload__gphuJ4Q",
+                            "parallel_fork_dispatch_writes__T4oKu2H",
+                            "shadow_bucket_s3_passthrough_rea__dqiHcsa",
+                            "workspace_create_upload_teardown__joSu4VK",
+                            "readonly_workspace_write_denial__29YTQ34",
+                            "presigned_url_unauthenticated_do__HXJcMrw"
+                        ],
+                        "1.0": [
+                            "force_delete_nonempty_bucket_cle__5WEPqgw"
+                        ]
+                    }
+                },
+                "exception_stats": {
+                    "AgentTimeoutError": [
+                        "cli_list_bucket_snapshots__wR8eTsN",
+                        "force_delete_nonempty_bucket_cle__5WEPqgw",
+                        "bucket_to_bucket_copy_via_sdk__axyPuBd",
+                        "download_object_to_local_disk__4pn8YRC",
+                        "checkpoint_create_then_restore_f__bWX9qda",
+                        "bucket_ttl_policy_set__pbtziLo",
+                        "coordination_finished_extension__8o2htuq",
+                        "parallel_fork_dispatch_writes__T4oKu2H",
+                        "shadow_bucket_s3_passthrough_rea__dqiHcsa"
+                    ],
+                    "AgentSetupTimeoutError": [
+                        "bucket_snapshot_enabled_creation__LaFi6sZ"
+                    ]
+                }
+            }
+        }
+    }
+}

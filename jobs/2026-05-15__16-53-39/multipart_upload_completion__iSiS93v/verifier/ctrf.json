@@ -1,0 +1,65 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 1,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778835607.4224606,
+            "stop": 1778835616.1224515
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_local_md5_file_exists_and_matches",
+                "status": "passed",
+                "duration": 0.028017680626362562,
+                "start": 1778835607.4390492,
+                "stop": 1778835607.4673445,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_exists_via_cli",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.8435077220201492,
+                "start": 1778835607.4675825,
+                "stop": 1778835609.326977,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "bucket_name = 'harbor-mpu-multipart_upload_completion__iSiS93v'\n\n    def test_bucket_exists_via_cli(bucket_name):\n        \"\"\"Priority 1: use the AWS CLI against Tigris to verify the bucket exists.\"\"\"\n        result = subprocess.run(\n            [\"aws\", \"s3api\", \"head-bucket\", \"--bucket\", bucket_name],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"Expected bucket {bucket_name!r} to exist on Tigris, but \"\n            f\"'aws s3api head-bucket' failed with exit code {result.returncode}: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: Expected bucket 'harbor-mpu-multipart_upload_completion__iSiS93v' to exist on Tigris, but 'aws s3api head-bucket' failed with exit code 254: stdout='' stderr='\\naws: [ERROR]: An error occurred (404) when calling the HeadBucket operation: Not Found\\n'\nE       assert 254 == 0\nE        +  where 254 = CompletedProcess(args=['aws', 's3api', 'head-bucket', '--bucket', 'harbor-mpu-multipart_upload_completion__iSiS93v'], ...de=254, stdout='', stderr='\\naws: [ERROR]: An error occurred (404) when calling the HeadBucket operation: Not Found\\n').returncode\n\ntests/test_final_state.py:87: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_object_head_reports_correct_size_and_multipart_etag",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.983403597958386,
+                "start": 1778835609.327234,
+                "stop": 1778835612.3148024,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "bucket_name = 'harbor-mpu-multipart_upload_completion__iSiS93v'\n\n    def test_object_head_reports_correct_size_and_multipart_etag(bucket_name):\n        \"\"\"Priority 1: head-object must report ContentLength=16777216 and a\n        multipart-style ETag (hex-<partcount>) with part count >= 2, which proves\n        the upload was performed via S3 multipart upload.\"\"\"\n        result = subprocess.run(\n            [\n                \"aws\",\n                \"s3api\",\n                \"head-object\",\n                \"--bucket\",\n                bucket_name,\n                \"--key\",\n                OBJECT_KEY,\n            ],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"'aws s3api head-object' for s3://{bucket_name}/{OBJECT_KEY} failed: \"\n            f\"exit code {result.returncode}, stdout={result.stdout!r} \"\n            f\"stderr={result.stderr!r}\"\n        )\nE       AssertionError: 'aws s3api head-object' for s3://harbor-mpu-multipart_upload_completion__iSiS93v/archives/large.bin failed: exit code 254, stdout='' stderr='\\naws: [ERROR]: An error occurred (403) when calling the HeadObject operation: Forbidden\\n'\nE       assert 254 == 0\nE        +  where 254 = CompletedProcess(args=['aws', 's3api', 'head-object', '--bucket', 'harbor-mpu-multipart_upload_completion__iSiS93v', '...de=254, stdout='', stderr='\\naws: [ERROR]: An error occurred (403) when calling the HeadObject operation: Forbidden\\n').returncode\n\ntests/test_final_state.py:111: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_downloaded_object_matches_local_sha256",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 3.8033149731345475,
+                "start": 1778835612.3150003,
+                "stop": 1778835616.1221313,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "bucket_name = 'harbor-mpu-multipart_upload_completion__iSiS93v'\ntmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_downloaded_object_matches0')\n\n    def test_downloaded_object_matches_local_sha256(bucket_name, tmp_path):\n        \"\"\"Priority 1: download the uploaded object and verify SHA256 equals the\n        SHA256 of the local source file.\"\"\"\n        dest = tmp_path / \"downloaded.bin\"\n        result = subprocess.run(\n            [\n                \"aws\",\n                \"s3\",\n                \"cp\",\n                f\"s3://{bucket_name}/{OBJECT_KEY}\",\n                str(dest),\n            ],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"Failed to download s3://{bucket_name}/{OBJECT_KEY}: \"\n            f\"exit code {result.returncode}, stdout={result.stdout!r} \"\n            f\"stderr={result.stderr!r}\"\n        )\nE       AssertionError: Failed to download s3://harbor-mpu-multipart_upload_completion__iSiS93v/archives/large.bin: exit code 1, stdout='' stderr='fatal error: An error occurred (403) when calling the HeadObject operation: Forbidden\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['aws', 's3', 'cp', 's3://harbor-mpu-multipart_upload_completion__iSiS93v/archives/large.bin', '...urncode=1, stdout='', stderr='fatal error: An error occurred (403) when calling the HeadObject operation: Forbidden\\n').returncode\n\ntests/test_final_state.py:152: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

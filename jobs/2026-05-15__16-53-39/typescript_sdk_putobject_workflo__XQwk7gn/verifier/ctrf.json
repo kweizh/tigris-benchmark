@@ -1,0 +1,62 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 2,
+            "failed": 2,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778835433.4882195,
+            "stop": 1778835439.922834
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_exists_and_uses_sdk",
+                "status": "passed",
+                "duration": 0.0005139359273016453,
+                "start": 1778835433.5019104,
+                "stop": 1778835433.502682,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_listing_txt_contains_all_keys",
+                "status": "passed",
+                "duration": 0.0005070427432656288,
+                "start": 1778835433.5029492,
+                "stop": 1778835433.5036283,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_listing_contains_expected_keys",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 6.397144700400531,
+                "start": 1778835433.5038023,
+                "stop": 1778835439.918692,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'__bucket__': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'inbox/msg-1.json...'error': 'The specified bucket does not exist'}, 'inbox/msg-3.json': {'error': 'The specified bucket does not exist'}}}\n\n    def test_bucket_listing_contains_expected_keys(verify_payload):\n        listing = verify_payload.get(\"listing\")\n>       assert listing is not None, (\n            f\"Verifier failed to list the bucket. Errors: {verify_payload.get('errors')}\"\n        )\nE       AssertionError: Verifier failed to list the bucket. Errors: [{'where': 'list', 'message': 'Unable to list objects The specified bucket does not exist'}]\nE       assert None is not None\n\ntests/test_final_state.py:147: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_object_contents_match_expected",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005529457703232765,
+                "start": 1778835439.918898,
+                "stop": 1778835439.9226596,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'__bucket__': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'inbox/msg-1.json...'error': 'The specified bucket does not exist'}, 'inbox/msg-3.json': {'error': 'The specified bucket does not exist'}}}\n\n    def test_object_contents_match_expected(verify_payload):\n        objects = verify_payload.get(\"objects\", {})\n        for key, expected_body in EXPECTED_BODIES.items():\n            entry = objects.get(key)\n            assert entry is not None, f\"Verifier did not fetch object {key}.\"\n>           assert \"error\" not in entry, (\n                f\"Failed to GET {key}: {entry.get('error')}\"\n            )\nE           AssertionError: Failed to GET inbox/msg-1.json: The specified bucket does not exist\nE           assert 'error' not in {'error': 'The specified bucket does not exist'}\n\ntests/test_final_state.py:161: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

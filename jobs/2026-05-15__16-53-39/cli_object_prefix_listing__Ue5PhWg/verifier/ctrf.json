@@ -1,0 +1,53 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 3,
+            "passed": 1,
+            "failed": 2,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778835724.849835,
+            "stop": 1778835729.543546
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_logs_prefix_has_exactly_two_objects",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.4709536070004106,
+                "start": 1778835724.8675904,
+                "stop": 1778835726.3560328,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_logs_prefix_has_exactly_two_objects():\n        \"\"\"Priority 1: Use the Tigris CLI to list the `logs/` prefix and confirm\n        exactly two objects ending in logs/a.txt and logs/b.txt.\"\"\"\n        bucket = _bucket_name()\n        result = _run_tigris([\"ls\", f\"t3://{bucket}/logs/\"])\n>       assert result.returncode == 0, (\n            f\"'tigris ls t3://{bucket}/logs/' failed: returncode=\"\n            f\"{result.returncode}, stderr={result.stderr!r}, stdout={result.stdout!r}\"\n        )\nE       AssertionError: 'tigris ls t3://harbor-prefix-cli_object_prefix_listing__Ue5PhWg/logs/' failed: returncode=1, stderr='\\nError: Unable to list objects The specified bucket does not exist\\n', stdout=''\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['tigris', 'ls', 't3://harbor-prefix-cli_object_prefix_listing__Ue5PhWg/logs/'], returncode=1, stdout='', stderr='\\nError: Unable to list objects The specified bucket does not exist\\n').returncode\n\ntests/test_final_state.py:90: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_data_prefix_has_exactly_one_object",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.8894682452082634,
+                "start": 1778835726.356279,
+                "stop": 1778835728.250064,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_data_prefix_has_exactly_one_object():\n        \"\"\"Priority 1: Use the Tigris CLI to list the `data/` prefix and confirm\n        exactly one object ending in data/c.txt.\"\"\"\n        bucket = _bucket_name()\n        result = _run_tigris([\"ls\", f\"t3://{bucket}/data/\"])\n>       assert result.returncode == 0, (\n            f\"'tigris ls t3://{bucket}/data/' failed: returncode=\"\n            f\"{result.returncode}, stderr={result.stderr!r}, stdout={result.stdout!r}\"\n        )\nE       AssertionError: 'tigris ls t3://harbor-prefix-cli_object_prefix_listing__Ue5PhWg/data/' failed: returncode=1, stderr='\\nError: Unable to list objects The specified bucket does not exist\\n', stdout=''\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['tigris', 'ls', 't3://harbor-prefix-cli_object_prefix_listing__Ue5PhWg/data/'], returncode=1, stdout='', stderr='\\nError: Unable to list objects The specified bucket does not exist\\n').returncode\n\ntests/test_final_state.py:122: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_listing_file_saved_and_correct",
+                "status": "passed",
+                "duration": 1.2927218568511307,
+                "start": 1778835728.2503705,
+                "stop": 1778835729.5433075,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}
