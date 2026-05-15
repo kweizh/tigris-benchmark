@@ -17,7 +17,10 @@ def _trial_id():
 
 
 def _bucket_name():
-    return f"harbor-boto3-{_trial_id()}"
+    import re
+    name = f"harbor-boto3-{_trial_id()}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _s3_client():

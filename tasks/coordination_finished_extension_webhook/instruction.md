@@ -16,7 +16,7 @@ You must use that public URL as the webhook target (Tigris's notification system
 Write and execute a TypeScript program `/home/user/tigris-task/run.ts` that performs the following steps in order using the Tigris SDKs and exits with code 0 on success:
 
 1. Read `trial_id` from `/logs/artifacts/trial_id` and `.trim()` it.
-2. Build the bucket name `harbor-coord-${trial_id}` (lowercase trial id).
+2. Build the bucket name `harbor-coord-${trial_id}` (lowercase trial id). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 3. Read the public webhook base URL from `/home/user/tigris-task/tunnel.url` and append `/receive` to form the final `webhookUrl`. If the tunnel URL file is missing or empty, retry with backoff for up to 60 seconds before failing.
 4. Use `createBucket` from `@tigrisdata/storage` to create the bucket. Snapshots are **not** required. If `createBucket` reports the bucket already exists, treat that as success.
 5. Use `setupCoordination` from `@tigrisdata/agent-kit` to register a notification rule on the bucket with:
@@ -94,7 +94,7 @@ Run the program with `tsx /home/user/tigris-task/run.ts`. Do not mock any Tigris
 - Log file: /home/user/tigris-task/run.log
 - Tunnel URL file (pre-populated by the entrypoint): /home/user/tigris-task/tunnel.url
 - Received notifications file (pre-created empty, appended to by the receiver): /home/user/tigris-task/received.jsonl
-- Bucket name: `harbor-coord-${trial_id}` (read `${trial_id}` from `/logs/artifacts/trial_id`).
+- Bucket name: `harbor-coord-${trial_id}` (read `${trial_id}` from `/logs/artifacts/trial_id`). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Use the **real** Tigris service via `@tigrisdata/storage` and `@tigrisdata/agent-kit`. Do not mock the webhook delivery — Tigris must actually POST to the tunnel.
 - Do not hardcode credentials. The SDKs read them from `TIGRIS_STORAGE_ACCESS_KEY_ID`, `TIGRIS_STORAGE_SECRET_ACCESS_KEY`, `TIGRIS_STORAGE_ENDPOINT`.
 - Do not stop, kill, or restart the pre-running receiver (`node ... receiver.js`) or the `cloudflared` tunnel process.

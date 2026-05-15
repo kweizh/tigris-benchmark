@@ -5,7 +5,7 @@ Tigris Agent Kit (`@tigrisdata/agent-kit`) exposes a `createForks` primitive tha
 
 A source bucket has already been pre-seeded on the live Tigris service by the container's entrypoint script BEFORE the agent starts:
 
-- Bucket name: `harbor-source-${trial_id}` (snapshots enabled), where `${trial_id}` is the content of `/logs/artifacts/trial_id` (newline-trimmed).
+- Bucket name: `harbor-source-${trial_id}` (snapshots enabled), where `${trial_id}` is the content of `/logs/artifacts/trial_id` (newline-trimmed). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Pre-seeded object: `seed/dataset.txt` with body bytes `initial` (no trailing newline).
 
 Your job is to write a TypeScript program that uses Agent Kit to fork that source bucket 3 ways, then fan out **in parallel** to write a distinct `worker/output.txt` object into each fork. The verifier later asserts both that each fork contains the correct distinct worker output AND that the seed object is still present in every fork (proving the copy-on-write fork inherited the source's state).
@@ -39,7 +39,7 @@ Run the program with `tsx /home/user/tigris-task/run.ts`. `tsx` is pre-installed
 - Project path: `/home/user/tigris-task`
 - Source file: `/home/user/tigris-task/run.ts`
 - Source bucket (created by the entrypoint script, do NOT re-create or delete): `harbor-source-${trial_id}`.
-- Fork bucket names (created by `createForks` via the `prefix` option): `harbor-fork-${trial_id}-0`, `harbor-fork-${trial_id}-1`, `harbor-fork-${trial_id}-2`.
+- Fork bucket names (created by `createForks` via the `prefix` option): `harbor-fork-${trial_id}-0`, `harbor-fork-${trial_id}-1`, `harbor-fork-${trial_id}-2`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - The three fork writes MUST happen in parallel via `Promise.all`. Sequential `for await` loops are not acceptable — the verifier will inspect `run.ts` for `Promise.all`.
 - Use `@tigrisdata/agent-kit`'s `createForks` exclusively for fork creation. Do not implement forking via `tigris buckets create` or raw S3 calls.
 - Use `@tigrisdata/storage`'s `put` for the per-fork writes. Do not shell out to the CLI for the worker writes.

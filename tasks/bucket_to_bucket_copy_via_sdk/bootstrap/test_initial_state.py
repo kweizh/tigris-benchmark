@@ -35,11 +35,17 @@ def _read_trial_id():
 
 
 def _src_bucket_name():
-    return f"harbor-src-{_read_trial_id()}"
+    name = f"harbor-src-{_read_trial_id()}"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _dst_bucket_name():
-    return f"harbor-dst-{_read_trial_id()}"
+    name = f"harbor-dst-{_read_trial_id()}"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _tigris_cli_env():

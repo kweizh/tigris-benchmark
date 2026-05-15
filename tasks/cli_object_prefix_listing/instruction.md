@@ -6,8 +6,8 @@ Tigris is an object storage service. The `tigris` CLI (`@tigrisdata/cli`) suppor
 ## Requirements
 Using the `tigris` CLI exclusively, do the following in order:
 
-1. Read the current `trial_id` from `/logs/artifacts/trial_id`. The bucket name MUST be exactly `harbor-prefix-${trial_id}` — do NOT hardcode any other suffix.
-2. Create a new Tigris bucket named `harbor-prefix-${trial_id}`.
+1. Read the current `trial_id` from `/logs/artifacts/trial_id`. The bucket name MUST be exactly `harbor-prefix-${trial_id}` — do NOT hardcode any other suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+2. Create a new Tigris bucket named `harbor-prefix-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 3. Upload the three pre-existing files into the bucket as follows:
    - `/home/user/tigris-task/a.txt` → `t3://harbor-prefix-${trial_id}/logs/a.txt`
    - `/home/user/tigris-task/b.txt` → `t3://harbor-prefix-${trial_id}/logs/b.txt`
@@ -33,7 +33,7 @@ Do NOT delete the bucket — the verifier inspects the bucket state and tears it
 
 ## Constraints
 - Project path: `/home/user/tigris-task`
-- Bucket name MUST be exactly `harbor-prefix-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Do NOT hardcode the suffix.
+- Bucket name MUST be exactly `harbor-prefix-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Do NOT hardcode the suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Use the Tigris CLI (`@tigrisdata/cli`) only — do not implement uploads via raw S3/HTTP calls or other SDKs.
 - Do NOT modify the contents of `/home/user/tigris-task/a.txt`, `b.txt`, or `c.txt` — upload them as-is.
 - Do NOT delete the bucket; the verifier asserts on the bucket state and cleans up afterwards.

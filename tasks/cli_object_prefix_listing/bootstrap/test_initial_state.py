@@ -35,7 +35,10 @@ def _expected_bucket_name():
     with open(TRIAL_ID_PATH) as f:
         trial_id = f.read().strip()
     assert trial_id, f"{TRIAL_ID_PATH} must contain a non-empty trial id."
-    return f"harbor-prefix-{trial_id}"
+    name = f"harbor-prefix-{trial_id}"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def test_tigris_cli_available():

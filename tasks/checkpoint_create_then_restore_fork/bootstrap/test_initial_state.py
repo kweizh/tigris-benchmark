@@ -162,6 +162,8 @@ def test_seeded_base_bucket_exists():
     """The pre-seeded base bucket must be visible to the Tigris CLI."""
     _wait_for_seed_sentinel()
     bucket = f"harbor-base-{_read_trial_id()}"
+    import re
+    bucket = re.sub(r"[^a-z0-9.-]", "-", bucket.lower())
     result = subprocess.run(
         ["tigris", "buckets", "list", "--format", "json"],
         capture_output=True,
@@ -208,6 +210,8 @@ def test_seeded_base_bucket_has_snapshots_enabled():
     """Snapshots must be enabled on the base bucket — checkpoints require it."""
     _wait_for_seed_sentinel()
     bucket = f"harbor-base-{_read_trial_id()}"
+    import re
+    bucket = re.sub(r"[^a-z0-9.-]", "-", bucket.lower())
     result = subprocess.run(
         ["tigris", "snapshots", "list", bucket],
         capture_output=True,
@@ -227,6 +231,8 @@ def test_seeded_base_bucket_has_two_objects():
     """The pre-seeded base bucket must contain exactly `data/v1.txt` and `data/v2.txt`."""
     _wait_for_seed_sentinel()
     bucket = f"harbor-base-{_read_trial_id()}"
+    import re
+    bucket = re.sub(r"[^a-z0-9.-]", "-", bucket.lower())
     result = subprocess.run(
         ["tigris", "ls", f"t3://{bucket}/data/"],
         capture_output=True,

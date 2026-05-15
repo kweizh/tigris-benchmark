@@ -41,7 +41,10 @@ def _bucket_name():
     with open(TRIAL_ID_PATH) as f:
         trial_id = f.read().strip()
     assert trial_id, f"{TRIAL_ID_PATH} must contain a non-empty trial id."
-    return f"harbor-download-{trial_id}"
+    import re
+    name = f"harbor-download-{trial_id}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 @pytest.fixture(scope="module", autouse=True)

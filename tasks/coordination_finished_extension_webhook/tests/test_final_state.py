@@ -21,7 +21,10 @@ def _read_trial_id():
 
 
 def _bucket_name():
-    return f"harbor-coord-{_read_trial_id()}"
+    import re
+    name = f"harbor-coord-{_read_trial_id()}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _load_received_payloads():

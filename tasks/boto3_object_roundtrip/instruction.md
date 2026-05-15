@@ -6,7 +6,7 @@ Tigris is an S3-compatible, globally distributed object storage service exposed 
 ## Requirements
 Write a single Python script at `/home/user/tigris-task/roundtrip.py` that uses **boto3** (no shelling out to other CLIs) to perform a full object roundtrip against Tigris:
 
-1. Read the trial identifier from `/logs/artifacts/trial_id` (strip surrounding whitespace) and derive the bucket name `harbor-boto3-${trial_id}`.
+1. Read the trial identifier from `/logs/artifacts/trial_id` (strip surrounding whitespace) and derive the bucket name `harbor-boto3-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 2. Create a boto3 S3 client pointed at the Tigris endpoint. Use the value of the `AWS_ENDPOINT_URL_S3` environment variable as the endpoint URL (this is set to `https://t3.storage.dev` by the runtime). Configure `Config(s3={"addressing_style": "virtual"})`.
 3. Create the bucket `harbor-boto3-${trial_id}` (idempotently — if it already exists and is owned by the caller, treat that as success).
 4. Upload the bytes of the JSON payload `{"hello":"tigris"}` (exactly that string, no extra whitespace, no trailing newline) under the object key `data/payload.json`.
@@ -50,7 +50,7 @@ Then execute the script once from `/home/user/tigris-task` so that the bucket, t
 - Downloaded artifact: `/home/user/tigris-task/downloaded.json`
 - Object key MUST be exactly `data/payload.json`.
 - Object body MUST be exactly the 18 bytes `{"hello":"tigris"}` (no extra whitespace, no newline).
-- Bucket name MUST be derived from `/logs/artifacts/trial_id` as `harbor-boto3-${trial_id}` — do NOT hardcode the trial id.
+- Bucket name MUST be derived from `/logs/artifacts/trial_id` as `harbor-boto3-${trial_id}` — do NOT hardcode the trial id. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Use boto3 for ALL S3 operations. Do not shell out to AWS CLI, `tigris`, `curl`, etc.
 - Do NOT hardcode credentials or the endpoint URL inside the script — read them from the standard `AWS_*` environment variables that Harbor injects.
 

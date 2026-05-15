@@ -11,7 +11,7 @@ You will:
 
 ## Requirements
 - Read the current `trial_id` from `/logs/artifacts/trial_id` and trim trailing whitespace.
-- Derive the bucket name as `harbor-interop-${trial_id}` and use that name verbatim everywhere.
+- Derive the bucket name as `harbor-interop-${trial_id}` and use that name verbatim everywhere. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Step 1 (CLI): create the bucket with snapshots enabled in a single `tigris buckets create` invocation that includes `--enable-snapshots`.
 - Step 2 (CLI): set the object expiration TTL on that bucket to exactly 7 days using `tigris buckets set-ttl <bucket> --days 7`.
 - Step 3 (SDK): create `/home/user/tigris-task/index.ts` that imports from `@tigrisdata/storage` and uses the `put` function to upload an object whose key is `manifest.json` and whose body is the literal JSON string `{"created_by":"cli","modified_by":"sdk","trial":"<trial_id>"}` (with `<trial_id>` substituted from `/logs/artifacts/trial_id`). The object's Content-Type should be `application/json`. The upload must target the new bucket via `config: { bucket: bucketName }`. Run the program with `tsx /home/user/tigris-task/index.ts`.
@@ -64,7 +64,7 @@ You will:
 - Project path: `/home/user/tigris-task`
 - Source file: `/home/user/tigris-task/index.ts`
 - Listing file: `/home/user/tigris-task/bucket-listing.txt`
-- Bucket name MUST be `harbor-interop-${trial_id}` (no other prefix or suffix), with `${trial_id}` taken verbatim from `/logs/artifacts/trial_id`.
+- Bucket name MUST be `harbor-interop-${trial_id}` (no other prefix or suffix), with `${trial_id}` taken verbatim from `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Snapshots MUST be enabled at creation (`--enable-snapshots` on `tigris buckets create`). They cannot be enabled on an existing bucket.
 - The bucket TTL MUST be exactly 7 days (`tigris buckets set-ttl <bucket> --days 7`).
 - The uploaded object body MUST be exactly `{"created_by":"cli","modified_by":"sdk","trial":"<trial_id>"}` (no extra whitespace, key ordering as written here), with `<trial_id>` substituted.

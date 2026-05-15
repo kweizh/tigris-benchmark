@@ -14,7 +14,7 @@ Tigris is an S3-compatible object storage service exposing a single global endpo
 
 ## Implementation Guide
 1. Read the trial id from `/logs/artifacts/trial_id`.
-2. Construct the bucket name as `harbor-meta-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal).
+2. Construct the bucket name as `harbor-meta-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 3. Use the AWS CLI against the Tigris endpoint to create the bucket, for example:
    ```bash
    aws s3 mb s3://harbor-meta-${trial_id}
@@ -35,7 +35,7 @@ Tigris is an S3-compatible object storage service exposing a single global endpo
 ## Constraints
 - Project path: /home/user/tigris-task
 - Pre-existing file: /home/user/tigris-task/report.txt (contains exactly the bytes `quarterly report`, no trailing newline). Do NOT modify its contents.
-- Bucket name format: `harbor-meta-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`.
+- Bucket name format: `harbor-meta-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Object key: `reports/q1.txt` (note the `reports/` prefix).
 - Required user metadata keys: `owner`, `team`. Required values: `alice`, `research`. Use lowercase keys exactly as written.
 - Required object Content-Type: `text/markdown`.

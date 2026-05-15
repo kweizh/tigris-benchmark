@@ -24,11 +24,17 @@ def _read_trial_id():
 
 
 def _workspace_bucket():
-    return f"harbor-ro-{_read_trial_id()}"
+    name = f"harbor-ro-{_read_trial_id()}"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _fork_bucket():
-    return f"harbor-ro-{_read_trial_id()}-readonly-0"
+    name = f"harbor-ro-{_read_trial_id()}-readonly-0"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 VERIFY_SCRIPT = r"""

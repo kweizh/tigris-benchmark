@@ -142,6 +142,8 @@ def test_tigris_cli_can_list_buckets():
 def test_target_bucket_does_not_yet_exist():
     """The bucket the agent must create must NOT already exist in the org."""
     bucket_name = f"harbor-interop-{_trial_id()}"
+    import re
+    bucket_name = re.sub(r"[^a-z0-9.-]", "-", bucket_name.lower())
     result = subprocess.run(
         ["tigris", "buckets", "list", "--format", "json"],
         capture_output=True,

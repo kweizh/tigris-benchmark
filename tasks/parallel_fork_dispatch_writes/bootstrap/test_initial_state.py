@@ -104,6 +104,8 @@ def test_source_bucket_seeded_with_dataset():
     with open(TRIAL_ID_PATH, "r", encoding="utf-8") as handle:
         trial_id = handle.read().strip()
     bucket = f"harbor-source-{trial_id}"
+    import re
+    bucket = re.sub(r"[^a-z0-9.-]", "-", bucket.lower())
 
     env = os.environ.copy()
     env["AWS_ACCESS_KEY_ID"] = os.environ["TIGRIS_STORAGE_ACCESS_KEY_ID"]

@@ -28,7 +28,10 @@ def _read_trial_id():
 
 
 def _bucket_name():
-    return f"harbor-tssdk-{_read_trial_id()}"
+    import re
+    name = f"harbor-tssdk-{_read_trial_id()}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 VERIFY_SCRIPT = r"""

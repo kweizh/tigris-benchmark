@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 import pytest
 
@@ -20,6 +21,7 @@ def _read_trial_id():
 def bucket_name():
     trial_id = _read_trial_id()
     name = f"harbor-awscli-{trial_id}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
     yield name
     # Cleanup: forcefully remove the bucket and any objects it contains,
     # regardless of whether the assertions above passed or failed.

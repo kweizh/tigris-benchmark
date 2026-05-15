@@ -7,7 +7,7 @@ In this task, both the origin and the shadow are Tigris buckets (Tigris is itsel
 
 The container's entrypoint script has ALREADY pre-seeded the origin bucket BEFORE the agent runs:
 
-- Origin bucket name: `harbor-origin-${trial_id}` (where `${trial_id}` is the content of `/logs/artifacts/trial_id`).
+- Origin bucket name: `harbor-origin-${trial_id}` (where `${trial_id}` is the content of `/logs/artifacts/trial_id`). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Pre-seeded object key: `docs/readme.md`
 - Pre-seeded object content (exact bytes, no trailing newline): `from origin`
 
@@ -16,7 +16,7 @@ The shadow bucket has NOT been created yet. That is your job.
 ## Requirements
 Using the `tigris` CLI and the `aws` CLI, do the following:
 
-1. Create a NEW Tigris bucket named EXACTLY `harbor-shadow-${trial_id}` (read the `${trial_id}` from `/logs/artifacts/trial_id`).
+1. Create a NEW Tigris bucket named EXACTLY `harbor-shadow-${trial_id}` (read the `${trial_id}` from `/logs/artifacts/trial_id`). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 2. Configure the new bucket so that the **pre-existing** Tigris bucket `harbor-origin-${trial_id}` is its **shadow source**. The shadow source endpoint MUST be `https://t3.storage.dev`, the region MUST be `auto`, and the shadow credentials MUST be the same Tigris credentials provided to the container (`TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`). DO NOT enable write-through.
 3. Without ever writing the object `docs/readme.md` directly into the shadow bucket, fetch the object via the shadow bucket using the AWS CLI:
    ```bash
@@ -62,8 +62,8 @@ Using the `tigris` CLI and the `aws` CLI, do the following:
 ## Constraints
 - Project path: `/home/user/tigris-task`
 - Output file MUST be at exactly `/home/user/tigris-task/proxied.md`.
-- Origin bucket name MUST be exactly `harbor-origin-${trial_id}` (do NOT recreate or modify it — it is pre-seeded by the container entrypoint).
-- Shadow bucket name MUST be exactly `harbor-shadow-${trial_id}` (you create it).
+- Origin bucket name MUST be exactly `harbor-origin-${trial_id}` (do NOT recreate or modify it — it is pre-seeded by the container entrypoint). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Shadow bucket name MUST be exactly `harbor-shadow-${trial_id}` (you create it). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Shadow source endpoint MUST be `https://t3.storage.dev`; region MUST be `auto`.
 - DO NOT upload `docs/readme.md` (or any object) directly into the shadow bucket via `tigris cp`, `tigris mk`, `aws s3 cp` to the shadow bucket, or any other mechanism — the bytes MUST be served by the shadow read-through from the origin bucket.
 - DO NOT enable write-through mode on the shadow migration configuration.

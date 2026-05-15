@@ -10,7 +10,7 @@ Tigris is an S3-compatible object storage service exposing a single global endpo
 
 ## Implementation Guide
 1. Read the trial id from `/logs/artifacts/trial_id`.
-2. Construct the bucket name as `harbor-awscli-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal).
+2. Construct the bucket name as `harbor-awscli-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 3. Use the AWS CLI against the Tigris endpoint to create the bucket, for example:
    ```bash
    aws s3 mb s3://harbor-awscli-${trial_id}
@@ -24,7 +24,7 @@ Tigris is an S3-compatible object storage service exposing a single global endpo
 ## Constraints
 - Project path: /home/user/tigris-task
 - Pre-existing file: /home/user/tigris-task/hello.txt (contains exactly the bytes `hello tigris`, no trailing newline). Do NOT modify its contents.
-- Bucket name format: `harbor-awscli-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`.
+- Bucket name format: `harbor-awscli-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. You must normalize the bucket name to only contain lowercase letters, numbers, dots, and hyphens. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - The AWS CLI is pre-configured via the environment variables `AWS_ENDPOINT_URL_S3=https://t3.storage.dev`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION=auto`. Do NOT hardcode credentials in any file.
 - Use the real Tigris service. Do NOT mock or stub any of the calls.
 

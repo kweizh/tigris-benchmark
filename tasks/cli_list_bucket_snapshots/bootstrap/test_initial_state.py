@@ -113,8 +113,8 @@ def test_setup_script_uses_tigris_cli():
     assert "tigris" in content, (
         "setup.sh must invoke the tigris CLI to prepare the bucket."
     )
-    assert "agent-history" in content, (
-        "setup.sh must reference the bucket name 'agent-history'."
+    assert "harbor-history-" in content, (
+        "setup.sh must reference the bucket name 'harbor-history-'."
     )
     assert "snapshots take" in content, (
         "setup.sh must call 'tigris snapshots take' to pre-populate snapshots."

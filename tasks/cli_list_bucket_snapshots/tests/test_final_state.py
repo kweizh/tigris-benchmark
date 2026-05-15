@@ -7,8 +7,17 @@ import pytest
 
 PROJECT_DIR = "/home/user/snapshot-list"
 SNAPSHOTS_FILE = os.path.join(PROJECT_DIR, "snapshots.txt")
-BUCKET = "agent-history"
+TRIAL_ID_PATH = "/logs/artifacts/trial_id"
 
+def _read_trial_id():
+    with open(TRIAL_ID_PATH, "r", encoding="utf-8") as handle:
+        return handle.read().strip()
+
+def _bucket_name():
+    name = f"harbor-history-{_read_trial_id()}"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 def _tigris_cmd():
     """Return the command list for invoking the Tigris CLI."""
@@ -22,8 +31,9 @@ def _tigris_cmd():
 def _list_snapshots():
     """Run `tigris snapshots list <bucket> --format json` and return the
     parsed JSON payload."""
+    bucket = _bucket_name()
     cmd = _tigris_cmd() + [
-        "snapshots", "list", BUCKET, "--format", "json",
+        "snapshots", "list", bucket, "--format", "json",
     ]
     result = subprocess.run(
         cmd,
@@ -33,7 +43,7 @@ def _list_snapshots():
         env=os.environ.copy(),
     )
     assert result.returncode == 0, (
-        f"'tigris snapshots list {BUCKET} --format json' failed: "
+        f"'tigris snapshots list {bucket} --format json' failed: "
         f"stdout={result.stdout!r} stderr={result.stderr!r}"
     )
     try:
@@ -60,8 +70,9 @@ def test_cli_reports_at_least_three_snapshots():
     assert isinstance(snapshots, list), (
         f"Expected 'snapshots' to be a list in CLI output, got: {payload!r}"
     )
+    bucket = _bucket_name()
     assert len(snapshots) >= 3, (
-        f"Expected at least 3 snapshots in bucket '{BUCKET}', got "
+        f"Expected at least 3 snapshots in bucket '{bucket}', got "
         f"{len(snapshots)}: {snapshots!r}"
     )
     for entry in snapshots:

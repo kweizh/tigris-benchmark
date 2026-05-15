@@ -14,7 +14,7 @@ Your job is to download that object to a local file on disk using the Tigris CLI
 ## Requirements
 Using the `tigris` CLI exclusively, do the following:
 
-1. Read the current `trial_id` from `/logs/artifacts/trial_id`. The bucket name MUST be exactly `harbor-download-${trial_id}` — do NOT hardcode any other suffix.
+1. Read the current `trial_id` from `/logs/artifacts/trial_id`. The bucket name MUST be exactly `harbor-download-${trial_id}` — do NOT hardcode any other suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 2. Download the pre-seeded object `assets/welcome.md` from that bucket to the absolute local path `/home/user/tigris-task/welcome.md` using `tigris cp`.
 3. Leave the source object in the bucket untouched — the verifier will assert that `tigris ls t3://harbor-download-${trial_id}/assets/welcome.md` still resolves.
 
@@ -35,7 +35,7 @@ Using the `tigris` CLI exclusively, do the following:
 ## Constraints
 - Project path: `/home/user/tigris-task`
 - Output file MUST be at exactly `/home/user/tigris-task/welcome.md`.
-- Bucket name MUST be exactly `harbor-download-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Do NOT hardcode the suffix.
+- Bucket name MUST be exactly `harbor-download-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Do NOT hardcode the suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Use the Tigris CLI (`@tigrisdata/cli`) only — do not implement the download via raw S3/HTTP calls or other SDKs.
 - Do NOT move, rename, overwrite, or delete the source object `t3://harbor-download-${trial_id}/assets/welcome.md`. The verifier asserts the source still exists.
 - Do NOT delete the bucket; the verifier cleans it up after assertions.

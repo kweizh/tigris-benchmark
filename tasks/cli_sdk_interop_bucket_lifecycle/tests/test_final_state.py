@@ -34,7 +34,10 @@ def _read_trial_id():
 
 
 def _bucket_name():
-    return f"harbor-interop-{_read_trial_id()}"
+    import re
+    name = f"harbor-interop-{_read_trial_id()}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _expected_manifest_body(trial_id: str) -> str:

@@ -49,6 +49,8 @@ def _md5_of_file(path):
 def bucket_name():
     trial_id = _read_trial_id()
     name = f"harbor-mpu-{trial_id}"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
     yield name
     # Cleanup: forcefully remove the bucket and any objects it contains,
     # regardless of whether the assertions above passed or failed.

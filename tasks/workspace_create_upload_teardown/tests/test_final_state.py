@@ -16,7 +16,10 @@ def _read_trial_id():
 
 
 def _workspace_name():
-    return f"harbor-ws-{_read_trial_id()}"
+    name = f"harbor-ws-{_read_trial_id()}"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _expected_body():

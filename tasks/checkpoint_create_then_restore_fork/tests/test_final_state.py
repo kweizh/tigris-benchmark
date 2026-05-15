@@ -24,7 +24,12 @@ def _read_trial_id():
 
 def _bucket_names():
     trial = _read_trial_id()
-    return f"harbor-base-{trial}", f"harbor-restore-{trial}"
+    import re
+    name1 = f"harbor-base-{trial}"
+    name2 = f"harbor-restore-{trial}"
+    name1 = re.sub(r"[^a-z0-9.-]", "-", name1.lower())
+    name2 = re.sub(r"[^a-z0-9.-]", "-", name2.lower())
+    return name1, name2
 
 
 VERIFY_SCRIPT = r"""

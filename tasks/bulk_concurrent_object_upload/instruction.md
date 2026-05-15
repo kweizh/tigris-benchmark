@@ -8,7 +8,7 @@ In this task you will exercise a realistic AI-pipeline pattern: writing many sma
 ## Requirements
 Write a Python program at `/home/user/tigris-task/bulk.py`. When executed with `python3 /home/user/tigris-task/bulk.py` it MUST:
 
-1. Read the current trial id from `/logs/artifacts/trial_id` (newline-trimmed) and compute the bucket name `harbor-bulk-${trial_id}`. Do NOT hardcode the suffix.
+1. Read the current trial id from `/logs/artifacts/trial_id` (newline-trimmed) and compute the bucket name `harbor-bulk-${trial_id}`. Do NOT hardcode the suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 2. Build a boto3 S3 client whose `endpoint_url` is `https://t3.storage.dev` (the `AWS_ENDPOINT_URL_S3` env var is also exported to this exact value, so you may read it from the environment) and whose `Config` sets `s3={'addressing_style': 'virtual'}`. The client MUST authenticate with `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` from the environment (you may either pass them explicitly to `boto3.client` or first re-export them as `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`).
 3. Create the bucket `harbor-bulk-${trial_id}` (treat "already exists / owned by you" as success).
 4. Upload **exactly 20** JSON objects **in parallel** using `concurrent.futures.ThreadPoolExecutor(max_workers=10)`. For each integer `N` in `1..20`:
@@ -21,7 +21,7 @@ Write a Python program at `/home/user/tigris-task/bulk.py`. When executed with `
 Do NOT delete any object or the bucket -- the verifier will inspect them and then clean up.
 
 ## Implementation Guide
-1. Inspect `/logs/artifacts/trial_id` and use the contents (stripped) to form the bucket name `harbor-bulk-${trial_id}`.
+1. Inspect `/logs/artifacts/trial_id` and use the contents (stripped) to form the bucket name `harbor-bulk-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 2. Create `/home/user/tigris-task/bulk.py` with logic similar to the snippet below:
    ```python
    import json, os, time
@@ -71,7 +71,7 @@ Do NOT delete any object or the bucket -- the verifier will inspect them and the
 - Project path: `/home/user/tigris-task`
 - Script path (MUST exist after the task): `/home/user/tigris-task/bulk.py`
 - Timing file (MUST exist after the task): `/home/user/tigris-task/timing.txt` containing a single positive base-10 integer (milliseconds).
-- Bucket name MUST be exactly `harbor-bulk-${trial_id}` where `${trial_id}` is the stripped content of `/logs/artifacts/trial_id`. Do NOT hardcode the suffix.
+- Bucket name MUST be exactly `harbor-bulk-${trial_id}` where `${trial_id}` is the stripped content of `/logs/artifacts/trial_id`. Do NOT hardcode the suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Use `boto3` and `concurrent.futures.ThreadPoolExecutor(max_workers=10)` -- do NOT serialize the uploads, do NOT use the `tigris` CLI for the uploads, and do NOT use multiprocessing or asyncio.
 - Exactly 20 objects under the `events/` prefix: keys `events/event-001.json` ... `events/event-020.json`. No extra objects, no missing objects.
 - Each object body MUST be the UTF-8 JSON `{"id": "<NNN>", "ts": "2024-01-01"}` where `<NNN>` matches the key (e.g. `events/event-007.json` must contain `{"id": "007", "ts": "2024-01-01"}`).

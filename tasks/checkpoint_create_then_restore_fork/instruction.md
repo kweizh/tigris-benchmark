@@ -7,7 +7,7 @@ The container already has a base bucket `harbor-base-${trial_id}` provisioned wi
 - `data/v1.txt` whose content is exactly `version1`
 - `data/v2.txt` whose content is exactly `version2`
 
-Your task is to (1) checkpoint that base bucket, (2) write a new object `data/v3.txt` (content `version3`) into the base bucket *after* the checkpoint, and (3) restore the checkpoint into a fresh fork bucket named `harbor-restore-${trial_id}`. The fork must reflect the state *before* `data/v3.txt` was added.
+Your task is to (1) checkpoint that base bucket, (2) write a new object `data/v3.txt` (content `version3`) into the base bucket *after* the checkpoint, and (3) restore the checkpoint into a fresh fork bucket named `harbor-restore-${trial_id}`. The fork must reflect the state *before* `data/v3.txt` was added. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 
 ## Requirements
 - Implement everything in a single TypeScript script at `/home/user/tigris-task/run.ts`.
@@ -59,8 +59,8 @@ Your task is to (1) checkpoint that base bucket, (2) write a new object `data/v3
 ## Constraints
 - Project path: `/home/user/tigris-task`
 - Source file: `/home/user/tigris-task/run.ts`
-- Base bucket name: `harbor-base-${trial_id}` (pre-seeded by the entrypoint with snapshots enabled and the two `data/v*.txt` objects).
-- Fork bucket name: `harbor-restore-${trial_id}` (created by your `restore` call — must not pre-exist).
+- Base bucket name: `harbor-base-${trial_id}` (pre-seeded by the entrypoint with snapshots enabled and the two `data/v*.txt` objects). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Fork bucket name: `harbor-restore-${trial_id}` (created by your `restore` call — must not pre-exist). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - The fork bucket must contain EXACTLY the two pre-seeded objects (`data/v1.txt`, `data/v2.txt`). It MUST NOT contain `data/v3.txt`, because the checkpoint was taken before the upload.
 - The base bucket must still contain all three objects (`data/v1.txt`, `data/v2.txt`, `data/v3.txt`) at the end.
 - Use only `@tigrisdata/agent-kit` and `@tigrisdata/storage` for the checkpoint/restore/upload work. Do not shell out to the Tigris CLI for these operations.

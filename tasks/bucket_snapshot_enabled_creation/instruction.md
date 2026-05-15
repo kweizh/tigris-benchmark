@@ -5,7 +5,7 @@ Tigris is a globally distributed, S3-compatible object storage service. Snapshot
 
 ## Requirements
 - Use the Tigris CLI (`tigris`) to create exactly one new bucket on the real Tigris service (`https://t3.storage.dev`).
-- The bucket name MUST be `harbor-snap-${trial_id}`, where `${trial_id}` is the contents of `/logs/artifacts/trial_id`.
+- The bucket name MUST be `harbor-snap-${trial_id}`, where `${trial_id}` is the contents of `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Snapshots MUST be enabled on the bucket at creation time (in the same command — snapshots cannot be enabled later).
 - Do NOT upload any objects to the bucket. Just create it.
 

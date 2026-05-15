@@ -8,7 +8,7 @@ The Harbor runtime injects the Tigris credentials and endpoint into the containe
 ## Requirements
 From the project directory `/home/user/tigris-task`, perform the following steps **in order**:
 
-1. Read the per-trial id from `/logs/artifacts/trial_id` (strip surrounding whitespace) and derive the bucket name `harbor-presign-${trial_id}`. Do NOT hardcode the trial id.
+1. Read the per-trial id from `/logs/artifacts/trial_id` (strip surrounding whitespace) and derive the bucket name `harbor-presign-${trial_id}`. Do NOT hardcode the trial id. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 2. Using **boto3**, create the bucket `harbor-presign-${trial_id}` (treat `BucketAlreadyOwnedByYou` as success).
 3. Using **boto3**, upload an object under the key `share/secret.txt` whose body is exactly the bytes `shareable content` (17 bytes — no newline, no quotes, no extra whitespace).
 4. Using `s3_client.generate_presigned_url("get_object", Params={"Bucket": ..., "Key": "share/secret.txt"}, ExpiresIn=300)`, mint an S3 SigV4 presigned URL valid for **300 seconds** that grants read access to `share/secret.txt`.
@@ -26,7 +26,7 @@ Do NOT delete the bucket or object after you finish — the verifier will perfor
 ## Implementation Guide
 1. `cd /home/user/tigris-task`.
 2. Write a small Python helper (e.g. `presign.py`) that:
-   * Reads `/logs/artifacts/trial_id` and builds the bucket name `harbor-presign-${trial_id}`.
+   * Reads `/logs/artifacts/trial_id` and builds the bucket name `harbor-presign-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
    * Builds a boto3 S3 client targeting `AWS_ENDPOINT_URL_S3` with `Config(s3={"addressing_style": "virtual"})`.
    * Calls `create_bucket(Bucket=bucket)` (catching `BucketAlreadyOwnedByYou`).
    * Calls `put_object(Bucket=bucket, Key="share/secret.txt", Body=b"shareable content")`.
@@ -39,7 +39,7 @@ Do NOT delete the bucket or object after you finish — the verifier will perfor
 - Project path: `/home/user/tigris-task`
 - Presigned URL file: `/home/user/tigris-task/presigned.url` (single line, no trailing newline).
 - Downloaded artifact: `/home/user/tigris-task/downloaded.txt` (bytes must equal exactly `shareable content`, 17 bytes, no newline).
-- Bucket name MUST be exactly `harbor-presign-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Do NOT hardcode the suffix.
+- Bucket name MUST be exactly `harbor-presign-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Do NOT hardcode the suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Object key MUST be exactly `share/secret.txt`.
 - Object body MUST be exactly the 17 bytes `shareable content` (no newline, no quotes).
 - The presigned URL MUST:

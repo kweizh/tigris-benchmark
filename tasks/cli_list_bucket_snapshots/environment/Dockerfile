@@ -12,7 +12,7 @@ RUN apt-get update -y && \
 RUN mkdir -p /home/user && chmod 0755 /home/user
 
 LABEL Author="any-task-builder"
-LABEL Description="Tigris CLI snapshot-listing task: Node.js v24, the @tigrisdata/cli installed globally, a pre-initialized /home/user/snapshot-list project with @tigrisdata/agent-kit installed locally, and a setup.sh script that prepares the agent-history bucket at task start."
+LABEL Description="Tigris CLI snapshot-listing task: Node.js v24, the @tigrisdata/cli installed globally, a pre-initialized /home/user/snapshot-list project with @tigrisdata/agent-kit installed locally, and a setup.sh script that prepares the snapshot bucket at task start."
 
 # Pre-create the project directory with package.json and a project-local
 # node_modules containing @tigrisdata/agent-kit (the agent-kit SDK is required
@@ -42,7 +42,15 @@ RUN cat >/home/user/snapshot-list/setup.sh <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 
-BUCKET="agent-history"
+if [[ ! -f /logs/artifacts/trial_id ]]; then
+  echo "ERROR: /logs/artifacts/trial_id not found." >&2
+  exit 1
+fi
+
+TRIAL_ID=$(cat /logs/artifacts/trial_id | tr -d '[:space:]')
+BUCKET="harbor-history-${TRIAL_ID}"
+BUCKET=$(echo "$BUCKET" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9.-]/-/g')
+
 ENDPOINT="${TIGRIS_STORAGE_ENDPOINT:-https://t3.storage.dev}"
 
 if [[ -z "${TIGRIS_STORAGE_ACCESS_KEY_ID:-}" || -z "${TIGRIS_STORAGE_SECRET_ACCESS_KEY:-}" ]]; then
@@ -55,12 +63,6 @@ tigris configure \
   --access-key "${TIGRIS_STORAGE_ACCESS_KEY_ID}" \
   --access-secret "${TIGRIS_STORAGE_SECRET_ACCESS_KEY}" \
   --endpoint "${ENDPOINT}"
-
-echo "[setup] Removing bucket ${BUCKET} if it already exists..."
-tigris buckets delete "${BUCKET}" --yes >/dev/null 2>&1 || true
-
-# Wait briefly for deletion to propagate.
-sleep 3
 
 echo "[setup] Creating bucket ${BUCKET} with snapshots enabled..."
 tigris buckets create "${BUCKET}" --enable-snapshots
@@ -85,7 +87,7 @@ RUN chmod +x /home/user/snapshot-list/setup.sh
 #   - @tigrisdata/cli installed globally so `tigris` is on PATH.
 #   - /home/user/snapshot-list — pre-initialized project with package.json
 #     and node_modules containing @tigrisdata/agent-kit, plus an executable
-#     setup.sh that prepares the agent-history bucket and its snapshots at
+#     setup.sh that prepares the snapshot bucket and its snapshots at
 #     task start (the build does not have Tigris credentials).
 #   - snapshots.txt and output.log are intentionally absent — the user
 #     creates them when completing the task.

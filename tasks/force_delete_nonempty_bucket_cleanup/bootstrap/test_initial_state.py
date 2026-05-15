@@ -35,7 +35,10 @@ def _trial_id():
 
 
 def _bucket_name():
-    return f"harbor-cleanup-{_trial_id()}"
+    import re
+    name = f"harbor-cleanup-{_trial_id()}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _list_bucket_names():

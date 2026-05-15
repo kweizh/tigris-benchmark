@@ -15,11 +15,17 @@ def _read_trial_id():
 
 
 def _source_bucket():
-    return f"harbor-source-{_read_trial_id()}"
+    import re
+    name = f"harbor-source-{_read_trial_id()}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _fork_bucket(i):
-    return f"harbor-fork-{_read_trial_id()}-{i}"
+    name = f"harbor-fork-{_read_trial_id()}-{i}"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 VERIFY_SCRIPT = r"""

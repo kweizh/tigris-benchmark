@@ -60,11 +60,17 @@ def _read_trial_id():
 
 
 def _origin_bucket():
-    return f"harbor-origin-{_read_trial_id()}"
+    import re
+    name = f"harbor-origin-{_read_trial_id()}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _shadow_bucket():
-    return f"harbor-shadow-{_read_trial_id()}"
+    import re
+    name = f"harbor-shadow-{_read_trial_id()}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 @pytest.fixture(scope="module", autouse=True)

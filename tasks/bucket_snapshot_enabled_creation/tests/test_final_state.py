@@ -21,6 +21,8 @@ def _read_trial_id():
 def bucket_name():
     trial_id = _read_trial_id()
     name = f"harbor-snap-{trial_id}"
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
     yield name
     # Finalizer: delete the bucket so re-runs (same trial id) don't collide.
     # `tigris buckets delete` requires the bucket to be empty; the task does

@@ -4,7 +4,7 @@
 Tigris is an S3-compatible object storage service exposing a single global endpoint at `https://t3.storage.dev`. The standard `aws` CLI can be used against Tigris by configuring the S3 endpoint URL. For objects larger than the `multipart_threshold`, the AWS CLI automatically uses the S3 multipart upload protocol (`CreateMultipartUpload` / `UploadPart` / `CompleteMultipartUpload`). In this task you will force the AWS CLI to upload a 16 MiB file to Tigris using multipart upload with a small chunk size, then record the local file's MD5 fingerprint so the verifier can confirm end-to-end integrity.
 
 ## Requirements
-- Create a Tigris bucket named `harbor-mpu-${trial_id}` (where `${trial_id}` is the content of `/logs/artifacts/trial_id`).
+- Create a Tigris bucket named `harbor-mpu-${trial_id}` (where `${trial_id}` is the content of `/logs/artifacts/trial_id`). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Configure the AWS CLI so the multipart threshold and chunk size are both 5 MB, ensuring a 16 MiB upload is performed as a multipart upload (≥4 parts).
 - Upload the pre-existing local file `/home/user/tigris-task/large.bin` (16 MiB, deterministic content) to the bucket under the object key `archives/large.bin` using `aws s3 cp` with `--cli-write-timeout 0`.
 - Compute the MD5 (hex digest) of the local file and write it (exactly 32 lowercase hex characters, no trailing newline allowed beyond a single optional `\n`) to `/home/user/tigris-task/local.md5`.
@@ -39,7 +39,7 @@ Tigris is an S3-compatible object storage service exposing a single global endpo
 ## Constraints
 - Project path: /home/user/tigris-task
 - Pre-existing file: /home/user/tigris-task/large.bin (exactly 16 MiB = 16777216 bytes of NUL bytes, generated deterministically with `dd if=/dev/zero bs=1048576 count=16`). Do NOT modify or regenerate this file.
-- Bucket name format: `harbor-mpu-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`.
+- Bucket name format: `harbor-mpu-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Object key: `archives/large.bin` (note the `archives/` prefix).
 - Output file: /home/user/tigris-task/local.md5 (32 lowercase hex characters representing the MD5 of `large.bin`).
 - The AWS CLI is pre-configured via the environment variables `AWS_ENDPOINT_URL_S3=https://t3.storage.dev`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION=auto`. Do NOT hardcode credentials in any file.

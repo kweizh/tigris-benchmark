@@ -23,7 +23,10 @@ def _read_trial_id():
 
 
 def _bucket_name():
-    return f"harbor-bulk-{_read_trial_id()}"
+    import re
+    name = f"harbor-bulk-{_read_trial_id()}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _make_client():

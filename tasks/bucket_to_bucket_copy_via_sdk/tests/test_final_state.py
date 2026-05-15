@@ -32,11 +32,17 @@ def _read_trial_id():
 
 
 def _src_bucket():
-    return "harbor-src-%s" % _read_trial_id()
+    name = "harbor-src-%s" % _read_trial_id()
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _dst_bucket():
-    return "harbor-dst-%s" % _read_trial_id()
+    name = "harbor-dst-%s" % _read_trial_id()
+    import re
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 VERIFY_SCRIPT = r"""
