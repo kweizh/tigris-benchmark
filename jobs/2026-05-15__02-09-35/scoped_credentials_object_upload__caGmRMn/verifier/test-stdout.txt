@@ -1,0 +1,62 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 19ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 4 items
+
+tests/test_final_state.py ..F.                                           [100%]
+
+=================================== FAILURES ===================================
+____________ test_script_runs_successfully_and_emits_success_marker ____________
+
+    def test_script_runs_successfully_and_emits_success_marker():
+        """Priority 1: Execute the user's script end-to-end against real Tigris."""
+        # Run the script, capturing stdout/stderr to output.log so we can inspect
+        # the success marker afterwards.
+        with open(OUTPUT_LOG, "w") as logf:
+            result = subprocess.run(
+                ["npx", "tsx", "index.ts"],
+                cwd=PROJECT_DIR,
+                stdout=logf,
+                stderr=subprocess.STDOUT,
+                env=os.environ.copy(),
+                timeout=300,
+            )
+        assert os.path.isfile(OUTPUT_LOG), f"Expected log file at {OUTPUT_LOG}."
+        with open(OUTPUT_LOG) as f:
+            log_contents = f.read()
+>       assert result.returncode == 0, (
+            f"'npx tsx index.ts' exited with {result.returncode}. "
+            f"Output:\n{log_contents}"
+        )
+E       AssertionError: 'npx tsx index.ts' exited with 1. Output:
+E         Error during scoped upload process: Error: Failed to create workspace bucket "scoped-upload-ws": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.
+E             at I (file:///home/user/scoped-upload/node_modules/@tigrisdata/agent-kit/dist/index.js:3:343)
+E             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+E             at async main (/home/user/scoped-upload/index.ts:9:22)
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1).returncode
+
+tests/test_final_state.py:67: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_index_ts_created
+PASSED tests/test_final_state.py::test_index_ts_uses_required_apis
+PASSED tests/test_final_state.py::test_workspace_bucket_torn_down
+FAILED tests/test_final_state.py::test_script_runs_successfully_and_emits_success_marker
+========================= 1 failed, 3 passed in 2.07s ==========================

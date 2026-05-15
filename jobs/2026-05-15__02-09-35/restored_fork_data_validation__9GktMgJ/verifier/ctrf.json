@@ -1,0 +1,69 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 1,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778783599.048265,
+            "stop": 1778783607.8205225
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_uses_required_apis",
+                "status": "passed",
+                "duration": 0.0005506514571607113,
+                "start": 1778783599.0741236,
+                "stop": 1778783599.0748878,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_result_json_reports_validation_fork_bucket",
+                "status": "failed",
+                "duration": 8.709292483981699,
+                "start": 1778783599.0750856,
+                "stop": 1778783607.8038924,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def restored_bucket():\n        \"\"\"Prepare the source bucket, run the user's script, then clean up.\n    \n        Yields the restored fork bucket name reported by result.json.\n        \"\"\"\n        assert os.path.isfile(INDEX_TS), (\n            f\"User must create the TypeScript script at {INDEX_TS}.\"\n        )\n        assert os.path.isfile(SETUP_SCRIPT), (\n            f\"setup.sh missing at {SETUP_SCRIPT}.\"\n        )\n    \n        # 1. Re-run setup.sh to deterministically prepare archive-bucket and\n        #    refresh snapshot_id.txt / expected_sha256.txt.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SCRIPT],\n            capture_output=True, text=True, timeout=300,\n            cwd=PROJECT_DIR, env=os.environ.copy(),\n        )\n>       assert setup_result.returncode == 0, (\n            f\"setup.sh failed: stdout={setup_result.stdout!r} \"\n            f\"stderr={setup_result.stderr!r}\"\n        )\nE       AssertionError: setup.sh failed: stdout='[setup] Configuring tigris CLI...\\n[setup] Creating bucket archive-bucket-1778783599 with snapshots enabled...\\n[setup] Writing manifest.json...\\n[setup] Computing manifest SHA256...\\n[setup] expected_sha256=850d0618e9fe45239eff2e396d1c1b4e99e0670863b875ec04a483c28c59d0ea\\n[setup] Uploading manifest.json to archive-bucket-1778783599...\\nuploaded manifest.json -> s3://archive-bucket-1778783599/manifest.json\\n[setup] Taking checkpoint of archive-bucket-1778783599...\\n' stderr='checkpoint failed: Failed to checkpoint bucket \"archive-bucket-1778783599\": Unable to create bucket snapshot Invalid Request\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['bash', '/home/user/restore-validate/setup.sh'], returncode=1, stdout='[setup] Configuring tigr...t failed: Failed to checkpoint bucket \"archive-bucket-1778783599\": Unable to create bucket snapshot Invalid Request\\n').returncode\n\ntests/test_final_state.py:78: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_result_json_reports_sha256_match",
+                "status": "failed",
+                "duration": 0.00038200337439775467,
+                "start": 1778783607.8041203,
+                "stop": 1778783607.8095613,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def restored_bucket():\n        \"\"\"Prepare the source bucket, run the user's script, then clean up.\n    \n        Yields the restored fork bucket name reported by result.json.\n        \"\"\"\n        assert os.path.isfile(INDEX_TS), (\n            f\"User must create the TypeScript script at {INDEX_TS}.\"\n        )\n        assert os.path.isfile(SETUP_SCRIPT), (\n            f\"setup.sh missing at {SETUP_SCRIPT}.\"\n        )\n    \n        # 1. Re-run setup.sh to deterministically prepare archive-bucket and\n        #    refresh snapshot_id.txt / expected_sha256.txt.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SCRIPT],\n            capture_output=True, text=True, timeout=300,\n            cwd=PROJECT_DIR, env=os.environ.copy(),\n        )\n>       assert setup_result.returncode == 0, (\n            f\"setup.sh failed: stdout={setup_result.stdout!r} \"\n            f\"stderr={setup_result.stderr!r}\"\n        )\nE       AssertionError: setup.sh failed: stdout='[setup] Configuring tigris CLI...\\n[setup] Creating bucket archive-bucket-1778783599 with snapshots enabled...\\n[setup] Writing manifest.json...\\n[setup] Computing manifest SHA256...\\n[setup] expected_sha256=850d0618e9fe45239eff2e396d1c1b4e99e0670863b875ec04a483c28c59d0ea\\n[setup] Uploading manifest.json to archive-bucket-1778783599...\\nuploaded manifest.json -> s3://archive-bucket-1778783599/manifest.json\\n[setup] Taking checkpoint of archive-bucket-1778783599...\\n' stderr='checkpoint failed: Failed to checkpoint bucket \"archive-bucket-1778783599\": Unable to create bucket snapshot Invalid Request\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['bash', '/home/user/restore-validate/setup.sh'], returncode=1, stdout='[setup] Configuring tigr...t failed: Failed to checkpoint bucket \"archive-bucket-1778783599\": Unable to create bucket snapshot Invalid Request\\n').returncode\n\ntests/test_final_state.py:78: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_restored_bucket_listed_via_tigris_cli",
+                "status": "failed",
+                "duration": 0.00028691720217466354,
+                "start": 1778783607.809771,
+                "stop": 1778783607.814704,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def restored_bucket():\n        \"\"\"Prepare the source bucket, run the user's script, then clean up.\n    \n        Yields the restored fork bucket name reported by result.json.\n        \"\"\"\n        assert os.path.isfile(INDEX_TS), (\n            f\"User must create the TypeScript script at {INDEX_TS}.\"\n        )\n        assert os.path.isfile(SETUP_SCRIPT), (\n            f\"setup.sh missing at {SETUP_SCRIPT}.\"\n        )\n    \n        # 1. Re-run setup.sh to deterministically prepare archive-bucket and\n        #    refresh snapshot_id.txt / expected_sha256.txt.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SCRIPT],\n            capture_output=True, text=True, timeout=300,\n            cwd=PROJECT_DIR, env=os.environ.copy(),\n        )\n>       assert setup_result.returncode == 0, (\n            f\"setup.sh failed: stdout={setup_result.stdout!r} \"\n            f\"stderr={setup_result.stderr!r}\"\n        )\nE       AssertionError: setup.sh failed: stdout='[setup] Configuring tigris CLI...\\n[setup] Creating bucket archive-bucket-1778783599 with snapshots enabled...\\n[setup] Writing manifest.json...\\n[setup] Computing manifest SHA256...\\n[setup] expected_sha256=850d0618e9fe45239eff2e396d1c1b4e99e0670863b875ec04a483c28c59d0ea\\n[setup] Uploading manifest.json to archive-bucket-1778783599...\\nuploaded manifest.json -> s3://archive-bucket-1778783599/manifest.json\\n[setup] Taking checkpoint of archive-bucket-1778783599...\\n' stderr='checkpoint failed: Failed to checkpoint bucket \"archive-bucket-1778783599\": Unable to create bucket snapshot Invalid Request\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['bash', '/home/user/restore-validate/setup.sh'], returncode=1, stdout='[setup] Configuring tigr...t failed: Failed to checkpoint bucket \"archive-bucket-1778783599\": Unable to create bucket snapshot Invalid Request\\n').returncode\n\ntests/test_final_state.py:78: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_independent_download_matches_expected_sha256",
+                "status": "failed",
+                "duration": 0.0004556882195174694,
+                "start": 1778783607.8149047,
+                "stop": 1778783607.8203337,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def restored_bucket():\n        \"\"\"Prepare the source bucket, run the user's script, then clean up.\n    \n        Yields the restored fork bucket name reported by result.json.\n        \"\"\"\n        assert os.path.isfile(INDEX_TS), (\n            f\"User must create the TypeScript script at {INDEX_TS}.\"\n        )\n        assert os.path.isfile(SETUP_SCRIPT), (\n            f\"setup.sh missing at {SETUP_SCRIPT}.\"\n        )\n    \n        # 1. Re-run setup.sh to deterministically prepare archive-bucket and\n        #    refresh snapshot_id.txt / expected_sha256.txt.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SCRIPT],\n            capture_output=True, text=True, timeout=300,\n            cwd=PROJECT_DIR, env=os.environ.copy(),\n        )\n>       assert setup_result.returncode == 0, (\n            f\"setup.sh failed: stdout={setup_result.stdout!r} \"\n            f\"stderr={setup_result.stderr!r}\"\n        )\nE       AssertionError: setup.sh failed: stdout='[setup] Configuring tigris CLI...\\n[setup] Creating bucket archive-bucket-1778783599 with snapshots enabled...\\n[setup] Writing manifest.json...\\n[setup] Computing manifest SHA256...\\n[setup] expected_sha256=850d0618e9fe45239eff2e396d1c1b4e99e0670863b875ec04a483c28c59d0ea\\n[setup] Uploading manifest.json to archive-bucket-1778783599...\\nuploaded manifest.json -> s3://archive-bucket-1778783599/manifest.json\\n[setup] Taking checkpoint of archive-bucket-1778783599...\\n' stderr='checkpoint failed: Failed to checkpoint bucket \"archive-bucket-1778783599\": Unable to create bucket snapshot Invalid Request\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['bash', '/home/user/restore-validate/setup.sh'], returncode=1, stdout='[setup] Configuring tigr...t failed: Failed to checkpoint bucket \"archive-bucket-1778783599\": Unable to create bucket snapshot Invalid Request\\n').returncode\n\ntests/test_final_state.py:78: AssertionError"
+            }
+        ]
+    }
+}

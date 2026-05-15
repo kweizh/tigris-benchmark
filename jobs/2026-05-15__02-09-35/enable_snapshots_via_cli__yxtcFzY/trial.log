@@ -1,0 +1,83 @@
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash  && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo enable_snapshots_via_cli__yxtcFzY > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: mkdir -p /logs/artifacts
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model google/gemini-3-flash --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Enable Snapshots on a Tigris Bucket
+
+## Background
+You are preparing a Tigris bucket to be used with the Tigris Agent Kit (`@tigrisdata/agent-kit`). The bucket `agent-corpus` already exists in your Tigris account but does NOT have snapshots enabled. Without snapshots enabled, the `checkpoint` and `createForks` primitives from `@tigrisdata/agent-kit` fail with the error `Snapshots are not enabled on bucket ...`.
+
+Your job is to use the Tigris CLI (`tigris`) to enable snapshots on the `agent-corpus` bucket so that subsequent calls to `checkpoint("agent-corpus", ...)` and `createForks("agent-corpus", ...)` succeed.
+
+## Requirements
+- Use the Tigris CLI (the `tigris` binary is installed globally) to enable snapshots on the bucket named `agent-corpus`.
+- After your changes, running `tigris buckets get agent-corpus` must indicate that snapshots are enabled on the bucket (the `Snapshots` field reads `enabled`).
+- The bucket name must remain `agent-corpus`.
+
+## Implementation Guide
+1. The credentials are already configured via the environment variables `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`, and the Tigris CLI has been authenticated at the start of the task (via `tigris configure`). You can immediately run `tigris` commands.
+2. Confirm the bucket exists by running `tigris buckets get agent-corpus`. Observe that snapshots are currently NOT enabled.
+3. Consult the Tigris CLI documentation (https://www.tigrisdata.com/docs/cli/buckets/) to find the correct command and flag to produce a bucket named `agent-corpus` with snapshots enabled. The relevant flag is `--enable-snapshots` (alias `-s`) on `tigris buckets create`.
+4. Execute a single CLI command line that results in a bucket named `agent-corpus` whose snapshots are enabled. The expected state after your command is a snapshot-enabled bucket of that name.
+
+## Constraints
+- Project path: /home/user/snapshot-enable
+- You must only use the Tigris CLI (`tigris ...`). Do not write any TypeScript / Node.js code.
+- The bucket name must remain `agent-corpus`.
+- Do not hard-code or print the contents of `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`.
+
+## Integrations
+- Tigris (object storage) — accessed via the `tigris` CLI from `@tigrisdata/cli` using `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`.
+EOF
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured

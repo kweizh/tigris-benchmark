@@ -1,0 +1,60 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 0,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778784136.56929,
+            "stop": 1778784136.6165512
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_workspace_json_has_required_keys",
+                "status": "failed",
+                "duration": 0.0005179611034691334,
+                "start": 1778784136.5869622,
+                "stop": 1778784136.6039925,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def workspace_data():\n>       assert os.path.isfile(WORKSPACE_JSON), (\n            f\"workspace.json was not created at {WORKSPACE_JSON}.\"\n        )\nE       AssertionError: workspace.json was not created at /home/user/ttl-workspace/workspace.json.\nE       assert False\nE        +  where False = <function isfile at 0x70d0e7884220>('/home/user/ttl-workspace/workspace.json')\nE        +    where <function isfile at 0x70d0e7884220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:33: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_appears_in_tigris_list",
+                "status": "failed",
+                "duration": 0.00037688715383410454,
+                "start": 1778784136.6042292,
+                "stop": 1778784136.6083198,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def workspace_data():\n>       assert os.path.isfile(WORKSPACE_JSON), (\n            f\"workspace.json was not created at {WORKSPACE_JSON}.\"\n        )\nE       AssertionError: workspace.json was not created at /home/user/ttl-workspace/workspace.json.\nE       assert False\nE        +  where False = <function isfile at 0x70d0e7884220>('/home/user/ttl-workspace/workspace.json')\nE        +    where <function isfile at 0x70d0e7884220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:33: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_get_succeeds",
+                "status": "failed",
+                "duration": 0.000375144649296999,
+                "start": 1778784136.6085713,
+                "stop": 1778784136.6123505,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def workspace_data():\n>       assert os.path.isfile(WORKSPACE_JSON), (\n            f\"workspace.json was not created at {WORKSPACE_JSON}.\"\n        )\nE       AssertionError: workspace.json was not created at /home/user/ttl-workspace/workspace.json.\nE       assert False\nE        +  where False = <function isfile at 0x70d0e7884220>('/home/user/ttl-workspace/workspace.json')\nE        +    where <function isfile at 0x70d0e7884220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:33: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_expires_at_is_seven_days_from_now",
+                "status": "failed",
+                "duration": 0.00031785620376467705,
+                "start": 1778784136.612554,
+                "stop": 1778784136.6163847,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def workspace_data():\n>       assert os.path.isfile(WORKSPACE_JSON), (\n            f\"workspace.json was not created at {WORKSPACE_JSON}.\"\n        )\nE       AssertionError: workspace.json was not created at /home/user/ttl-workspace/workspace.json.\nE       assert False\nE        +  where False = <function isfile at 0x70d0e7884220>('/home/user/ttl-workspace/workspace.json')\nE        +    where <function isfile at 0x70d0e7884220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:33: AssertionError"
+            }
+        ]
+    }
+}

@@ -1,0 +1,95 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 3,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778784142.5381927,
+            "stop": 1778784147.4023767
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_created",
+                "status": "passed",
+                "duration": 0.00048245489597320557,
+                "start": 1778784142.557913,
+                "stop": 1778784142.5586526,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_uses_required_apis",
+                "status": "passed",
+                "duration": 0.00046599237248301506,
+                "start": 1778784142.5588393,
+                "stop": 1778784142.559437,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_script_exits_zero",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 4.632291100919247,
+                "start": 1778784142.559618,
+                "stop": 1778784147.2353308,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Ensuring bucket seed-corpus-iofrt0 exists with snap...ksAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/seeded-fork/index.ts:62:20)\\n')\n\n    def test_script_exits_zero(run_user_script):\n        result, log_contents = run_user_script\n>       assert result.returncode == 0, (\n            f\"'npx tsx index.ts' exited with {result.returncode}. \"\n            f\"Output:\\n{log_contents}\"\n        )\nE       AssertionError: 'npx tsx index.ts' exited with 1. Output:\nE         Ensuring bucket seed-corpus-iofrt0 exists with snapshots enabled...\nE         Bucket created.\nE         Error: Failed to create any forks\nE             at b (file:///home/user/seeded-fork/node_modules/@tigrisdata/agent-kit/dist/index.js:1:2251)\nE             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nE             at async run (/home/user/seeded-fork/index.ts:62:20)\nE         \nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1).returncode\n\ntests/test_final_state.py:91: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_forks_json_exists_and_has_two_unique_fork_names",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0006423448212444782,
+                "start": 1778784147.2355902,
+                "stop": 1778784147.2405431,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Ensuring bucket seed-corpus-iofrt0 exists with snap...ksAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/seeded-fork/index.ts:62:20)\\n')\n\n    def test_forks_json_exists_and_has_two_unique_fork_names(run_user_script):\n        run_user_script  # ensure script ran\n>       assert os.path.isfile(FORKS_JSON), (\n            f\"Expected fork manifest at {FORKS_JSON} after running index.ts.\"\n        )\nE       AssertionError: Expected fork manifest at /home/user/seeded-fork/forks.json after running index.ts.\nE       assert False\nE        +  where False = <function isfile at 0x705a25c70220>('/home/user/seeded-fork/forks.json')\nE        +    where <function isfile at 0x705a25c70220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:99: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_seed_corpus_contains_expected_objects",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.049087653402239084,
+                "start": 1778784147.2407444,
+                "stop": 1778784147.2947202,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Ensuring bucket seed-corpus-iofrt0 exists with snap...ksAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/seeded-fork/index.ts:62:20)\\n')\n\n    def test_seed_corpus_contains_expected_objects(run_user_script):\n        \"\"\"Priority 1: Use the Tigris CLI to confirm the seed bucket now contains\n        exactly the three expected keys.\"\"\"\n        run_user_script  # ensure script ran\n        cmd = _tigris_cmd() + [\"objects\", \"list\", SOURCE_BUCKET]\n        result = subprocess.run(\n            cmd,\n            capture_output=True,\n            text=True,\n            timeout=120,\n            env=os.environ.copy(),\n        )\n        assert result.returncode == 0, (\n            f\"'tigris objects list {SOURCE_BUCKET}' failed: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\n        combined = result.stdout + \"\\n\" + result.stderr\n        found = set()\n        for key in EXPECTED_KEYS:\n            if key in combined:\n                found.add(key)\n        missing = EXPECTED_KEYS - found\n>       assert not missing, (\n            f\"Expected keys {sorted(EXPECTED_KEYS)} in bucket '{SOURCE_BUCKET}', \"\n            f\"missing: {sorted(missing)}. CLI output:\\n{combined}\"\n        )\nE       AssertionError: Expected keys ['a.txt', 'b.txt', 'c.txt'] in bucket 'seed-corpus', missing: ['a.txt', 'b.txt', 'c.txt']. CLI output:\nE         \nE         \nE       assert not {'a.txt', 'b.txt', 'c.txt'}\n\ntests/test_final_state.py:154: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_fork_buckets_were_torn_down",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005334373563528061,
+                "start": 1778784147.2949579,
+                "stop": 1778784147.2998667,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Ensuring bucket seed-corpus-iofrt0 exists with snap...ksAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/seeded-fork/index.ts:62:20)\\n')\n\n    def test_fork_buckets_were_torn_down(run_user_script):\n        \"\"\"Priority 1: Use the Tigris CLI to confirm neither fork bucket exists\n        anymore after teardownForks ran.\"\"\"\n        run_user_script  # ensure script ran\n>       with open(FORKS_JSON) as f:\n             ^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/seeded-fork/forks.json'\n\ntests/test_final_state.py:164: FileNotFoundError",
+                "message": "The test failed in the call phase"
+            },
+            {
+                "name": "test_final_state.py::test_cleanup_seed_corpus_bucket",
+                "status": "passed",
+                "duration": 0.10181127907708287,
+                "start": 1778784147.3000848,
+                "stop": 1778784147.402133,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

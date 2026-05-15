@@ -1,0 +1,68 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 0,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778782828.8638217,
+            "stop": 1778782831.3425725
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_snapshots_output_file_exists",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.000856438186019659,
+                "start": 1778782828.8817868,
+                "stop": 1778782828.900051,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_snapshots_output_file_exists():\n>       assert os.path.isfile(SNAPSHOTS_FILE), (\n            f\"User must produce the snapshot list at {SNAPSHOTS_FILE}.\"\n        )\nE       AssertionError: User must produce the snapshot list at /home/user/snapshot-list/snapshots.txt.\nE       assert False\nE        +  where False = <function isfile at 0x72da65520220>('/home/user/snapshot-list/snapshots.txt')\nE        +    where <function isfile at 0x72da65520220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:50: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_cli_reports_at_least_three_snapshots",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.1680677854456007,
+                "start": 1778782828.9004035,
+                "stop": 1778782830.0750108,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_cli_reports_at_least_three_snapshots():\n        \"\"\"Priority 1: Use the Tigris CLI to confirm snapshots exist for the\n        bucket pre-populated by setup.sh.\"\"\"\n>       payload = _list_snapshots()\n                  ^^^^^^^^^^^^^^^^^\n\ntests/test_final_state.py:58: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    def _list_snapshots():\n        \"\"\"Run `tigris snapshots list <bucket> --format json` and return the\n        parsed JSON payload.\"\"\"\n        cmd = _tigris_cmd() + [\n            \"snapshots\", \"list\", BUCKET, \"--format\", \"json\",\n        ]\n        result = subprocess.run(\n            cmd,\n            capture_output=True,\n            text=True,\n            timeout=60,\n            env=os.environ.copy(),\n        )\n>       assert result.returncode == 0, (\n            f\"'tigris snapshots list {BUCKET} --format json' failed: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: 'tigris snapshots list agent-history --format json' failed: stdout='' stderr='{\"error\":{\"message\":\"Unable to list bucket snapshots Access Denied.\",\"code\":2,\"category\":\"permission\"},\"nextActions\":[{\"command\":\"tigris access-keys list\",\"description\":\"Check your access key permissions\"},{\"command\":\"tigris login\",\"description\":\"Re-authenticate if needed\"}]}\\n'\nE       assert 2 == 0\nE        +  where 2 = CompletedProcess(args=['tigris', 'snapshots', 'list', 'agent-history', '--format', 'json'], returncode=2, stdout='', s...iption\":\"Check your access key permissions\"},{\"command\":\"tigris login\",\"description\":\"Re-authenticate if needed\"}]}\\n').returncode\n\ntests/test_final_state.py:35: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_snapshots_file_matches_cli_in_chronological_order",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.256774710956961,
+                "start": 1778782830.075419,
+                "stop": 1778782831.3378232,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_snapshots_file_matches_cli_in_chronological_order():\n        \"\"\"Priority 1: The contents of snapshots.txt must equal the snapshot\n        versions reported by the CLI, reversed into chronological (oldest-first)\n        order, with no extra header, blank lines, JSON, or whitespace.\"\"\"\n>       payload = _list_snapshots()\n                  ^^^^^^^^^^^^^^^^^\n\ntests/test_final_state.py:78: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    def _list_snapshots():\n        \"\"\"Run `tigris snapshots list <bucket> --format json` and return the\n        parsed JSON payload.\"\"\"\n        cmd = _tigris_cmd() + [\n            \"snapshots\", \"list\", BUCKET, \"--format\", \"json\",\n        ]\n        result = subprocess.run(\n            cmd,\n            capture_output=True,\n            text=True,\n            timeout=60,\n            env=os.environ.copy(),\n        )\n>       assert result.returncode == 0, (\n            f\"'tigris snapshots list {BUCKET} --format json' failed: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: 'tigris snapshots list agent-history --format json' failed: stdout='' stderr='{\"error\":{\"message\":\"Unable to list bucket snapshots Access Denied.\",\"code\":2,\"category\":\"permission\"},\"nextActions\":[{\"command\":\"tigris access-keys list\",\"description\":\"Check your access key permissions\"},{\"command\":\"tigris login\",\"description\":\"Re-authenticate if needed\"}]}\\n'\nE       assert 2 == 0\nE        +  where 2 = CompletedProcess(args=['tigris', 'snapshots', 'list', 'agent-history', '--format', 'json'], returncode=2, stdout='', s...iption\":\"Check your access key permissions\"},{\"command\":\"tigris login\",\"description\":\"Re-authenticate if needed\"}]}\\n').returncode\n\ntests/test_final_state.py:35: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_snapshots_file_has_no_blank_or_whitespace_lines",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0007805433124303818,
+                "start": 1778782831.3381894,
+                "stop": 1778782831.3423429,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_snapshots_file_has_no_blank_or_whitespace_lines():\n>       with open(SNAPSHOTS_FILE) as f:\n             ^^^^^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/snapshot-list/snapshots.txt'\n\ntests/test_final_state.py:110: FileNotFoundError",
+                "message": "The test failed in the call phase"
+            }
+        ]
+    }
+}

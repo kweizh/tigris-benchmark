@@ -1,0 +1,89 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 1,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778783969.519422,
+            "stop": 1778783977.2073855
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_tigris_cli_available",
+                "status": "passed",
+                "duration": 0.0006007417105138302,
+                "start": 1778783969.537315,
+                "stop": 1778783969.5381165,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_js_authored_by_user",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005458509549498558,
+                "start": 1778783969.5383117,
+                "stop": 1778783969.5537586,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_index_js_authored_by_user():\n        \"\"\"The user must have authored /home/user/inv/index.js.\"\"\"\n>       assert os.path.isfile(INDEX_JS), (\n            f\"Expected user-authored script at {INDEX_JS}, but it does not exist.\"\n        )\nE       AssertionError: Expected user-authored script at /home/user/inv/index.js, but it does not exist.\nE       assert False\nE        +  where False = <function isfile at 0x78f4c4aa4220>('/home/user/inv/index.js')\nE        +    where <function isfile at 0x78f4c4aa4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:109: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_node_script_runs_and_prints_summary",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005191671662032604,
+                "start": 1778783969.5539482,
+                "stop": 1778783969.5575926,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_node_script_runs_and_prints_summary():\n        \"\"\"Priority 1: Re-run the user's script and assert exit code + stdout\n        summary line. This also (re)produces /home/user/inv/inventory.json.\"\"\"\n>       assert os.path.isfile(INDEX_JS), (\n            f\"Expected user-authored script at {INDEX_JS}; run cannot proceed.\"\n        )\nE       AssertionError: Expected user-authored script at /home/user/inv/index.js; run cannot proceed.\nE       assert False\nE        +  where False = <function isfile at 0x78f4c4aa4220>('/home/user/inv/index.js')\nE        +    where <function isfile at 0x78f4c4aa4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:117: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_inventory_file_exists_after_run",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.00047678546980023384,
+                "start": 1778783969.5577714,
+                "stop": 1778783969.5613627,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_inventory_file_exists_after_run():\n>       assert os.path.isfile(INVENTORY_FILE), (\n            f\"Expected {INVENTORY_FILE} to exist after running index.js.\"\n        )\nE       AssertionError: Expected /home/user/inv/inventory.json to exist after running index.js.\nE       assert False\nE        +  where False = <function isfile at 0x78f4c4aa4220>('/home/user/inv/inventory.json')\nE        +    where <function isfile at 0x78f4c4aa4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:140: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_inventory_file_has_correct_keys_and_counts",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0004040086641907692,
+                "start": 1778783969.5615408,
+                "stop": 1778783969.5648267,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_inventory_file_has_correct_keys_and_counts():\n        \"\"\"The aggregated inventory must list exactly the three inv-bench-*\n        buckets with the expected snapshot counts.\"\"\"\n>       with open(INVENTORY_FILE) as f:\n             ^^^^^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/inv/inventory.json'\n\ntests/test_final_state.py:148: FileNotFoundError",
+                "message": "The test failed in the call phase"
+            },
+            {
+                "name": "test_final_state.py::test_inventory_versions_match_cli_truth",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 7.639290140476078,
+                "start": 1778783969.5650012,
+                "stop": 1778783977.207094,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_inventory_versions_match_cli_truth():\n        \"\"\"Priority 1: For every inv-bench-* bucket, the snapshot version IDs\n        recorded in inventory.json must equal the version IDs reported by the\n        live Tigris CLI for that bucket.\"\"\"\n>       with open(INVENTORY_FILE) as f:\n             ^^^^^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/inv/inventory.json'\n\ntests/test_final_state.py:193: FileNotFoundError",
+                "message": "The test failed in the call phase"
+            }
+        ]
+    }
+}

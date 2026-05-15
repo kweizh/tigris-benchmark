@@ -1,0 +1,50 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 3,
+            "passed": 0,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778782830.9075947,
+            "stop": 1778782831.199805
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_bucket_still_exists_in_list",
+                "status": "failed",
+                "duration": 0.2544929445721209,
+                "start": 1778782830.9213529,
+                "stop": 1778782831.1922376,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\", autouse=True)\n    def configure_tigris_cli():\n        \"\"\"Authenticate the Tigris CLI for the verifier session.\n    \n        Uses the same TIGRIS_STORAGE_ACCESS_KEY_ID / TIGRIS_STORAGE_SECRET_ACCESS_KEY\n        env vars that were available to the task environment.\n        \"\"\"\n        access_key = os.environ.get(\"TIGRIS_STORAGE_ACCESS_KEY_ID\")\n        secret_key = os.environ.get(\"TIGRIS_STORAGE_SECRET_ACCESS_KEY\")\n        assert access_key, (\n            \"TIGRIS_STORAGE_ACCESS_KEY_ID is not set in the verifier environment.\"\n        )\n        assert secret_key, (\n            \"TIGRIS_STORAGE_SECRET_ACCESS_KEY is not set in the verifier environment.\"\n        )\n        assert shutil.which(\"tigris\") is not None, (\n            \"Tigris CLI binary `tigris` not found in PATH for the verifier.\"\n        )\n    \n        result = subprocess.run(\n            [\n                \"tigris\",\n                \"configure\",\n                \"--access-key\",\n                access_key,\n                \"--access-secret\",\n                secret_key,\n            ],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"`tigris configure` failed in the verifier: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: `tigris configure` failed in the verifier: stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\\nHint: Provide --access-key, --access-secret, and --endpoint\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['tigris', 'configure', '--access-key', 'REDACTED'...teractive input (not available in piped/scripted mode)\\nHint: Provide --access-key, --access-secret, and --endpoint\\n').returncode\n\ntests/test_final_state.py:42: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_get_succeeds",
+                "status": "failed",
+                "duration": 0.00033019203692674637,
+                "start": 1778782831.1924684,
+                "stop": 1778782831.1961849,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\", autouse=True)\n    def configure_tigris_cli():\n        \"\"\"Authenticate the Tigris CLI for the verifier session.\n    \n        Uses the same TIGRIS_STORAGE_ACCESS_KEY_ID / TIGRIS_STORAGE_SECRET_ACCESS_KEY\n        env vars that were available to the task environment.\n        \"\"\"\n        access_key = os.environ.get(\"TIGRIS_STORAGE_ACCESS_KEY_ID\")\n        secret_key = os.environ.get(\"TIGRIS_STORAGE_SECRET_ACCESS_KEY\")\n        assert access_key, (\n            \"TIGRIS_STORAGE_ACCESS_KEY_ID is not set in the verifier environment.\"\n        )\n        assert secret_key, (\n            \"TIGRIS_STORAGE_SECRET_ACCESS_KEY is not set in the verifier environment.\"\n        )\n        assert shutil.which(\"tigris\") is not None, (\n            \"Tigris CLI binary `tigris` not found in PATH for the verifier.\"\n        )\n    \n        result = subprocess.run(\n            [\n                \"tigris\",\n                \"configure\",\n                \"--access-key\",\n                access_key,\n                \"--access-secret\",\n                secret_key,\n            ],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"`tigris configure` failed in the verifier: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: `tigris configure` failed in the verifier: stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\\nHint: Provide --access-key, --access-secret, and --endpoint\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['tigris', 'configure', '--access-key', 'REDACTED'...teractive input (not available in piped/scripted mode)\\nHint: Provide --access-key, --access-secret, and --endpoint\\n').returncode\n\ntests/test_final_state.py:42: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_snapshots_enabled_on_bucket",
+                "status": "failed",
+                "duration": 0.0002965726889669895,
+                "start": 1778782831.1964042,
+                "stop": 1778782831.1996384,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\", autouse=True)\n    def configure_tigris_cli():\n        \"\"\"Authenticate the Tigris CLI for the verifier session.\n    \n        Uses the same TIGRIS_STORAGE_ACCESS_KEY_ID / TIGRIS_STORAGE_SECRET_ACCESS_KEY\n        env vars that were available to the task environment.\n        \"\"\"\n        access_key = os.environ.get(\"TIGRIS_STORAGE_ACCESS_KEY_ID\")\n        secret_key = os.environ.get(\"TIGRIS_STORAGE_SECRET_ACCESS_KEY\")\n        assert access_key, (\n            \"TIGRIS_STORAGE_ACCESS_KEY_ID is not set in the verifier environment.\"\n        )\n        assert secret_key, (\n            \"TIGRIS_STORAGE_SECRET_ACCESS_KEY is not set in the verifier environment.\"\n        )\n        assert shutil.which(\"tigris\") is not None, (\n            \"Tigris CLI binary `tigris` not found in PATH for the verifier.\"\n        )\n    \n        result = subprocess.run(\n            [\n                \"tigris\",\n                \"configure\",\n                \"--access-key\",\n                access_key,\n                \"--access-secret\",\n                secret_key,\n            ],\n            capture_output=True,\n            text=True,\n        )\n>       assert result.returncode == 0, (\n            f\"`tigris configure` failed in the verifier: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\nE       AssertionError: `tigris configure` failed in the verifier: stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\\nHint: Provide --access-key, --access-secret, and --endpoint\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['tigris', 'configure', '--access-key', 'REDACTED'...teractive input (not available in piped/scripted mode)\\nHint: Provide --access-key, --access-secret, and --endpoint\\n').returncode\n\ntests/test_final_state.py:42: AssertionError"
+            }
+        ]
+    }
+}

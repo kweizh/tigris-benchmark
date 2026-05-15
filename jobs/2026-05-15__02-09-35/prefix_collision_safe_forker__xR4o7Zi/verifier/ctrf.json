@@ -1,0 +1,80 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 0,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778783479.469184,
+            "stop": 1778783488.2816284
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_user_script_runs_successfully",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 7.5365921328775585,
+                "start": 1778783479.4934547,
+                "stop": 1778783487.0744011,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n')\n\n    def test_user_script_runs_successfully(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"User script 'npx tsx index.ts' did not exit 0. \"\n            f\"stdout={script_run_result.stdout!r} stderr={script_run_result.stderr!r}\"\n        )\nE       AssertionError: User script 'npx tsx index.ts' did not exit 0. stdout='Detecting prefix collisions...\\nFound 0 colliding buckets.\\nCreating 3 forks for source-bucket...\\n' stderr='Error creating forks: Error: Failed to snapshot bucket \"source-bucket\": Unable to create bucket snapshot The specified bucket does not exist\\n    at b (file:///home/user/safe-fork/node_modules/@tigrisdata/agent-kit/dist/index.js:1:1779)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n').returncode\n\ntests/test_final_state.py:119: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_forks_json_has_three_unique_prefixed_names",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0007214713841676712,
+                "start": 1778783487.0747294,
+                "stop": 1778783487.0795553,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n')\n\n    def test_forks_json_has_three_unique_prefixed_names(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping forks.json check because the user script failed: \"\n            f\"{script_run_result.stderr!r}\"\n        )\nE       AssertionError: Skipping forks.json check because the user script failed: 'Error creating forks: Error: Failed to snapshot bucket \"source-bucket\": Unable to create bucket snapshot The specified bucket does not exist\\n    at b (file:///home/user/safe-fork/node_modules/@tigrisdata/agent-kit/dist/index.js:1:1779)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n').returncode\n\ntests/test_final_state.py:126: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_stale_collision_bucket_was_cleaned_up",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005576517432928085,
+                "start": 1778783487.0797849,
+                "stop": 1778783487.0837867,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n')\n\n    def test_stale_collision_bucket_was_cleaned_up(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping stale-bucket cleanup check because the user script failed.\"\n        )\nE       AssertionError: Skipping stale-bucket cleanup check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n').returncode\n\ntests/test_final_state.py:161: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_new_fork_buckets_were_torn_down",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005191527307033539,
+                "start": 1778783487.0839858,
+                "stop": 1778783487.087655,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n')\n\n    def test_new_fork_buckets_were_torn_down(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping fork teardown check because the user script failed.\"\n        )\nE       AssertionError: Skipping fork teardown check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n').returncode\n\ntests/test_final_state.py:173: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_bucket_still_exists",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.190163476858288,
+                "start": 1778783487.087832,
+                "stop": 1778783488.281375,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n')\n\n    def test_source_bucket_still_exists(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping source-bucket existence check because the user script failed.\"\n        )\nE       AssertionError: Skipping source-bucket existence check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Detecting prefix collisions...\\nFound 0 collid...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/safe-fork/index.ts:33:47)\\n').returncode\n\ntests/test_final_state.py:190: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

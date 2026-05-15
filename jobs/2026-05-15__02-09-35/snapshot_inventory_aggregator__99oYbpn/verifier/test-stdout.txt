@@ -1,0 +1,95 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 27ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 6 items
+
+tests/test_final_state.py .FFFFF                                         [100%]
+
+=================================== FAILURES ===================================
+________________________ test_index_js_authored_by_user ________________________
+
+    def test_index_js_authored_by_user():
+        """The user must have authored /home/user/inv/index.js."""
+>       assert os.path.isfile(INDEX_JS), (
+            f"Expected user-authored script at {INDEX_JS}, but it does not exist."
+        )
+E       AssertionError: Expected user-authored script at /home/user/inv/index.js, but it does not exist.
+E       assert False
+E        +  where False = <function isfile at 0x78f4c4aa4220>('/home/user/inv/index.js')
+E        +    where <function isfile at 0x78f4c4aa4220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:109: AssertionError
+___________________ test_node_script_runs_and_prints_summary ___________________
+
+    def test_node_script_runs_and_prints_summary():
+        """Priority 1: Re-run the user's script and assert exit code + stdout
+        summary line. This also (re)produces /home/user/inv/inventory.json."""
+>       assert os.path.isfile(INDEX_JS), (
+            f"Expected user-authored script at {INDEX_JS}; run cannot proceed."
+        )
+E       AssertionError: Expected user-authored script at /home/user/inv/index.js; run cannot proceed.
+E       assert False
+E        +  where False = <function isfile at 0x78f4c4aa4220>('/home/user/inv/index.js')
+E        +    where <function isfile at 0x78f4c4aa4220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:117: AssertionError
+_____________________ test_inventory_file_exists_after_run _____________________
+
+    def test_inventory_file_exists_after_run():
+>       assert os.path.isfile(INVENTORY_FILE), (
+            f"Expected {INVENTORY_FILE} to exist after running index.js."
+        )
+E       AssertionError: Expected /home/user/inv/inventory.json to exist after running index.js.
+E       assert False
+E        +  where False = <function isfile at 0x78f4c4aa4220>('/home/user/inv/inventory.json')
+E        +    where <function isfile at 0x78f4c4aa4220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:140: AssertionError
+_______________ test_inventory_file_has_correct_keys_and_counts ________________
+
+    def test_inventory_file_has_correct_keys_and_counts():
+        """The aggregated inventory must list exactly the three inv-bench-*
+        buckets with the expected snapshot counts."""
+>       with open(INVENTORY_FILE) as f:
+             ^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/inv/inventory.json'
+
+tests/test_final_state.py:148: FileNotFoundError
+___________________ test_inventory_versions_match_cli_truth ____________________
+
+    def test_inventory_versions_match_cli_truth():
+        """Priority 1: For every inv-bench-* bucket, the snapshot version IDs
+        recorded in inventory.json must equal the version IDs reported by the
+        live Tigris CLI for that bucket."""
+>       with open(INVENTORY_FILE) as f:
+             ^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/inv/inventory.json'
+
+tests/test_final_state.py:193: FileNotFoundError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_tigris_cli_available
+FAILED tests/test_final_state.py::test_index_js_authored_by_user - AssertionE...
+FAILED tests/test_final_state.py::test_node_script_runs_and_prints_summary - ...
+FAILED tests/test_final_state.py::test_inventory_file_exists_after_run - Asse...
+FAILED tests/test_final_state.py::test_inventory_file_has_correct_keys_and_counts
+FAILED tests/test_final_state.py::test_inventory_versions_match_cli_truth - F...
+========================= 5 failed, 1 passed in 7.69s ==========================
