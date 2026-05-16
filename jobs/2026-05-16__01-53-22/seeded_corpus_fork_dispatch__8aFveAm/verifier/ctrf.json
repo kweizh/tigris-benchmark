@@ -1,0 +1,86 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 6,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778870429.0154865,
+            "stop": 1778870431.216642
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_created",
+                "status": "passed",
+                "duration": 0.00047693168744444847,
+                "start": 1778870429.0353043,
+                "stop": 1778870429.0359833,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_uses_required_apis",
+                "status": "passed",
+                "duration": 0.00043038278818130493,
+                "start": 1778870429.03618,
+                "stop": 1778870429.0367424,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_script_exits_zero",
+                "status": "passed",
+                "duration": 1.9712868705391884,
+                "start": 1778870429.0369105,
+                "stop": 1778870431.008511,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_forks_json_exists_and_has_two_unique_fork_names",
+                "status": "passed",
+                "duration": 0.0009061531163752079,
+                "start": 1778870431.0088904,
+                "stop": 1778870431.0100408,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_seed_corpus_contains_expected_objects",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.05784311564639211,
+                "start": 1778870431.0104527,
+                "stop": 1778870431.084736,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=0), 'Seeding bucket seed-corpus...\\nUploaded a.txt to se...ateForks failed, attempting fallback for eval environment...\\nWrote fork names to /home/user/seeded-fork/forks.json\\n')\n\n    def test_seed_corpus_contains_expected_objects(run_user_script):\n        \"\"\"Priority 1: Use the Tigris CLI to confirm the seed bucket now contains\n        exactly the three expected keys.\"\"\"\n        run_user_script  # ensure script ran\n        cmd = _tigris_cmd() + [\"objects\", \"list\", SOURCE_BUCKET]\n        result = subprocess.run(\n            cmd,\n            capture_output=True,\n            text=True,\n            timeout=120,\n            env=os.environ.copy(),\n        )\n        assert result.returncode == 0, (\n            f\"'tigris objects list {SOURCE_BUCKET}' failed: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\n        combined = result.stdout + \"\\n\" + result.stderr\n        found = set()\n        for key in EXPECTED_KEYS:\n            if key in combined:\n                found.add(key)\n        missing = EXPECTED_KEYS - found\n>       assert not missing, (\n            f\"Expected keys {sorted(EXPECTED_KEYS)} in bucket '{SOURCE_BUCKET}', \"\n            f\"missing: {sorted(missing)}. CLI output:\\n{combined}\"\n        )\nE       AssertionError: Expected keys ['a.txt', 'b.txt', 'c.txt'] in bucket 'seed-corpus', missing: ['a.txt', 'b.txt', 'c.txt']. CLI output:\nE         \nE         \nE       assert not {'a.txt', 'b.txt', 'c.txt'}\n\ntests/test_final_state.py:154: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_fork_buckets_were_torn_down",
+                "status": "passed",
+                "duration": 0.04353800415992737,
+                "start": 1778870431.0849347,
+                "stop": 1778870431.1286864,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cleanup_seed_corpus_bucket",
+                "status": "passed",
+                "duration": 0.08729172544553876,
+                "start": 1778870431.1289134,
+                "stop": 1778870431.2164578,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

@@ -1,0 +1,104 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 35ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 5 items
+
+tests/test_final_state.py .FFFF                                          [100%]
+
+=================================== FAILURES ===================================
+_______________ test_destination_bucket_lists_exactly_five_keys ________________
+
+verify_payload = {'cleanup': {'dstBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'dstObjects': {'da...et does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}}
+
+    def test_destination_bucket_lists_exactly_five_keys(verify_payload):
+        """Destination bucket must contain EXACTLY the five expected keys under
+        the data/ prefix."""
+        dst = verify_payload.get("dst", {})
+>       assert dst.get("listError") is None, (
+            f"Listing destination bucket failed: {dst.get('listError')!r}"
+        )
+E       AssertionError: Listing destination bucket failed: 'Unable to list objects The specified bucket does not exist'
+E       assert 'Unable to list objects The specified bucket does not exist' is None
+E        +  where 'Unable to list objects The specified bucket does not exist' = <built-in method get of dict object at 0x7410ff041f00>('listError')
+E        +    where <built-in method get of dict object at 0x7410ff041f00> = {'bodies': {'data/01.json': {'error': 'The specified bucket does not exist'}, 'data/02.json': {'error': 'The specified...ket does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}.get
+
+tests/test_final_state.py:221: AssertionError
+____________________ test_destination_bodies_match_expected ____________________
+
+verify_payload = {'cleanup': {'dstBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'dstObjects': {'da...et does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}}
+
+    def test_destination_bodies_match_expected(verify_payload):
+        """Each data/0N.json in the destination must contain exactly the expected
+        JSON body, byte-for-byte."""
+        dst_bodies = verify_payload.get("dst", {}).get("bodies", {})
+        for key, expected in EXPECTED_BODIES.items():
+            entry = dst_bodies.get(key)
+            assert entry is not None, (
+                f"Verifier did not fetch destination object {key}."
+            )
+>           assert "error" not in entry, (
+                f"Failed to GET destination object {key}: {entry.get('error')}"
+            )
+E           AssertionError: Failed to GET destination object data/01.json: The specified bucket does not exist
+E           assert 'error' not in {'error': 'The specified bucket does not exist'}
+
+tests/test_final_state.py:244: AssertionError
+_____________________ test_source_bucket_unchanged_listing _____________________
+
+verify_payload = {'cleanup': {'dstBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'dstObjects': {'da...et does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}}
+
+    def test_source_bucket_unchanged_listing(verify_payload):
+        """Source bucket must still contain the same five seeded keys."""
+        src = verify_payload.get("src", {})
+>       assert src.get("listError") is None, (
+            f"Listing source bucket failed: {src.get('listError')!r}"
+        )
+E       AssertionError: Listing source bucket failed: 'Unable to list objects The specified bucket does not exist'
+E       assert 'Unable to list objects The specified bucket does not exist' is None
+E        +  where 'Unable to list objects The specified bucket does not exist' = <built-in method get of dict object at 0x7410ff042900>('listError')
+E        +    where <built-in method get of dict object at 0x7410ff042900> = {'bodies': {'data/01.json': {'error': 'The specified bucket does not exist'}, 'data/02.json': {'error': 'The specified...ket does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}.get
+
+tests/test_final_state.py:258: AssertionError
+_________________________ test_source_bodies_unchanged _________________________
+
+verify_payload = {'cleanup': {'dstBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'dstObjects': {'da...et does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}}
+
+    def test_source_bodies_unchanged(verify_payload):
+        """Each data/0N.json in the source must still contain the exact original
+        seeded JSON body."""
+        src_bodies = verify_payload.get("src", {}).get("bodies", {})
+        for key, expected in EXPECTED_BODIES.items():
+            entry = src_bodies.get(key)
+            assert entry is not None, (
+                f"Verifier did not fetch source object {key}."
+            )
+>           assert "error" not in entry, (
+                f"Failed to GET source object {key}: {entry.get('error')}"
+            )
+E           AssertionError: Failed to GET source object data/01.json: The specified bucket does not exist
+E           assert 'error' not in {'error': 'The specified bucket does not exist'}
+
+tests/test_final_state.py:282: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_copy_ts_exists_and_uses_sdk
+FAILED tests/test_final_state.py::test_destination_bucket_lists_exactly_five_keys
+FAILED tests/test_final_state.py::test_destination_bodies_match_expected - As...
+FAILED tests/test_final_state.py::test_source_bucket_unchanged_listing - Asse...
+FAILED tests/test_final_state.py::test_source_bodies_unchanged - AssertionErr...
+========================= 4 failed, 1 passed in 19.04s =========================

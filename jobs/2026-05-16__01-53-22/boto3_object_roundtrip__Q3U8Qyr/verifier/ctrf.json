@@ -1,0 +1,74 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 2,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778867724.2644534,
+            "stop": 1778867724.3134258
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_boto3_installed_in_verifier",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.013266050722450018,
+                "start": 1778867724.2758353,
+                "stop": 1778867724.3037784,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_boto3_installed_in_verifier():\n        \"\"\"The verifier itself relies on boto3 \u2014 make sure the import works.\"\"\"\n        result = subprocess.run(\n            [\"python3\", \"-c\", \"import boto3; print(boto3.__version__)\"],\n            capture_output=True,\n            text=True,\n            timeout=60,\n        )\n>       assert result.returncode == 0, (\n            f\"boto3 must be importable in the verifier env. stderr={result.stderr!r}\"\n        )\nE       AssertionError: boto3 must be importable in the verifier env. stderr='Traceback (most recent call last):\\n  File \"<string>\", line 1, in <module>\\nModuleNotFoundError: No module named \\'boto3\\'\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['python3', '-c', 'import boto3; print(boto3.__version__)'], returncode=1, stdout='', stderr='Tr...ck (most recent call last):\\n  File \"<string>\", line 1, in <module>\\nModuleNotFoundError: No module named \\'boto3\\'\\n').returncode\n\ntests/test_final_state.py:77: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_roundtrip_script_exists",
+                "status": "passed",
+                "duration": 0.0004371609538793564,
+                "start": 1778867724.3039918,
+                "stop": 1778867724.3045688,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_object_listed_in_bucket",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0006541083566844463,
+                "start": 1778867724.3047564,
+                "stop": 1778867724.3085556,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_object_listed_in_bucket():\n        \"\"\"Priority 1: use boto3 list_objects_v2 to confirm the object was uploaded.\"\"\"\n>       client = _s3_client()\n                 ^^^^^^^^^^^^\n\ntests/test_final_state.py:91: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    def _s3_client():\n        \"\"\"Build a boto3 S3 client targeting Tigris using the verifier's env.\"\"\"\n>       import boto3\nE       ModuleNotFoundError: No module named 'boto3'\n\ntests/test_final_state.py:28: ModuleNotFoundError",
+                "message": "The test failed in the call phase"
+            },
+            {
+                "name": "test_final_state.py::test_object_body_matches_remote",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005279039032757282,
+                "start": 1778867724.3087363,
+                "stop": 1778867724.3123934,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_object_body_matches_remote():\n        \"\"\"Priority 1: download the object via boto3 and check the exact bytes.\"\"\"\n>       client = _s3_client()\n                 ^^^^^^^^^^^^\n\ntests/test_final_state.py:110: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    def _s3_client():\n        \"\"\"Build a boto3 S3 client targeting Tigris using the verifier's env.\"\"\"\n>       import boto3\nE       ModuleNotFoundError: No module named 'boto3'\n\ntests/test_final_state.py:28: ModuleNotFoundError",
+                "message": "The test failed in the call phase"
+            },
+            {
+                "name": "test_final_state.py::test_local_downloaded_file_matches",
+                "status": "passed",
+                "duration": 0.0005769575946033001,
+                "start": 1778867724.312578,
+                "stop": 1778867724.313276,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

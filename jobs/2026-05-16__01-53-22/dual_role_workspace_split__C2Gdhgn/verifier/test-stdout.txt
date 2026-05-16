@@ -1,0 +1,110 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 21ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 5 items
+
+tests/test_final_state.py FFFF.                                          [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_index_ts_created _____________________________
+
+    def test_index_ts_created():
+>       assert os.path.isfile(INDEX_TS), (
+            f"User must create the TypeScript script at {INDEX_TS}."
+        )
+E       AssertionError: User must create the TypeScript script at /home/user/dual-role/index.ts.
+E       assert False
+E        +  where False = <function isfile at 0x735976c88220>('/home/user/dual-role/index.ts')
+E        +    where <function isfile at 0x735976c88220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:26: AssertionError
+_______________________ test_index_ts_uses_required_apis _______________________
+
+    def test_index_ts_uses_required_apis():
+>       with open(INDEX_TS) as f:
+             ^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/dual-role/index.ts'
+
+tests/test_final_state.py:32: FileNotFoundError
+________________________ test_script_runs_successfully _________________________
+
+    def test_script_runs_successfully():
+        """Priority 1: Execute the user's script end-to-end against real Tigris."""
+        result = subprocess.run(
+            ["npx", "tsx", "index.ts"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=os.environ.copy(),
+            timeout=300,
+        )
+>       assert result.returncode == 0, (
+            f"'npx tsx index.ts' exited with {result.returncode}. "
+            f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+        )
+E       AssertionError: 'npx tsx index.ts' exited with 1. stdout:
+E         
+E         stderr:
+E         node:internal/modules/esm/resolve:271
+E             throw new ERR_MODULE_NOT_FOUND(
+E                   ^
+E         
+E         Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/home/user/dual-role/index.ts' imported from /home/user/dual-role/
+E             at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+E             at moduleResolve (node:internal/modules/esm/resolve:861:10)
+E             at defaultResolve (node:internal/modules/esm/resolve:988:11)
+E             at #cachedDefaultResolve (node:internal/modules/esm/loader:697:20)
+E             at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:714:38)
+E             at nextStep (node:internal/modules/customization_hooks:189:26)
+E             at resolveBaseSync (file:///home/user/dual-role/node_modules/tsx/dist/register-lJYvHe5s.mjs:2:7331)
+E             at resolveDirectorySync (file:///home/user/dual-role/node_modules/tsx/dist/register-lJYvHe5s.mjs:2:8470)
+E             at resolveTsPathsSync (file:///home/user/dual-role/node_modules/tsx/dist/register-lJYvHe5s.mjs:2:9673)
+E             at resolve2 (file:///home/user/dual-role/node_modules/tsx/dist/register-lJYvHe5s.mjs:2:11046) {
+E           code: 'ERR_MODULE_NOT_FOUND',
+E           url: 'file:///home/user/dual-role/index.ts'
+E         }
+E         
+E         Node.js v24.15.0
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr="node:internal/modules/esm/resolve:2...s:2:11046) {\n  code: 'ERR_MODULE_NOT_FOUND',\n  url: 'file:///home/user/dual-role/index.ts'\n}\n\nNode.js v24.15.0\n").returncode
+
+tests/test_final_state.py:65: AssertionError
+_____________________ test_result_json_has_expected_flags ______________________
+
+    def test_result_json_has_expected_flags():
+        """Priority 3: parse the result.json summary the script produced."""
+>       assert os.path.isfile(RESULT_JSON), (
+            f"Expected the user's script to produce {RESULT_JSON}."
+        )
+E       AssertionError: Expected the user's script to produce /home/user/dual-role/result.json.
+E       assert False
+E        +  where False = <function isfile at 0x735976c88220>('/home/user/dual-role/result.json')
+E        +    where <function isfile at 0x735976c88220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:73: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_workspaces_torn_down
+FAILED tests/test_final_state.py::test_index_ts_created - AssertionError: Use...
+FAILED tests/test_final_state.py::test_index_ts_uses_required_apis - FileNotF...
+FAILED tests/test_final_state.py::test_script_runs_successfully - AssertionEr...
+FAILED tests/test_final_state.py::test_result_json_has_expected_flags - Asser...
+========================= 4 failed, 1 passed in 0.82s ==========================

@@ -1,0 +1,83 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 3,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778870279.6163383,
+            "stop": 1778870291.2930934
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_tigris_cli_available",
+                "status": "passed",
+                "duration": 0.000703158788383007,
+                "start": 1778870279.6361194,
+                "stop": 1778870279.6370418,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_js_authored_by_user",
+                "status": "passed",
+                "duration": 0.0003924979828298092,
+                "start": 1778870279.6372678,
+                "stop": 1778870279.637791,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_node_script_runs_and_prints_summary",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.889161110855639,
+                "start": 1778870279.6379607,
+                "stop": 1778870282.5473428,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_node_script_runs_and_prints_summary():\n        \"\"\"Priority 1: Re-run the user's script and assert exit code + stdout\n        summary line. This also (re)produces /home/user/inv/inventory.json.\"\"\"\n        assert os.path.isfile(INDEX_JS), (\n            f\"Expected user-authored script at {INDEX_JS}; run cannot proceed.\"\n        )\n        result = subprocess.run(\n            [\"node\", \"index.js\"],\n            capture_output=True,\n            text=True,\n            cwd=PROJECT_DIR,\n            env=_tigris_env(),\n            timeout=180,\n        )\n>       assert result.returncode == 0, (\n            f\"'node index.js' failed with returncode {result.returncode}. \"\n            f\"stdout={result.stdout!r}, stderr={result.stderr!r}\"\n        )\nE       AssertionError: 'node index.js' failed with returncode 1. stdout='', stderr='<anonymous_script>:1\\n\\n\\nSyntaxError: Unexpected end of JSON input\\n    at JSON.parse (<anonymous>)\\n    at tigrisJSON (file:///home/user/inv/index.js:6:15)\\n    at file:///home/user/inv/index.js:23:24\\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\\n    at async node:internal/modules/esm/loader:639:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.15.0\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['node', 'index.js'], returncode=1, stdout='', stderr='<anonymous_script>:1\\n\\n\\nSyntaxError: Un...der:639:26\\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\\n\\nNode.js v24.15.0\\n').returncode\n\ntests/test_final_state.py:128: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_inventory_file_exists_after_run",
+                "status": "passed",
+                "duration": 0.0003958027809858322,
+                "start": 1778870282.5475595,
+                "stop": 1778870282.5480843,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_inventory_file_has_correct_keys_and_counts",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0006733494810760021,
+                "start": 1778870282.548303,
+                "stop": 1778870282.5529256,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_inventory_file_has_correct_keys_and_counts():\n        \"\"\"The aggregated inventory must list exactly the three inv-bench-*\n        buckets with the expected snapshot counts.\"\"\"\n        with open(INVENTORY_FILE) as f:\n            try:\n                inventory = json.load(f)\n            except json.JSONDecodeError as exc:\n                pytest.fail(\n                    f\"{INVENTORY_FILE} is not valid JSON: {exc!s}.\"\n                )\n        assert isinstance(inventory, dict), (\n            f\"{INVENTORY_FILE} must be a JSON object keyed by bucket name. \"\n            f\"Got: {type(inventory).__name__}\"\n        )\n        actual_keys = set(inventory.keys())\n        expected_keys = set(EXPECTED_COUNTS.keys())\n>       assert actual_keys == expected_keys, (\n            f\"{INVENTORY_FILE} must have exactly the keys {sorted(expected_keys)}, \"\n            f\"but it has {sorted(actual_keys)}. Distractor buckets (inv-other-*) \"\n            \"must be filtered out.\"\n        )\nE       AssertionError: /home/user/inv/inventory.json must have exactly the keys ['inv-bench-a', 'inv-bench-b', 'inv-bench-c'], but it has []. Distractor buckets (inv-other-*) must be filtered out.\nE       assert set() == {'inv-bench-a...'inv-bench-c'}\nE         \nE         Extra items in the right set:\nE         'inv-bench-a'\nE         'inv-bench-b'\nE         'inv-bench-c'\nE         Use -v to get more diff\n\ntests/test_final_state.py:161: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_inventory_versions_match_cli_truth",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 8.730688344687223,
+                "start": 1778870282.5531044,
+                "stop": 1778870291.2928548,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_inventory_versions_match_cli_truth():\n        \"\"\"Priority 1: For every inv-bench-* bucket, the snapshot version IDs\n        recorded in inventory.json must equal the version IDs reported by the\n        live Tigris CLI for that bucket.\"\"\"\n        with open(INVENTORY_FILE) as f:\n            inventory = json.load(f)\n        for bucket in EXPECTED_COUNTS:\n            recorded = set(inventory.get(bucket) or [])\n>           truth = _list_snapshot_versions(bucket)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_final_state.py:197: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nbucket = 'inv-bench-a'\n\n    def _list_snapshot_versions(bucket):\n        \"\"\"Return the set of snapshot version strings for `bucket` as reported by\n        `tigris snapshots list <bucket> --format json`.\"\"\"\n        result = _run_tigris(\n            [\"snapshots\", \"list\", bucket, \"--format\", \"json\"], timeout=120\n        )\n>       assert result.returncode == 0, (\n            f\"'tigris snapshots list {bucket} --format json' failed: \"\n            f\"returncode={result.returncode}, stdout={result.stdout!r}, \"\n            f\"stderr={result.stderr!r}\"\n        )\nE       AssertionError: 'tigris snapshots list inv-bench-a --format json' failed: returncode=2, stdout='', stderr='{\"error\":{\"message\":\"Unable to list bucket snapshots Access Denied.\",\"code\":2,\"category\":\"permission\"},\"nextActions\":[{\"command\":\"tigris access-keys list\",\"description\":\"Check your access key permissions\"},{\"command\":\"tigris login\",\"description\":\"Re-authenticate if needed\"}]}\\n'\nE       assert 2 == 0\nE        +  where 2 = CompletedProcess(args=['tigris', 'snapshots', 'list', 'inv-bench-a', '--format', 'json'], returncode=2, stdout='', std...iption\":\"Check your access key permissions\"},{\"command\":\"tigris login\",\"description\":\"Re-authenticate if needed\"}]}\\n').returncode\n\ntests/test_final_state.py:58: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

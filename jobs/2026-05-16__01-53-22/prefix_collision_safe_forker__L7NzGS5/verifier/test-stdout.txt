@@ -1,0 +1,97 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 25ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 5 items
+
+tests/test_final_state.py FFFFF                                          [100%]
+
+=================================== FAILURES ===================================
+______________________ test_user_script_runs_successfully ______________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n')
+
+    def test_user_script_runs_successfully(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "User script 'npx tsx index.ts' did not exit 0. "
+            f"stdout={script_run_result.stdout!r} stderr={script_run_result.stderr!r}"
+        )
+E       AssertionError: User script 'npx tsx index.ts' did not exit 0. stdout='Found 0 colliding buckets: []\nCreating 3 forks for source-bucket with prefix eval-prefix...\n' stderr='Error creating forks: Error: Failed to snapshot bucket "source-bucket": Unable to create bucket snapshot Invalid Request\n    at b (file:///home/user/safe-fork/node_modules/@tigrisdata/agent-kit/dist/index.js:1:1779)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n').returncode
+
+tests/test_final_state.py:119: AssertionError
+_______________ test_forks_json_has_three_unique_prefixed_names ________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n')
+
+    def test_forks_json_has_three_unique_prefixed_names(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping forks.json check because the user script failed: "
+            f"{script_run_result.stderr!r}"
+        )
+E       AssertionError: Skipping forks.json check because the user script failed: 'Error creating forks: Error: Failed to snapshot bucket "source-bucket": Unable to create bucket snapshot Invalid Request\n    at b (file:///home/user/safe-fork/node_modules/@tigrisdata/agent-kit/dist/index.js:1:1779)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n').returncode
+
+tests/test_final_state.py:126: AssertionError
+__________________ test_stale_collision_bucket_was_cleaned_up __________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n')
+
+    def test_stale_collision_bucket_was_cleaned_up(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping stale-bucket cleanup check because the user script failed."
+        )
+E       AssertionError: Skipping stale-bucket cleanup check because the user script failed.
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n').returncode
+
+tests/test_final_state.py:161: AssertionError
+_____________________ test_new_fork_buckets_were_torn_down _____________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n')
+
+    def test_new_fork_buckets_were_torn_down(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping fork teardown check because the user script failed."
+        )
+E       AssertionError: Skipping fork teardown check because the user script failed.
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n').returncode
+
+tests/test_final_state.py:173: AssertionError
+_______________________ test_source_bucket_still_exists ________________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n')
+
+    def test_source_bucket_still_exists(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping source-bucket existence check because the user script failed."
+        )
+E       AssertionError: Skipping source-bucket existence check because the user script failed.
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Found 0 colliding buckets: []\nCreating 3 fork...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/safe-fork/index.ts:26:36)\n').returncode
+
+tests/test_final_state.py:190: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_final_state.py::test_user_script_runs_successfully - Assert...
+FAILED tests/test_final_state.py::test_forks_json_has_three_unique_prefixed_names
+FAILED tests/test_final_state.py::test_stale_collision_bucket_was_cleaned_up
+FAILED tests/test_final_state.py::test_new_fork_buckets_were_torn_down - Asse...
+FAILED tests/test_final_state.py::test_source_bucket_still_exists - Assertion...
+============================== 5 failed in 5.28s ===============================

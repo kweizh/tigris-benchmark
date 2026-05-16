@@ -1,0 +1,80 @@
+{
+    "id": "1f640b17-2473-4d1b-8a69-0d6515f139ca",
+    "started_at": "2026-05-16T01:53:26.734701",
+    "finished_at": "2026-05-16T02:41:39.192014",
+    "n_total_trials": 35,
+    "stats": {
+        "n_trials": 35,
+        "n_errors": 11,
+        "evals": {
+            "pochi__gemini-3-flash__tasks": {
+                "n_trials": 34,
+                "n_errors": 11,
+                "metrics": [
+                    {
+                        "mean": 0.2857142857142857
+                    }
+                ],
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "aws_cli_s3_putobject_basic__NU3P2MF",
+                            "bucket_snapshot_enabled_creation__FKrUNag",
+                            "bulk_concurrent_object_upload__PtLHa4W",
+                            "force_delete_nonempty_bucket_cle__XbrbokF",
+                            "multipart_upload_completion__q5mFqGH",
+                            "object_user_metadata_persistence__H9di9rJ",
+                            "presigned_url_unauthenticated_do__Tfy9qiT",
+                            "typescript_sdk_putobject_workflo__TN2obRe",
+                            "agent_pool_lifecycle_manager__tQfjJY3",
+                            "workspace_ttl_extended_provision__pNPH4Mo"
+                        ],
+                        "0.0": [
+                            "boto3_object_roundtrip__Q3U8Qyr",
+                            "bucket_to_bucket_copy_via_sdk__9zjFVge",
+                            "bucket_ttl_policy_set__Vs9RwqP",
+                            "checkpoint_create_then_restore_f__vdo5MCU",
+                            "cli_object_prefix_listing__9RGiD5q",
+                            "cli_sdk_interop_bucket_lifecycle__qbj5dyx",
+                            "coordination_finished_extension__67bHtej",
+                            "download_object_to_local_disk__eBzcTTi",
+                            "parallel_fork_dispatch_writes__aV3cp3Y",
+                            "readonly_workspace_write_denial__gxqEfdE",
+                            "shadow_bucket_s3_passthrough_rea__3BiYiqB",
+                            "workspace_create_upload_teardown__hHWe6Q8",
+                            "chained_checkpoint_restoration__b5CWnx6",
+                            "dual_role_workspace_split__C2Gdhgn",
+                            "isolated_fork_writer_audit__rQVVbhp",
+                            "multi_agent_eval_orchestrator__AhJ7WgS",
+                            "cli_full_lifecycle_orchestrator__9qy9ViH",
+                            "concurrent_workspace_pool__hoFtTEn",
+                            "timestamped_checkpoint_tagging__rriyjUa",
+                            "scoped_credentials_object_upload__HppL3iK",
+                            "restored_fork_data_validation__vFsK9jF",
+                            "prefix_collision_safe_forker__L7NzGS5",
+                            "snapshot_inventory_aggregator__8srwPPw",
+                            "seeded_corpus_fork_dispatch__8aFveAm"
+                        ]
+                    }
+                },
+                "exception_stats": {
+                    "NonZeroAgentExitCodeError": [
+                        "cli_list_bucket_snapshots__WVgxQZf",
+                        "dual_role_workspace_split__C2Gdhgn"
+                    ],
+                    "AgentTimeoutError": [
+                        "coordination_finished_extension__67bHtej",
+                        "download_object_to_local_disk__eBzcTTi",
+                        "force_delete_nonempty_bucket_cle__XbrbokF",
+                        "shadow_bucket_s3_passthrough_rea__3BiYiqB",
+                        "workspace_create_upload_teardown__hHWe6Q8",
+                        "isolated_fork_writer_audit__rQVVbhp",
+                        "concurrent_workspace_pool__hoFtTEn",
+                        "timestamped_checkpoint_tagging__rriyjUa",
+                        "snapshot_inventory_aggregator__8srwPPw"
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,124 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 22ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 6 items
+
+tests/test_final_state.py ..F.FF                                         [100%]
+
+=================================== FAILURES ===================================
+___________________ test_node_script_runs_and_prints_summary ___________________
+
+    def test_node_script_runs_and_prints_summary():
+        """Priority 1: Re-run the user's script and assert exit code + stdout
+        summary line. This also (re)produces /home/user/inv/inventory.json."""
+        assert os.path.isfile(INDEX_JS), (
+            f"Expected user-authored script at {INDEX_JS}; run cannot proceed."
+        )
+        result = subprocess.run(
+            ["node", "index.js"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_DIR,
+            env=_tigris_env(),
+            timeout=180,
+        )
+>       assert result.returncode == 0, (
+            f"'node index.js' failed with returncode {result.returncode}. "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+E       AssertionError: 'node index.js' failed with returncode 1. stdout='', stderr='<anonymous_script>:1\n\n\nSyntaxError: Unexpected end of JSON input\n    at JSON.parse (<anonymous>)\n    at tigrisJSON (file:///home/user/inv/index.js:6:15)\n    at file:///home/user/inv/index.js:23:24\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\n    at async node:internal/modules/esm/loader:639:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.15.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['node', 'index.js'], returncode=1, stdout='', stderr='<anonymous_script>:1\n\n\nSyntaxError: Un...der:639:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.15.0\n').returncode
+
+tests/test_final_state.py:128: AssertionError
+_______________ test_inventory_file_has_correct_keys_and_counts ________________
+
+    def test_inventory_file_has_correct_keys_and_counts():
+        """The aggregated inventory must list exactly the three inv-bench-*
+        buckets with the expected snapshot counts."""
+        with open(INVENTORY_FILE) as f:
+            try:
+                inventory = json.load(f)
+            except json.JSONDecodeError as exc:
+                pytest.fail(
+                    f"{INVENTORY_FILE} is not valid JSON: {exc!s}."
+                )
+        assert isinstance(inventory, dict), (
+            f"{INVENTORY_FILE} must be a JSON object keyed by bucket name. "
+            f"Got: {type(inventory).__name__}"
+        )
+        actual_keys = set(inventory.keys())
+        expected_keys = set(EXPECTED_COUNTS.keys())
+>       assert actual_keys == expected_keys, (
+            f"{INVENTORY_FILE} must have exactly the keys {sorted(expected_keys)}, "
+            f"but it has {sorted(actual_keys)}. Distractor buckets (inv-other-*) "
+            "must be filtered out."
+        )
+E       AssertionError: /home/user/inv/inventory.json must have exactly the keys ['inv-bench-a', 'inv-bench-b', 'inv-bench-c'], but it has []. Distractor buckets (inv-other-*) must be filtered out.
+E       assert set() == {'inv-bench-a...'inv-bench-c'}
+E         
+E         Extra items in the right set:
+E         'inv-bench-a'
+E         'inv-bench-b'
+E         'inv-bench-c'
+E         Use -v to get more diff
+
+tests/test_final_state.py:161: AssertionError
+___________________ test_inventory_versions_match_cli_truth ____________________
+
+    def test_inventory_versions_match_cli_truth():
+        """Priority 1: For every inv-bench-* bucket, the snapshot version IDs
+        recorded in inventory.json must equal the version IDs reported by the
+        live Tigris CLI for that bucket."""
+        with open(INVENTORY_FILE) as f:
+            inventory = json.load(f)
+        for bucket in EXPECTED_COUNTS:
+            recorded = set(inventory.get(bucket) or [])
+>           truth = _list_snapshot_versions(bucket)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_final_state.py:197: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+bucket = 'inv-bench-a'
+
+    def _list_snapshot_versions(bucket):
+        """Return the set of snapshot version strings for `bucket` as reported by
+        `tigris snapshots list <bucket> --format json`."""
+        result = _run_tigris(
+            ["snapshots", "list", bucket, "--format", "json"], timeout=120
+        )
+>       assert result.returncode == 0, (
+            f"'tigris snapshots list {bucket} --format json' failed: "
+            f"returncode={result.returncode}, stdout={result.stdout!r}, "
+            f"stderr={result.stderr!r}"
+        )
+E       AssertionError: 'tigris snapshots list inv-bench-a --format json' failed: returncode=2, stdout='', stderr='{"error":{"message":"Unable to list bucket snapshots Access Denied.","code":2,"category":"permission"},"nextActions":[{"command":"tigris access-keys list","description":"Check your access key permissions"},{"command":"tigris login","description":"Re-authenticate if needed"}]}\n'
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['tigris', 'snapshots', 'list', 'inv-bench-a', '--format', 'json'], returncode=2, stdout='', std...iption":"Check your access key permissions"},{"command":"tigris login","description":"Re-authenticate if needed"}]}\n').returncode
+
+tests/test_final_state.py:58: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_tigris_cli_available
+PASSED tests/test_final_state.py::test_index_js_authored_by_user
+PASSED tests/test_final_state.py::test_inventory_file_exists_after_run
+FAILED tests/test_final_state.py::test_node_script_runs_and_prints_summary - ...
+FAILED tests/test_final_state.py::test_inventory_file_has_correct_keys_and_counts
+FAILED tests/test_final_state.py::test_inventory_versions_match_cli_truth - A...
+========================= 3 failed, 3 passed in 11.68s =========================

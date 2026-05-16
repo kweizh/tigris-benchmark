@@ -1,0 +1,89 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 1,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778868146.7625237,
+            "stop": 1778868152.0480797
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_required_symbols",
+                "status": "passed",
+                "duration": 0.0005801552906632423,
+                "start": 1778868146.7791348,
+                "stop": 1778868146.779919,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_fork_bucket_contains_exactly_two_seeded_objects",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.9047261620871723,
+                "start": 1778868146.78011,
+                "stop": 1778868149.7013907,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}\n\n    def test_fork_bucket_contains_exactly_two_seeded_objects(verify_payload):\n        fork = verify_payload.get(\"fork\", {})\n        listing = fork.get(\"listing\")\n>       assert listing is not None, (\n            f\"Verifier could not list fork bucket. Errors: {verify_payload.get('errors')}\"\n        )\nE       AssertionError: Verifier could not list fork bucket. Errors: [{'where': 'list-fork', 'message': 'Unable to list objects The specified bucket does not exist'}, {'where': 'list-base', 'message': 'Unable to list objects The specified bucket does not exist'}]\nE       assert None is not None\n\ntests/test_final_state.py:224: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_fork_bucket_does_not_contain_v3",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0004970161244273186,
+                "start": 1778868149.7015936,
+                "stop": 1778868149.7056801,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}\n\n    def test_fork_bucket_does_not_contain_v3(verify_payload):\n        fork = verify_payload.get(\"fork\", {})\n        listing = fork.get(\"listing\") or []\n        assert \"data/v3.txt\" not in listing, (\n            \"Fork bucket must NOT contain 'data/v3.txt': the checkpoint was supposed \"\n            f\"to be taken before that upload, but the fork listing was: {listing}\"\n        )\n        v3_entry = fork.get(\"objects\", {}).get(\"data/v3.txt\", {})\n        # Trying to GET v3 from the fork should fail (NoSuchKey or similar).\n>       assert \"error\" in v3_entry, (\n            \"Fork bucket appears to contain 'data/v3.txt' (the GET succeeded). \"\n            f\"The fork must reflect the pre-v3 state. Got: {v3_entry}\"\n        )\nE       AssertionError: Fork bucket appears to contain 'data/v3.txt' (the GET succeeded). The fork must reflect the pre-v3 state. Got: {}\nE       assert 'error' in {}\n\ntests/test_final_state.py:244: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_fork_bucket_object_contents_match_pre_checkpoint",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0004668477922677994,
+                "start": 1778868149.7058616,
+                "stop": 1778868149.709621,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}\n\n    def test_fork_bucket_object_contents_match_pre_checkpoint(verify_payload):\n        fork_objects = verify_payload.get(\"fork\", {}).get(\"objects\", {})\n        for key, expected_body in EXPECTED_FORK_BODIES.items():\n            entry = fork_objects.get(key)\n>           assert entry is not None, f\"Verifier did not fetch {key} from fork bucket.\"\nE           AssertionError: Verifier did not fetch data/v1.txt from fork bucket.\nE           assert None is not None\n\ntests/test_final_state.py:254: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_base_bucket_still_contains_all_three_objects",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0004728403873741627,
+                "start": 1778868149.7098024,
+                "stop": 1778868149.713633,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}\n\n    def test_base_bucket_still_contains_all_three_objects(verify_payload):\n        base = verify_payload.get(\"base\", {})\n        listing = base.get(\"listing\")\n>       assert listing is not None, (\n            f\"Verifier could not list base bucket. Errors: {verify_payload.get('errors')}\"\n        )\nE       AssertionError: Verifier could not list base bucket. Errors: [{'where': 'list-fork', 'message': 'Unable to list objects The specified bucket does not exist'}, {'where': 'list-base', 'message': 'Unable to list objects The specified bucket does not exist'}]\nE       assert None is not None\n\ntests/test_final_state.py:268: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_base_bucket_v3_object_has_expected_content",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.330359681043774,
+                "start": 1778868149.7138152,
+                "stop": 1778868152.047327,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}\n\n    def test_base_bucket_v3_object_has_expected_content(verify_payload):\n        base_objects = verify_payload.get(\"base\", {}).get(\"objects\", {})\n        entry = base_objects.get(\"data/v3.txt\")\n>       assert entry is not None, \"Verifier did not fetch data/v3.txt from base bucket.\"\nE       AssertionError: Verifier did not fetch data/v3.txt from base bucket.\nE       assert None is not None\n\ntests/test_final_state.py:281: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

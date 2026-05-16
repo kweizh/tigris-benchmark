@@ -1,0 +1,86 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 2,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778868545.7805014,
+            "stop": 1778868552.0487971
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_both_sdks",
+                "status": "passed",
+                "duration": 0.0005533993244171143,
+                "start": 1778868545.795718,
+                "stop": 1778868545.7964735,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_run_log_records_bucket_and_webhook",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.000548515934497118,
+                "start": 1778868545.7966635,
+                "stop": 1778868545.812011,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_run_log_records_bucket_and_webhook():\n>       assert os.path.isfile(RUN_LOG), f\"Expected {RUN_LOG} to exist.\"\nE       AssertionError: Expected /home/user/tigris-task/run.log to exist.\nE       assert False\nE        +  where False = <function isfile at 0x7ea942e90220>('/home/user/tigris-task/run.log')\nE        +    where <function isfile at 0x7ea942e90220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:172: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_received_jsonl_exists",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0004932587035000324,
+                "start": 1778868545.812206,
+                "stop": 1778868545.8161314,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_received_jsonl_exists():\n>       assert os.path.isfile(RECEIVED_JSONL), (\n            f\"Expected {RECEIVED_JSONL} to be present (pre-created by the entrypoint, \"\n            \"appended to by the receiver).\"\n        )\nE       AssertionError: Expected /home/user/tigris-task/received.jsonl to be present (pre-created by the entrypoint, appended to by the receiver).\nE       assert False\nE        +  where False = <function isfile at 0x7ea942e90220>('/home/user/tigris-task/received.jsonl')\nE        +    where <function isfile at 0x7ea942e90220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:189: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_exactly_one_notification_for_finished_key",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0004378585144877434,
+                "start": 1778868545.8163164,
+                "stop": 1778868545.8196402,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_exactly_one_notification_for_finished_key():\n        payloads = _load_received_payloads()\n        keys = _extract_keys_from_payloads(payloads)\n    \n>       assert keys, (\n            \"Expected at least one notification in received.jsonl, but the file is empty. \"\n            \"Did setupCoordination run with the correct webhookUrl and filter?\"\n        )\nE       AssertionError: Expected at least one notification in received.jsonl, but the file is empty. Did setupCoordination run with the correct webhookUrl and filter?\nE       assert []\n\ntests/test_final_state.py:199: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_no_notification_for_non_matching_keys",
+                "status": "passed",
+                "duration": 0.00038504553958773613,
+                "start": 1778868545.8198154,
+                "stop": 1778868545.8203251,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_contains_all_three_uploaded_objects",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 6.223239865619689,
+                "start": 1778868545.8204875,
+                "stop": 1778868552.0485942,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'__bucket__': {'error': 'Unable to remove bucket The specified bucket does not exist'}, '__coordination__...errors': [{'message': 'Unable to list objects The specified bucket does not exist', 'where': 'list'}], 'listing': None}\n\n    def test_bucket_contains_all_three_uploaded_objects(verify_payload):\n        listing = verify_payload.get(\"listing\")\n>       assert listing is not None, (\n            f\"Verifier failed to list the bucket. Errors: {verify_payload.get('errors')}\"\n        )\nE       AssertionError: Verifier failed to list the bucket. Errors: [{'where': 'list', 'message': 'Unable to list objects The specified bucket does not exist'}]\nE       assert None is not None\n\ntests/test_final_state.py:231: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

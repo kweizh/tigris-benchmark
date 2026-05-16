@@ -1,0 +1,77 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 1,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778868061.408651,
+            "stop": 1778868080.4493096
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_copy_ts_exists_and_uses_sdk",
+                "status": "passed",
+                "duration": 0.0007208255119621754,
+                "start": 1778868061.4331264,
+                "stop": 1778868061.4341364,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_destination_bucket_lists_exactly_five_keys",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 18.978384266141802,
+                "start": 1778868061.4343853,
+                "stop": 1778868080.4321904,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'dstBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'dstObjects': {'da...et does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}}\n\n    def test_destination_bucket_lists_exactly_five_keys(verify_payload):\n        \"\"\"Destination bucket must contain EXACTLY the five expected keys under\n        the data/ prefix.\"\"\"\n        dst = verify_payload.get(\"dst\", {})\n>       assert dst.get(\"listError\") is None, (\n            f\"Listing destination bucket failed: {dst.get('listError')!r}\"\n        )\nE       AssertionError: Listing destination bucket failed: 'Unable to list objects The specified bucket does not exist'\nE       assert 'Unable to list objects The specified bucket does not exist' is None\nE        +  where 'Unable to list objects The specified bucket does not exist' = <built-in method get of dict object at 0x7410ff041f00>('listError')\nE        +    where <built-in method get of dict object at 0x7410ff041f00> = {'bodies': {'data/01.json': {'error': 'The specified bucket does not exist'}, 'data/02.json': {'error': 'The specified...ket does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}.get\n\ntests/test_final_state.py:221: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_destination_bodies_match_expected",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.000716622918844223,
+                "start": 1778868080.4324563,
+                "stop": 1778868080.438166,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'dstBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'dstObjects': {'da...et does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}}\n\n    def test_destination_bodies_match_expected(verify_payload):\n        \"\"\"Each data/0N.json in the destination must contain exactly the expected\n        JSON body, byte-for-byte.\"\"\"\n        dst_bodies = verify_payload.get(\"dst\", {}).get(\"bodies\", {})\n        for key, expected in EXPECTED_BODIES.items():\n            entry = dst_bodies.get(key)\n            assert entry is not None, (\n                f\"Verifier did not fetch destination object {key}.\"\n            )\n>           assert \"error\" not in entry, (\n                f\"Failed to GET destination object {key}: {entry.get('error')}\"\n            )\nE           AssertionError: Failed to GET destination object data/01.json: The specified bucket does not exist\nE           assert 'error' not in {'error': 'The specified bucket does not exist'}\n\ntests/test_final_state.py:244: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_bucket_unchanged_listing",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0007687215693295002,
+                "start": 1778868080.4384503,
+                "stop": 1778868080.4437978,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'dstBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'dstObjects': {'da...et does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}}\n\n    def test_source_bucket_unchanged_listing(verify_payload):\n        \"\"\"Source bucket must still contain the same five seeded keys.\"\"\"\n        src = verify_payload.get(\"src\", {})\n>       assert src.get(\"listError\") is None, (\n            f\"Listing source bucket failed: {src.get('listError')!r}\"\n        )\nE       AssertionError: Listing source bucket failed: 'Unable to list objects The specified bucket does not exist'\nE       assert 'Unable to list objects The specified bucket does not exist' is None\nE        +  where 'Unable to list objects The specified bucket does not exist' = <built-in method get of dict object at 0x7410ff042900>('listError')\nE        +    where <built-in method get of dict object at 0x7410ff042900> = {'bodies': {'data/01.json': {'error': 'The specified bucket does not exist'}, 'data/02.json': {'error': 'The specified...ket does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}.get\n\ntests/test_final_state.py:258: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_bodies_unchanged",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0006861505098640919,
+                "start": 1778868080.444057,
+                "stop": 1778868080.449084,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'dstBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'dstObjects': {'da...et does not exist'}, ...}, 'listError': 'Unable to list objects The specified bucket does not exist', 'listing': None}}\n\n    def test_source_bodies_unchanged(verify_payload):\n        \"\"\"Each data/0N.json in the source must still contain the exact original\n        seeded JSON body.\"\"\"\n        src_bodies = verify_payload.get(\"src\", {}).get(\"bodies\", {})\n        for key, expected in EXPECTED_BODIES.items():\n            entry = src_bodies.get(key)\n            assert entry is not None, (\n                f\"Verifier did not fetch source object {key}.\"\n            )\n>           assert \"error\" not in entry, (\n                f\"Failed to GET source object {key}: {entry.get('error')}\"\n            )\nE           AssertionError: Failed to GET source object data/01.json: The specified bucket does not exist\nE           assert 'error' not in {'error': 'The specified bucket does not exist'}\n\ntests/test_final_state.py:282: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

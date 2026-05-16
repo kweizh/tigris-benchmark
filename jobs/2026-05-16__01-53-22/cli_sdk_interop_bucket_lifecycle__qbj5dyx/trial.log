@@ -1,0 +1,136 @@
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo cli_sdk_interop_bucket_lifecycle__qbj5dyx > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /tests/test_initial_state.py ]; then pytest /tests/test_initial_state.py; fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model google/gemini-3-flash --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Tigris CLI ↔ SDK Interop: Provision a Bucket and Upload a Manifest
+
+## Background
+This task exercises the interoperability between the Tigris CLI (`@tigrisdata/cli`) and the Tigris Storage SDK (`@tigrisdata/storage`). A common real-world pattern is to use the CLI to provision and configure a bucket as part of infrastructure setup, then use the SDK from application code to read and write objects. Snapshots and TTLs are bucket-level features that must be configured at the CLI/control-plane layer; object upload is data-plane and ergonomic from the SDK.
+
+You will:
+1. Use the Tigris CLI to create a brand new bucket with snapshots enabled (snapshots MUST be enabled at creation time — they cannot be turned on later).
+2. Use the Tigris CLI again to set the bucket's object-expiration TTL to 7 days.
+3. Write a TypeScript program that uses the `@tigrisdata/storage` SDK to upload an object named `manifest.json` to that bucket.
+4. Use the Tigris CLI a final time to list the bucket contents and persist the listing to disk.
+
+## Requirements
+- Read the current `trial_id` from `/logs/artifacts/trial_id` and trim trailing whitespace.
+- Derive the bucket name as `harbor-interop-${trial_id}` and use that name verbatim everywhere. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Step 1 (CLI): create the bucket with snapshots enabled in a single `tigris buckets create` invocation that includes `--enable-snapshots`.
+- Step 2 (CLI): set the object expiration TTL on that bucket to exactly 7 days using `tigris buckets set-ttl <bucket> --days 7`.
+- Step 3 (SDK): create `/home/user/tigris-task/index.ts` that imports from `@tigrisdata/storage` and uses the `put` function to upload an object whose key is `manifest.json` and whose body is the literal JSON string `{"created_by":"cli","modified_by":"sdk","trial":"<trial_id>"}` (with `<trial_id>` substituted from `/logs/artifacts/trial_id`). The object's Content-Type should be `application/json`. The upload must target the new bucket via `config: { bucket: bucketName }`. Run the program with `tsx /home/user/tigris-task/index.ts`.
+- Step 4 (CLI): list the bucket contents with `tigris ls t3://harbor-interop-${trial_id}/` and write stdout into `/home/user/tigris-task/bucket-listing.txt`. The listing file MUST mention the `manifest.json` key.
+
+## Implementation Guide
+1. Open a terminal in `/home/user/tigris-task`.
+2. Read the trial id:
+   ```bash
+   TRIAL_ID="$(cat /logs/artifacts/trial_id)"
+   BUCKET="harbor-interop-${TRIAL_ID}"
+   ```
+3. Create the snapshot-enabled bucket:
+   ```bash
+   tigris buckets create "$BUCKET" --enable-snapshots
+   ```
+4. Apply a 7-day object expiration TTL:
+   ```bash
+   tigris buckets set-ttl "$BUCKET" --days 7
+   ```
+5. Create `/home/user/tigris-task/index.ts`. The project is already initialized — `package.json` declares `@tigrisdata/storage` and `tsx`, and `node_modules/` is pre-populated. Example outline:
+   ```typescript
+   import { readFile } from "node:fs/promises";
+   import { put } from "@tigrisdata/storage";
+
+   const trialId = (await readFile("/logs/artifacts/trial_id", "utf-8")).trim();
+   const bucket = `harbor-interop-${trialId}`;
+   const body = JSON.stringify({ created_by: "cli", modified_by: "sdk", trial: trialId });
+
+   const { data, error } = await put("manifest.json", body, {
+     contentType: "application/json",
+     config: { bucket },
+   });
+   if (error) {
+     console.error("upload failed:", error);
+     process.exit(1);
+   }
+   console.log("uploaded", data);
+   ```
+6. Run the SDK uploader:
+   ```bash
+   tsx /home/user/tigris-task/index.ts
+   ```
+7. List bucket contents with the CLI and save the listing:
+   ```bash
+   tigris ls "t3://${BUCKET}/" > /home/user/tigris-task/bucket-listing.txt
+   ```
+
+## Constraints
+- Project path: `/home/user/tigris-task`
+- Source file: `/home/user/tigris-task/index.ts`
+- Listing file: `/home/user/tigris-task/bucket-listing.txt`
+- Bucket name MUST be `harbor-interop-${trial_id}` (no other prefix or suffix), with `${trial_id}` taken verbatim from `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Snapshots MUST be enabled at creation (`--enable-snapshots` on `tigris buckets create`). They cannot be enabled on an existing bucket.
+- The bucket TTL MUST be exactly 7 days (`tigris buckets set-ttl <bucket> --days 7`).
+- The uploaded object body MUST be exactly `{"created_by":"cli","modified_by":"sdk","trial":"<trial_id>"}` (no extra whitespace, key ordering as written here), with `<trial_id>` substituted.
+- The CLI is pre-authenticated via the AWS-compatible environment bridge in `/etc/profile.d/tigris-auth.sh`. From a login shell the CLI works directly; from a non-login shell, source that file first or pass `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_REGION=REDACTED` inline.
+- Use the Tigris CLI (`tigris`) for bucket creation, TTL configuration, and final listing. Use the `@tigrisdata/storage` SDK from TypeScript for the manifest upload. Do not mix or substitute these (no AWS CLI, no raw HTTP, no `tigris cp`/`tigris put` for the manifest upload, no SDK for bucket creation/TTL).
+- Do not hardcode credentials.
+- Leave the bucket and `manifest.json` in place after completion — the verifier inspects them and then cleans up.
+
+## Integrations
+- Tigris Object Storage (real `REDACTED` endpoint via the Tigris CLI and `@tigrisdata/storage` SDK).
+
+EOF
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured

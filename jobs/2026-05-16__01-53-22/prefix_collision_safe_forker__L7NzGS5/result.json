@@ -1,0 +1,103 @@
+{
+    "id": "9a35c16a-dd94-4e2d-afc3-c538e6a12534",
+    "task_name": "prefix_collision_safe_forker",
+    "trial_name": "prefix_collision_safe_forker__L7NzGS5",
+    "trial_uri": "file:///home/kw/code/zealt/pochi-harbor/jobs/2026-05-16__01-53-22/prefix_collision_safe_forker__L7NzGS5",
+    "task_id": {
+        "path": "/home/kw/code/zealt/tigris-benchmark/tasks/prefix_collision_safe_forker"
+    },
+    "source": "tasks",
+    "task_checksum": "d3ca10b5bb3cc4078ce392cf1421ac4842001f133e6d90b84f2d225af1db1802",
+    "config": {
+        "task": {
+            "path": "/home/kw/code/zealt/tigris-benchmark/tasks/prefix_collision_safe_forker",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": "tasks"
+        },
+        "trial_name": "prefix_collision_safe_forker__L7NzGS5",
+        "trials_dir": "jobs/2026-05-16__01-53-22",
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": null,
+            "import_path": "agents.pochi:Pochi",
+            "model_name": "google/gemini-3-flash",
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {},
+            "env": {}
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "suppress_override_warnings": false,
+            "mounts_json": null,
+            "env": {},
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [
+            "/home/user"
+        ],
+        "job_id": "1f640b17-2473-4d1b-8a69-0d6515f139ca"
+    },
+    "agent_info": {
+        "name": "pochi",
+        "version": "0.6.8",
+        "model_info": {
+            "name": "gemini-3-flash",
+            "provider": "google"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 0,
+        "n_cache_tokens": 0,
+        "n_output_tokens": 28149,
+        "cost_usd": null,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 0.0
+        }
+    },
+    "exception_info": null,
+    "started_at": "2026-05-15T18:27:23.907897Z",
+    "finished_at": "2026-05-15T18:32:29.021229Z",
+    "environment_setup": {
+        "started_at": "2026-05-15T18:27:23.911115Z",
+        "finished_at": "2026-05-15T18:27:27.756271Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-05-15T18:27:27.756294Z",
+        "finished_at": "2026-05-15T18:27:49.449884Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-05-15T18:27:49.449936Z",
+        "finished_at": "2026-05-15T18:31:57.278825Z"
+    },
+    "verifier": {
+        "started_at": "2026-05-15T18:31:57.282055Z",
+        "finished_at": "2026-05-15T18:32:12.873536Z"
+    }
+}

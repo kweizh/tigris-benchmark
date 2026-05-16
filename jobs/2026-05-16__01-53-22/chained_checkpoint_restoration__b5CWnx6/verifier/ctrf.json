@@ -1,0 +1,80 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 0,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778869288.6592555,
+            "stop": 1778869294.0232246
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_user_script_runs_successfully",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 3.892926999833435,
+                "start": 1778869288.6835015,
+                "stop": 1778869292.5932977,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n')\n\n    def test_user_script_runs_successfully(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"User script 'npx tsx index.ts' did not exit 0. \"\n            f\"stdout={script_run_result.stdout!r} stderr={script_run_result.stderr!r}\"\n        )\nE       AssertionError: User script 'npx tsx index.ts' did not exit 0. stdout=\"Uploading v1.txt (version=1)...\\nTaking checkpoint 'before-mutation'...\\nCheckpoint taken. snapshotId: 1778869290771882263\\nMutating v1.txt (version=2)...\\nRestoring checkpoint 1778869290771882263 to fork rollback-recovery-v2...\\n\" stderr='Restore error: Error: Failed to restore from snapshot \"1778869290771882263\": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n    at w (file:///home/user/chained-ckpt/node_modules/@tigrisdata/agent-kit/dist/index.js:1:508)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n').returncode\n\ntests/test_final_state.py:113: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_recovery_json_exists_and_has_expected_bucket",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005775904282927513,
+                "start": 1778869292.5935283,
+                "stop": 1778869292.5979571,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n')\n\n    def test_recovery_json_exists_and_has_expected_bucket(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping recovery.json check because the user script failed: \"\n            f\"{script_run_result.stderr!r}\"\n        )\nE       AssertionError: Skipping recovery.json check because the user script failed: 'Restore error: Error: Failed to restore from snapshot \"1778869290771882263\": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n    at w (file:///home/user/chained-ckpt/node_modules/@tigrisdata/agent-kit/dist/index.js:1:508)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n').returncode\n\ntests/test_final_state.py:120: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_bucket_v1_now_contains_version_two",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005626576021313667,
+                "start": 1778869292.5981617,
+                "stop": 1778869292.6026816,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n')\n\n    def test_source_bucket_v1_now_contains_version_two(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping source bucket content check because the user script failed.\"\n        )\nE       AssertionError: Skipping source bucket content check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n').returncode\n\ntests/test_final_state.py:145: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_recovery_bucket_was_torn_down",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005319127812981606,
+                "start": 1778869292.602883,
+                "stop": 1778869292.607181,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n')\n\n    def test_recovery_bucket_was_torn_down(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping recovery-bucket teardown check because the user script failed.\"\n        )\nE       AssertionError: Skipping recovery-bucket teardown check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n').returncode\n\ntests/test_final_state.py:179: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_before_mutation_snapshot_exists",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.4118024338968098,
+                "start": 1778869292.6073778,
+                "stop": 1778869294.0229363,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n')\n\n    def test_before_mutation_snapshot_exists(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping snapshot check because the user script failed.\"\n        )\nE       AssertionError: Skipping snapshot check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Uploading v1.txt (version=1)...\\nTaking checkp...sAndRejections (node:internal/process/task_queues:104:5)\\n    at async run (/home/user/chained-ckpt/index.ts:50:53)\\n').returncode\n\ntests/test_final_state.py:205: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}
