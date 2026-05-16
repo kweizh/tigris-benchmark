@@ -1,0 +1,53 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 3,
+            "passed": 3,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778872064.0863922,
+            "stop": 1778872068.7880318
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_required_apis",
+                "status": "passed",
+                "duration": 0.0005715712904930115,
+                "start": 1778872064.1004558,
+                "stop": 1778872064.1012306,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_each_fork_has_correct_worker_output",
+                "status": "passed",
+                "duration": 4.68257944798097,
+                "start": 1778872064.101425,
+                "stop": 1778872068.78419,
+                "retries": 2,
+                "file_path": "test_final_state.py",
+                "tags": [
+                    "parametrize::index::[0, 1, 2]"
+                ]
+            },
+            {
+                "name": "test_final_state.py::test_each_fork_inherits_seed_dataset",
+                "status": "passed",
+                "duration": 0.00048103276640176773,
+                "start": 1778872068.7858763,
+                "stop": 1778872068.786481,
+                "retries": 2,
+                "file_path": "test_final_state.py",
+                "tags": [
+                    "parametrize::index::[0, 1, 2]"
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,119 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 21ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 4 items
+
+tests/test_final_state.py FFFF                                           [100%]
+
+=================================== FAILURES ===================================
+______________________ test_snapshots_output_file_exists _______________________
+
+    def test_snapshots_output_file_exists():
+>       assert os.path.isfile(SNAPSHOTS_FILE), (
+            f"User must produce the snapshot list at {SNAPSHOTS_FILE}."
+        )
+E       AssertionError: User must produce the snapshot list at /home/user/snapshot-list/snapshots.txt.
+E       assert False
+E        +  where False = <function isfile at 0x73b3f6800220>('/home/user/snapshot-list/snapshots.txt')
+E        +    where <function isfile at 0x73b3f6800220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:60: AssertionError
+__________________ test_cli_reports_at_least_three_snapshots ___________________
+
+    def test_cli_reports_at_least_three_snapshots():
+        """Priority 1: Use the Tigris CLI to confirm snapshots exist for the
+        bucket pre-populated by setup.sh."""
+>       payload = _list_snapshots()
+                  ^^^^^^^^^^^^^^^^^
+
+tests/test_final_state.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _list_snapshots():
+        """Run `tigris snapshots list <bucket> --format json` and return the
+        parsed JSON payload."""
+        bucket = _bucket_name()
+        cmd = _tigris_cmd() + [
+            "snapshots", "list", bucket, "--format", "json",
+        ]
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=60,
+            env=os.environ.copy(),
+        )
+>       assert result.returncode == 0, (
+            f"'tigris snapshots list {bucket} --format json' failed: "
+            f"stdout={result.stdout!r} stderr={result.stderr!r}"
+        )
+E       AssertionError: 'tigris snapshots list harbor-history-cli-list-bucket-snapshots--pkgrzzy --format json' failed: stdout='' stderr='{"error":{"message":"Unable to list bucket snapshots The specified bucket does not exist","code":1,"category":"general"}}\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['tigris', 'snapshots', 'list', 'harbor-history-cli-list-bucket-snapshots--pkgrzzy', '--format',...r":{"message":"Unable to list bucket snapshots The specified bucket does not exist","code":1,"category":"general"}}\n').returncode
+
+tests/test_final_state.py:45: AssertionError
+____________ test_snapshots_file_matches_cli_in_chronological_order ____________
+
+    def test_snapshots_file_matches_cli_in_chronological_order():
+        """Priority 1: The contents of snapshots.txt must equal the snapshot
+        versions reported by the CLI, reversed into chronological (oldest-first)
+        order, with no extra header, blank lines, JSON, or whitespace."""
+>       payload = _list_snapshots()
+                  ^^^^^^^^^^^^^^^^^
+
+tests/test_final_state.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def _list_snapshots():
+        """Run `tigris snapshots list <bucket> --format json` and return the
+        parsed JSON payload."""
+        bucket = _bucket_name()
+        cmd = _tigris_cmd() + [
+            "snapshots", "list", bucket, "--format", "json",
+        ]
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=60,
+            env=os.environ.copy(),
+        )
+>       assert result.returncode == 0, (
+            f"'tigris snapshots list {bucket} --format json' failed: "
+            f"stdout={result.stdout!r} stderr={result.stderr!r}"
+        )
+E       AssertionError: 'tigris snapshots list harbor-history-cli-list-bucket-snapshots--pkgrzzy --format json' failed: stdout='' stderr='{"error":{"message":"Unable to list bucket snapshots Access Denied.","code":2,"category":"permission"},"nextActions":[{"command":"tigris access-keys list","description":"Check your access key permissions"},{"command":"tigris login","description":"Re-authenticate if needed"}]}\n'
+E       assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['tigris', 'snapshots', 'list', 'harbor-history-cli-list-bucket-snapshots--pkgrzzy', '--format',...iption":"Check your access key permissions"},{"command":"tigris login","description":"Re-authenticate if needed"}]}\n').returncode
+
+tests/test_final_state.py:45: AssertionError
+_____________ test_snapshots_file_has_no_blank_or_whitespace_lines _____________
+
+    def test_snapshots_file_has_no_blank_or_whitespace_lines():
+>       with open(SNAPSHOTS_FILE) as f:
+             ^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/snapshot-list/snapshots.txt'
+
+tests/test_final_state.py:121: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_final_state.py::test_snapshots_output_file_exists - Asserti...
+FAILED tests/test_final_state.py::test_cli_reports_at_least_three_snapshots
+FAILED tests/test_final_state.py::test_snapshots_file_matches_cli_in_chronological_order
+FAILED tests/test_final_state.py::test_snapshots_file_has_no_blank_or_whitespace_lines
+============================== 4 failed in 6.77s ===============================

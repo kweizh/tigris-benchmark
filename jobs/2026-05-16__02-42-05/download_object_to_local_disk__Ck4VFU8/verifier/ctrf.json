@@ -1,0 +1,59 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 3,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778871559.9796946,
+            "stop": 1778871562.6891048
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_local_file_exists",
+                "status": "passed",
+                "duration": 0.0005277940072119236,
+                "start": 1778871559.991683,
+                "stop": 1778871559.9924366,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_local_file_content_matches_exact_bytes",
+                "status": "passed",
+                "duration": 0.0004232553765177727,
+                "start": 1778871559.9926229,
+                "stop": 1778871559.993176,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_source_object_still_present_in_bucket",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.8904710174538195,
+                "start": 1778871559.993344,
+                "stop": 1778871560.9014726,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_source_object_still_present_in_bucket():\n        \"\"\"Priority 1: use the Tigris CLI to confirm the source object was NOT\n        deleted/moved by the agent \u2014 `tigris ls` on the exact object key must\n        still succeed and reference the key.\"\"\"\n        bucket = _bucket_name()\n        result = _run_tigris([\"ls\", f\"t3://{bucket}/assets/welcome.md\"])\n        assert result.returncode == 0, (\n            f\"'tigris ls t3://{bucket}/assets/welcome.md' failed: returncode=\"\n            f\"{result.returncode} stderr={result.stderr!r} stdout={result.stdout!r}. \"\n            \"The agent must NOT have moved or deleted the source object.\"\n        )\n>       assert \"welcome.md\" in result.stdout, (\n            f\"Expected 'welcome.md' to appear in the listing for \"\n            f\"t3://{bucket}/assets/welcome.md, but it was not in stdout:\\n\"\n            f\"{result.stdout}\"\n        )\nE       AssertionError: Expected 'welcome.md' to appear in the listing for t3://harbor-download-download-object-to-local-disk--ck4vfu8/assets/welcome.md, but it was not in stdout:\nE         \nE         \u250c\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\nE         \u2502 Key \u2502 Size \u2502 Modified \u2502\nE         \u251c\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\nE         \u2514\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nE         \nE         \nE       assert 'welcome.md' in '\\n\u250c\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n\u2502 Key \u2502 Size \u2502 Modified \u2502\\n\u251c\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\\n\u2514\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\\n\\n'\nE        +  where '\\n\u250c\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n\u2502 Key \u2502 Size \u2502 Modified \u2502\\n\u251c\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\\n\u2514\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\\n\\n' = CompletedProcess(args=['tigris', 'ls', 't3://harbor-download-download-object-to-local-disk--ck4vfu8/assets/welcome.md'...\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\\n\u2502 Key \u2502 Size \u2502 Modified \u2502\\n\u251c\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\\n\u2514\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\\n\\n', stderr='').stdout\n\ntests/test_final_state.py:94: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_object_still_listed_under_assets_prefix",
+                "status": "passed",
+                "duration": 1.786891050171107,
+                "start": 1778871560.9016745,
+                "stop": 1778871562.6887467,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

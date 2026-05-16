@@ -1,0 +1,80 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 0,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778872544.1048853,
+            "stop": 1778872548.336181
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_user_script_runs_successfully",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.3600329821929336,
+                "start": 1778872544.1241198,
+                "stop": 1778872546.5013359,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\")\n\n    def test_user_script_runs_successfully(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"User script 'npx tsx index.ts' did not exit 0. \"\n            f\"stdout={script_run_result.stdout!r} stderr={script_run_result.stderr!r}\"\n        )\nE       AssertionError: User script 'npx tsx index.ts' did not exit 0. stdout='' stderr=\"NoSuchBucket: The specified bucket does not exist\\n    at S3RestXmlProtocol.handleError (/home/user/chained-ckpt/node_modules/@aws-sdk/core/dist-cjs/submodules/protocols/index.js:1864:27)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async S3RestXmlProtocol.deserializeResponse (/home/user/chained-ckpt/node_modules/@smithy/core/dist-cjs/submodules/protocols/index.js:424:13)\\n    at async /home/user/chained-ckpt/node_modules/@smithy/core/dist-cjs/submodules/schema/index.js:27:24\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/middleware-sdk-s3/dist-cjs/index.js:350:20\\n    at async /home/user/chained-ckpt/node_modules/@smithy/core/dist-cjs/submodules/retry/index.js:172:50\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/middleware-flexible-checksums/dist-cjs/index.js:241:24\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/middleware-sdk-s3/dist-cjs/index.js:64:28\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/middleware-sdk-s3/dist-cjs/index.js:91:20\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/core/dist-cjs/submodules/client/index.js:119:26 {\\n  '$fault': 'client',\\n  '$retryable': undefined,\\n  '$metadata': {\\n    httpStatusCode: 404,\\n    requestId: '1778872545944782015',\\n    extendedRequestId: undefined,\\n    cfId: undefined,\\n    attempts: 1,\\n    totalRetryDelay: 0\\n  },\\n  Code: 'NoSuchBucket',\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\"\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\").returncode\n\ntests/test_final_state.py:113: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_recovery_json_exists_and_has_expected_bucket",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005770842544734478,
+                "start": 1778872546.501548,
+                "stop": 1778872546.5059373,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\")\n\n    def test_recovery_json_exists_and_has_expected_bucket(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping recovery.json check because the user script failed: \"\n            f\"{script_run_result.stderr!r}\"\n        )\nE       AssertionError: Skipping recovery.json check because the user script failed: \"NoSuchBucket: The specified bucket does not exist\\n    at S3RestXmlProtocol.handleError (/home/user/chained-ckpt/node_modules/@aws-sdk/core/dist-cjs/submodules/protocols/index.js:1864:27)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async S3RestXmlProtocol.deserializeResponse (/home/user/chained-ckpt/node_modules/@smithy/core/dist-cjs/submodules/protocols/index.js:424:13)\\n    at async /home/user/chained-ckpt/node_modules/@smithy/core/dist-cjs/submodules/schema/index.js:27:24\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/middleware-sdk-s3/dist-cjs/index.js:350:20\\n    at async /home/user/chained-ckpt/node_modules/@smithy/core/dist-cjs/submodules/retry/index.js:172:50\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/middleware-flexible-checksums/dist-cjs/index.js:241:24\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/middleware-sdk-s3/dist-cjs/index.js:64:28\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/middleware-sdk-s3/dist-cjs/index.js:91:20\\n    at async /home/user/chained-ckpt/node_modules/@aws-sdk/core/dist-cjs/submodules/client/index.js:119:26 {\\n  '$fault': 'client',\\n  '$retryable': undefined,\\n  '$metadata': {\\n    httpStatusCode: 404,\\n    requestId: '1778872545944782015',\\n    extendedRequestId: undefined,\\n    cfId: undefined,\\n    attempts: 1,\\n    totalRetryDelay: 0\\n  },\\n  Code: 'NoSuchBucket',\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\"\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\").returncode\n\ntests/test_final_state.py:120: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_bucket_v1_now_contains_version_two",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.000554181169718504,
+                "start": 1778872546.5062337,
+                "stop": 1778872546.510404,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\")\n\n    def test_source_bucket_v1_now_contains_version_two(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping source bucket content check because the user script failed.\"\n        )\nE       AssertionError: Skipping source bucket content check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\").returncode\n\ntests/test_final_state.py:145: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_recovery_bucket_was_torn_down",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.000492507591843605,
+                "start": 1778872546.5105846,
+                "stop": 1778872546.51486,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\")\n\n    def test_recovery_bucket_was_torn_down(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping recovery-bucket teardown check because the user script failed.\"\n        )\nE       AssertionError: Skipping recovery-bucket teardown check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\").returncode\n\ntests/test_final_state.py:179: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_before_mutation_snapshot_exists",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.817317881155759,
+                "start": 1778872546.5150402,
+                "stop": 1778872548.3359187,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\")\n\n    def test_before_mutation_snapshot_exists(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping snapshot check because the user script failed.\"\n        )\nE       AssertionError: Skipping snapshot check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr=\"NoSuchBucket: The specified bucket ...,\\n  Resource: '/v1.txt',\\n  RequestId: '1778872545944782015',\\n  Key: 'v1.txt',\\n  BucketName: 'pipeline-state'\\n}\\n\").returncode\n\ntests/test_final_state.py:205: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

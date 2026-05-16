@@ -1,0 +1,89 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 5,
+            "failed": 2,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778872513.3581069,
+            "stop": 1778872518.632447
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_script_exits_zero",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.157411865890026,
+                "start": 1778872513.3837225,
+                "stop": 1778872515.5576372,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Error: Error: Failed to create work...ocess/task_queues:104:5)\\n    at async Promise.all (index 0)\\n    at async main (/home/user/ws-pool/index.ts:10:27)\\n')\n\n    def test_script_exits_zero(script_run):\n>       assert script_run.returncode == 0, (\n            f\"`npx tsx index.ts` exited with status {script_run.returncode}. \"\n            f\"stdout: {script_run.stdout[:1000]}\\nstderr: {script_run.stderr[:1000]}\"\n        )\nE       AssertionError: `npx tsx index.ts` exited with status 1. stdout: \nE         stderr: Error: Error: Failed to create workspace bucket \"pool-agent-1\": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\nE             at I (file:///home/user/ws-pool/node_modules/@tigrisdata/agent-kit/dist/index.js:3:343)\nE             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nE             at async Promise.all (index 0)\nE             at async main (/home/user/ws-pool/index.ts:10:27)\nE         \nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Error: Error: Failed to create work...ocess/task_queues:104:5)\\n    at async Promise.all (index 0)\\n    at async main (/home/user/ws-pool/index.ts:10:27)\\n').returncode\n\ntests/test_final_state.py:80: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_pool_json_is_list_of_four",
+                "status": "passed",
+                "duration": 0.0004564463160932064,
+                "start": 1778872515.5578756,
+                "stop": 1778872515.55849,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_pool_entries_have_required_keys",
+                "status": "passed",
+                "duration": 0.0004183938726782799,
+                "start": 1778872515.5586765,
+                "stop": 1778872515.5592258,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_pool_names_match_expected",
+                "status": "passed",
+                "duration": 0.0004046601243317127,
+                "start": 1778872515.5594053,
+                "stop": 1778872515.5599396,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_uses_promise_all_for_creation",
+                "status": "passed",
+                "duration": 0.0004773796536028385,
+                "start": 1778872515.5601172,
+                "stop": 1778872515.5607288,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_uses_promise_all_settled_for_teardown",
+                "status": "passed",
+                "duration": 0.0004579019732773304,
+                "start": 1778872515.5609064,
+                "stop": 1778872515.561496,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_all_buckets_torn_down_via_cli",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 3.064434234518558,
+                "start": 1778872515.5616713,
+                "stop": 1778872518.632205,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "pool_data = [{'bucket': 'pool-agent-1', 'name': 'pool-agent-1'}, {'bucket': 'pool-agent-2', 'name': 'pool-agent-2'}, {'bucket': 'pool-agent-3', 'name': 'pool-agent-3'}, {'bucket': 'pool-agent-4', 'name': 'pool-agent-4'}]\n\n    def test_all_buckets_torn_down_via_cli(pool_data):\n        \"\"\"Priority 1: Use the tigris CLI to confirm every workspace bucket has been deleted.\"\"\"\n        env = _tigris_env()\n        result = subprocess.run(\n            [\"tigris\", \"buckets\", \"list\", \"--format\", \"json\"],\n            capture_output=True,\n            text=True,\n            env=env,\n        )\n        assert result.returncode == 0, (\n            f\"`tigris buckets list --format json` failed: {result.stderr.strip() or result.stdout.strip()}\"\n        )\n        try:\n            parsed = json.loads(result.stdout)\n        except json.JSONDecodeError as exc:\n            pytest.fail(\n                f\"`tigris buckets list --format json` returned invalid JSON: {exc}\\nOutput: {result.stdout[:500]}\"\n            )\n    \n        candidates = []\n        if isinstance(parsed, list):\n            candidates = parsed\n        elif isinstance(parsed, dict):\n            for key in (\"buckets\", \"Buckets\", \"items\", \"data\"):\n                value = parsed.get(key)\n                if isinstance(value, list):\n                    candidates = value\n                    break\n    \n        names = set()\n        for entry in candidates:\n            if isinstance(entry, str):\n                names.add(entry)\n            elif isinstance(entry, dict):\n                for key in (\"name\", \"Name\", \"bucket\", \"Bucket\"):\n                    if isinstance(entry.get(key), str):\n                        names.add(entry[key])\n                        break\n    \n        raw_output = result.stdout\n        for entry in pool_data:\n            if not isinstance(entry, dict):\n                continue\n            bucket = entry.get(\"bucket\")\n            if not isinstance(bucket, str) or not bucket:\n                continue\n>           assert bucket not in names and bucket not in raw_output, (\n                f\"Bucket {bucket!r} is still present after teardown; \"\n                f\"all four pool workspaces must be deleted via Promise.allSettled([teardownWorkspace(...), ...]).\"\n            )\nE           AssertionError: Bucket 'pool-agent-1' is still present after teardown; all four pool workspaces must be deleted via Promise.allSettled([teardownWorkspace(...), ...]).\nE           assert ('pool-agent-1' not in {'abs-1778783584', 'abs-1778783601', 'agent-corpus-final', 'agent-test-ckpt', 'archive-bucket-1778783355', 'archive-bucket-1778783424', ...} and 'pool-agent-1' not in '{\\n  \"items... }\\n  ]\\n}\\n'\nE             \nE             'pool-agent-1' is contained here:\nE                \"name\": \"pool-agent-1-1778869716757\",\nE             ?           ++++++++++++\nE                     \"created\": \"2026-05-15T18:28:40.000Z\"\nE                   },\nE                   {...\nE             \nE             ...Full output truncated (161 lines hidden), use '-vv' to show)\n\ntests/test_final_state.py:180: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

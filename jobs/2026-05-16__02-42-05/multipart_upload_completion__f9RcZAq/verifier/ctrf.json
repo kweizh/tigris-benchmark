@@ -1,0 +1,56 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 4,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1778871427.1278608,
+            "stop": 1778871435.5514452
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_local_md5_file_exists_and_matches",
+                "status": "passed",
+                "duration": 0.027968220878392458,
+                "start": 1778871427.1490936,
+                "stop": 1778871427.1773386,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_exists_via_cli",
+                "status": "passed",
+                "duration": 1.2096298015676439,
+                "start": 1778871427.1775784,
+                "stop": 1778871428.3875008,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_object_head_reports_correct_size_and_multipart_etag",
+                "status": "passed",
+                "duration": 1.4370486079715192,
+                "start": 1778871428.3877313,
+                "stop": 1778871429.824982,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_downloaded_object_matches_local_sha256",
+                "status": "passed",
+                "duration": 5.725709810387343,
+                "start": 1778871429.8252392,
+                "stop": 1778871435.551212,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

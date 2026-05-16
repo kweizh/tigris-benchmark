@@ -1,0 +1,120 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 15ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 7 items
+
+tests/test_final_state.py F.....F                                        [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_script_exits_zero ____________________________
+
+script_run = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Error: Error: Failed to create work...ocess/task_queues:104:5)\n    at async Promise.all (index 0)\n    at async main (/home/user/ws-pool/index.ts:10:27)\n')
+
+    def test_script_exits_zero(script_run):
+>       assert script_run.returncode == 0, (
+            f"`npx tsx index.ts` exited with status {script_run.returncode}. "
+            f"stdout: {script_run.stdout[:1000]}\nstderr: {script_run.stderr[:1000]}"
+        )
+E       AssertionError: `npx tsx index.ts` exited with status 1. stdout: 
+E         stderr: Error: Error: Failed to create workspace bucket "pool-agent-1": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.
+E             at I (file:///home/user/ws-pool/node_modules/@tigrisdata/agent-kit/dist/index.js:3:343)
+E             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+E             at async Promise.all (index 0)
+E             at async main (/home/user/ws-pool/index.ts:10:27)
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Error: Error: Failed to create work...ocess/task_queues:104:5)\n    at async Promise.all (index 0)\n    at async main (/home/user/ws-pool/index.ts:10:27)\n').returncode
+
+tests/test_final_state.py:80: AssertionError
+______________________ test_all_buckets_torn_down_via_cli ______________________
+
+pool_data = [{'bucket': 'pool-agent-1', 'name': 'pool-agent-1'}, {'bucket': 'pool-agent-2', 'name': 'pool-agent-2'}, {'bucket': 'pool-agent-3', 'name': 'pool-agent-3'}, {'bucket': 'pool-agent-4', 'name': 'pool-agent-4'}]
+
+    def test_all_buckets_torn_down_via_cli(pool_data):
+        """Priority 1: Use the tigris CLI to confirm every workspace bucket has been deleted."""
+        env = _tigris_env()
+        result = subprocess.run(
+            ["tigris", "buckets", "list", "--format", "json"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        assert result.returncode == 0, (
+            f"`tigris buckets list --format json` failed: {result.stderr.strip() or result.stdout.strip()}"
+        )
+        try:
+            parsed = json.loads(result.stdout)
+        except json.JSONDecodeError as exc:
+            pytest.fail(
+                f"`tigris buckets list --format json` returned invalid JSON: {exc}\nOutput: {result.stdout[:500]}"
+            )
+    
+        candidates = []
+        if isinstance(parsed, list):
+            candidates = parsed
+        elif isinstance(parsed, dict):
+            for key in ("buckets", "Buckets", "items", "data"):
+                value = parsed.get(key)
+                if isinstance(value, list):
+                    candidates = value
+                    break
+    
+        names = set()
+        for entry in candidates:
+            if isinstance(entry, str):
+                names.add(entry)
+            elif isinstance(entry, dict):
+                for key in ("name", "Name", "bucket", "Bucket"):
+                    if isinstance(entry.get(key), str):
+                        names.add(entry[key])
+                        break
+    
+        raw_output = result.stdout
+        for entry in pool_data:
+            if not isinstance(entry, dict):
+                continue
+            bucket = entry.get("bucket")
+            if not isinstance(bucket, str) or not bucket:
+                continue
+>           assert bucket not in names and bucket not in raw_output, (
+                f"Bucket {bucket!r} is still present after teardown; "
+                f"all four pool workspaces must be deleted via Promise.allSettled([teardownWorkspace(...), ...])."
+            )
+E           AssertionError: Bucket 'pool-agent-1' is still present after teardown; all four pool workspaces must be deleted via Promise.allSettled([teardownWorkspace(...), ...]).
+E           assert ('pool-agent-1' not in {'abs-1778783584', 'abs-1778783601', 'agent-corpus-final', 'agent-test-ckpt', 'archive-bucket-1778783355', 'archive-bucket-1778783424', ...} and 'pool-agent-1' not in '{\n  "items... }\n  ]\n}\n'
+E             
+E             'pool-agent-1' is contained here:
+E                "name": "pool-agent-1-1778869716757",
+E             ?           ++++++++++++
+E                     "created": "2026-05-15T18:28:40.000Z"
+E                   },
+E                   {...
+E             
+E             ...Full output truncated (161 lines hidden), use '-vv' to show)
+
+tests/test_final_state.py:180: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_pool_json_is_list_of_four
+PASSED tests/test_final_state.py::test_pool_entries_have_required_keys
+PASSED tests/test_final_state.py::test_pool_names_match_expected
+PASSED tests/test_final_state.py::test_index_ts_uses_promise_all_for_creation
+PASSED tests/test_final_state.py::test_index_ts_uses_promise_all_settled_for_teardown
+FAILED tests/test_final_state.py::test_script_exits_zero - AssertionError: `n...
+FAILED tests/test_final_state.py::test_all_buckets_torn_down_via_cli - Assert...
+========================= 2 failed, 5 passed in 5.27s ==========================

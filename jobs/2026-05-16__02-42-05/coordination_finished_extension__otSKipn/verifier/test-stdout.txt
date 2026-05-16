@@ -1,0 +1,60 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 14ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 6 items
+
+tests/test_final_state.py ...F..                                         [100%]
+
+=================================== FAILURES ===================================
+________________ test_exactly_one_notification_for_finished_key ________________
+
+    def test_exactly_one_notification_for_finished_key():
+        payloads = _load_received_payloads()
+        keys = _extract_keys_from_payloads(payloads)
+    
+        assert keys, (
+            "Expected at least one notification in received.jsonl, but the file is empty. "
+            "Did setupCoordination run with the correct webhookUrl and filter?"
+        )
+    
+        finished_count = sum(1 for k in keys if k == EXPECTED_TRIGGER_KEY)
+        assert finished_count >= 1, (
+            f"Expected at least one notification for {EXPECTED_TRIGGER_KEY!r}, "
+            f"got keys: {keys}"
+        )
+    
+        # Every observed key must be the target key. Anything else means the
+        # filter (prefix `runs/` AND suffix `.finished`) was wrong.
+        unexpected = [k for k in keys if k != EXPECTED_TRIGGER_KEY]
+>       assert not unexpected, (
+            f"Notifications fired for unexpected keys: {unexpected!r}. "
+            f"Only {EXPECTED_TRIGGER_KEY!r} should match the coordination filter."
+        )
+E       AssertionError: Notifications fired for unexpected keys: ['{"test": true}', 'test-obj']. Only 'runs/run1.finished' should match the coordination filter.
+E       assert not ['{"test": true}', 'test-obj']
+
+tests/test_final_state.py:213: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_run_ts_exists_and_uses_both_sdks
+PASSED tests/test_final_state.py::test_run_log_records_bucket_and_webhook
+PASSED tests/test_final_state.py::test_received_jsonl_exists
+PASSED tests/test_final_state.py::test_no_notification_for_non_matching_keys
+PASSED tests/test_final_state.py::test_bucket_contains_all_three_uploaded_objects
+FAILED tests/test_final_state.py::test_exactly_one_notification_for_finished_key
+========================= 1 failed, 5 passed in 2.17s ==========================

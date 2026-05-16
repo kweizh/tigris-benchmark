@@ -1,0 +1,116 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 23ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 5 items
+
+tests/test_final_state.py FEEEE                                          [100%]
+
+==================================== ERRORS ====================================
+______ ERROR at setup of test_result_json_reports_validation_fork_bucket _______
+
+    @pytest.fixture(scope="module")
+    def restored_bucket():
+        """Prepare the source bucket, run the user's script, then clean up.
+    
+        Yields the restored fork bucket name reported by result.json.
+        """
+>       assert os.path.isfile(INDEX_TS), (
+            f"User must create the TypeScript script at {INDEX_TS}."
+        )
+E       AssertionError: User must create the TypeScript script at /home/user/restore-validate/index.ts.
+E       assert False
+E        +  where False = <function isfile at 0x7017d50ec220>('/home/user/restore-validate/index.ts')
+E        +    where <function isfile at 0x7017d50ec220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:64: AssertionError
+___________ ERROR at setup of test_result_json_reports_sha256_match ____________
+
+    @pytest.fixture(scope="module")
+    def restored_bucket():
+        """Prepare the source bucket, run the user's script, then clean up.
+    
+        Yields the restored fork bucket name reported by result.json.
+        """
+>       assert os.path.isfile(INDEX_TS), (
+            f"User must create the TypeScript script at {INDEX_TS}."
+        )
+E       AssertionError: User must create the TypeScript script at /home/user/restore-validate/index.ts.
+E       assert False
+E        +  where False = <function isfile at 0x7017d50ec220>('/home/user/restore-validate/index.ts')
+E        +    where <function isfile at 0x7017d50ec220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:64: AssertionError
+_________ ERROR at setup of test_restored_bucket_listed_via_tigris_cli _________
+
+    @pytest.fixture(scope="module")
+    def restored_bucket():
+        """Prepare the source bucket, run the user's script, then clean up.
+    
+        Yields the restored fork bucket name reported by result.json.
+        """
+>       assert os.path.isfile(INDEX_TS), (
+            f"User must create the TypeScript script at {INDEX_TS}."
+        )
+E       AssertionError: User must create the TypeScript script at /home/user/restore-validate/index.ts.
+E       assert False
+E        +  where False = <function isfile at 0x7017d50ec220>('/home/user/restore-validate/index.ts')
+E        +    where <function isfile at 0x7017d50ec220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:64: AssertionError
+_____ ERROR at setup of test_independent_download_matches_expected_sha256 ______
+
+    @pytest.fixture(scope="module")
+    def restored_bucket():
+        """Prepare the source bucket, run the user's script, then clean up.
+    
+        Yields the restored fork bucket name reported by result.json.
+        """
+>       assert os.path.isfile(INDEX_TS), (
+            f"User must create the TypeScript script at {INDEX_TS}."
+        )
+E       AssertionError: User must create the TypeScript script at /home/user/restore-validate/index.ts.
+E       assert False
+E        +  where False = <function isfile at 0x7017d50ec220>('/home/user/restore-validate/index.ts')
+E        +    where <function isfile at 0x7017d50ec220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:64: AssertionError
+=================================== FAILURES ===================================
+_______________________ test_index_ts_uses_required_apis _______________________
+
+    def test_index_ts_uses_required_apis():
+>       assert os.path.isfile(INDEX_TS), (
+            f"User must create the TypeScript script at {INDEX_TS}."
+        )
+E       AssertionError: User must create the TypeScript script at /home/user/restore-validate/index.ts.
+E       assert False
+E        +  where False = <function isfile at 0x7017d50ec220>('/home/user/restore-validate/index.ts')
+E        +    where <function isfile at 0x7017d50ec220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:136: AssertionError
+=========================== short test summary info ============================
+ERROR tests/test_final_state.py::test_result_json_reports_validation_fork_bucket
+ERROR tests/test_final_state.py::test_result_json_reports_sha256_match - Asse...
+ERROR tests/test_final_state.py::test_restored_bucket_listed_via_tigris_cli
+ERROR tests/test_final_state.py::test_independent_download_matches_expected_sha256
+FAILED tests/test_final_state.py::test_index_ts_uses_required_apis - Assertio...
+========================= 1 failed, 4 errors in 0.06s ==========================
