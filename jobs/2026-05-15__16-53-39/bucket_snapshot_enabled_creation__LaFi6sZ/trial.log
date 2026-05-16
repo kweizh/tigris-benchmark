@@ -1,2 +1,0 @@
-Running command: apt-get update && apt-get install -y curl ripgrep
-Trial bucket_snapshot_enabled_creation__LaFi6sZ failed: Agent setup timed out after 360.0 seconds
