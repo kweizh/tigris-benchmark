@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -9,8 +10,25 @@ import pytest
 PROJECT_DIR = "/home/user/chained-ckpt"
 INDEX_TS = os.path.join(PROJECT_DIR, "index.ts")
 RECOVERY_JSON = os.path.join(PROJECT_DIR, "recovery.json")
-SOURCE_BUCKET = "pipeline-state"
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
 TIGRIS_ENDPOINT = "https://t3.storage.dev"
+
+
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive bucket name."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+
+def bucket_name():
+    trial_id = _read_trial_id()
+    name = f"harbor-awscli-{trial_id}"
+    name = re.sub(r"[^a-z0-9.-]", "-", name.lower())
+    return name
 
 
 def _tigris_env():
@@ -67,8 +85,9 @@ def script_run_result():
             timeout=60,
         )
         bucket_names = _parse_bucket_names(list_result.stdout)
+        source_bucket = bucket_name()
         for name in bucket_names:
-            if name == SOURCE_BUCKET or name.startswith("rollback-recovery"):
+            if name == source_bucket or name.startswith("rollback-recovery"):
                 subprocess.run(
                     ["tigris", "buckets", "delete", name, "--force"],
                     capture_output=True,
@@ -147,6 +166,7 @@ def test_source_bucket_v1_now_contains_version_two(script_run_result):
     )
     env = _tigris_env()
     assert shutil.which("aws") is not None, "aws CLI is required for verification."
+    source_bucket = bucket_name()
     with tempfile.TemporaryDirectory() as tmpdir:
         local_path = os.path.join(tmpdir, "v1.txt")
         result = subprocess.run(
@@ -154,7 +174,7 @@ def test_source_bucket_v1_now_contains_version_two(script_run_result):
                 "aws",
                 "s3",
                 "cp",
-                f"s3://{SOURCE_BUCKET}/v1.txt",
+                f"s3://{source_bucket}/v1.txt",
                 local_path,
                 "--endpoint-url",
                 TIGRIS_ENDPOINT,
@@ -165,13 +185,13 @@ def test_source_bucket_v1_now_contains_version_two(script_run_result):
             timeout=120,
         )
         assert result.returncode == 0, (
-            "Failed to download s3://pipeline-state/v1.txt via aws CLI: "
+            f"Failed to download s3://{source_bucket}/v1.txt via aws CLI: "
             f"stdout={result.stdout!r} stderr={result.stderr!r}"
         )
         with open(local_path, "rb") as f:
             body = f.read()
     assert body == b"version=2", (
-        f"Expected s3://{SOURCE_BUCKET}/v1.txt to contain 'version=2', got: {body!r}"
+        f"Expected s3://{source_bucket}/v1.txt to contain 'version=2', got: {body!r}"
     )
 
 
@@ -206,15 +226,16 @@ def test_before_mutation_snapshot_exists(script_run_result):
         "Skipping snapshot check because the user script failed."
     )
     env = _tigris_env()
+    source_bucket = bucket_name()
     result = subprocess.run(
-        ["tigris", "snapshots", "list", SOURCE_BUCKET, "--format", "json"],
+        ["tigris", "snapshots", "list", source_bucket, "--format", "json"],
         capture_output=True,
         text=True,
         env=env,
         timeout=60,
     )
     assert result.returncode == 0, (
-        "'tigris snapshots list pipeline-state --format json' failed: "
+        f"'tigris snapshots list {source_bucket} --format json' failed: "
         f"stdout={result.stdout!r} stderr={result.stderr!r}"
     )
     stdout = result.stdout.strip()
@@ -238,6 +259,6 @@ def test_before_mutation_snapshot_exists(script_run_result):
                 names.append(name)
 
     assert "before-mutation" in names, (
-        "Expected a snapshot named 'before-mutation' on bucket 'pipeline-state', "
+        f"Expected a snapshot named 'before-mutation' on bucket '{source_bucket}', "
         f"found names: {names}"
     )

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import subprocess
 
 import pytest
@@ -7,7 +8,23 @@ import pytest
 PROJECT_DIR = "/home/user/lifecycle"
 RUN_SCRIPT = os.path.join(PROJECT_DIR, "run.sh")
 SNAPSHOTS_FILE = os.path.join(PROJECT_DIR, "snapshots.txt")
-BUCKET_NAME = "lifecycle-demo"
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
+
+
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive bucket name."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+
+def bucket_name():
+    trial_id = _read_trial_id()
+    name = f"harbor-lifecycle-{trial_id}"
+    return re.sub(r"[^a-z0-9.-]", "-", name.lower())
 
 
 def _tigris_env():
@@ -62,8 +79,9 @@ def _bucket_exists(name):
 def execute_run_script():
     """Pre-clean any stale bucket, run the agent's `run.sh`, then ensure the
     bucket is removed afterwards regardless of what the script did."""
+    name = bucket_name()
     # Best-effort pre-clean — ignore failures (bucket may not exist).
-    _run_tigris(["buckets", "delete", BUCKET_NAME, "--yes"], timeout=120)
+    _run_tigris(["buckets", "delete", name, "--yes"], timeout=120)
 
     assert os.path.isfile(RUN_SCRIPT), (
         f"Expected {RUN_SCRIPT} to exist after the agent finished. The agent "
@@ -83,7 +101,7 @@ def execute_run_script():
 
     # Final cleanup — make subsequent runs idempotent even if the agent's
     # cleanup step was missing or failed mid-way.
-    _run_tigris(["buckets", "delete", BUCKET_NAME, "--yes"], timeout=120)
+    _run_tigris(["buckets", "delete", name, "--yes"], timeout=120)
 
 
 def test_run_script_exits_zero(execute_run_script):
@@ -116,7 +134,8 @@ def test_snapshots_file_has_at_least_one_line(execute_run_script):
 def test_bucket_was_deleted_at_end(execute_run_script):
     """Priority 1: the script's final step must delete the bucket so the run
     is self-cleaning."""
-    assert not _bucket_exists(BUCKET_NAME), (
-        f"Bucket {BUCKET_NAME!r} still exists after `run.sh` finished. The "
+    name = bucket_name()
+    assert not _bucket_exists(name), (
+        f"Bucket {name!r} still exists after `run.sh` finished. The "
         "script must delete the bucket as its final cleanup step."
     )

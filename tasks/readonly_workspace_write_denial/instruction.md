@@ -47,8 +47,8 @@ Because `createWorkspace` only mints a single scoped key per call and the docume
 - Source file: /home/user/tigris-task/run.ts
 - Write-denial log: /home/user/tigris-task/write-denial.log (non-empty; must contain an access-denial keyword)
 - Read-back file: /home/user/tigris-task/readback.txt (must equal exactly `hello readonly`)
-- Editor workspace bucket: `harbor-ro-${trial_id}` (with TTL 1 day, snapshots enabled, Editor scoped credentials)
-- ReadOnly fork bucket: `harbor-ro-${trial_id}-readonly-0` (created via `createForks` with `role: ReadOnly`)
+- Editor workspace bucket: dynamically constructed as `harbor-ro-${trial_id}` (with TTL 1 day, snapshots enabled, Editor scoped credentials). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- ReadOnly fork bucket: `harbor-ro-${trial_id}-readonly-0` (created via `createForks` with `role: ReadOnly`, normalized)
 - Object key written by editor creds: `notes/welcome.txt` with body `hello readonly`
 - Object key whose write MUST be denied: `notes/forbidden.txt` (must NOT exist in the fork bucket after the run)
 - Do not hardcode credentials; admin credentials come from environment variables (`TIGRIS_STORAGE_ACCESS_KEY_ID`, `TIGRIS_STORAGE_SECRET_ACCESS_KEY`, `TIGRIS_STORAGE_ENDPOINT`). Scoped credentials are obtained from Agent Kit at runtime.

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import subprocess
 
@@ -9,10 +10,26 @@ PROJECT_DIR = "/home/user/isolation"
 INDEX_TS = os.path.join(PROJECT_DIR, "index.ts")
 AUDIT_JSON = os.path.join(PROJECT_DIR, "audit.json")
 OUTPUT_LOG = os.path.join(PROJECT_DIR, "output.log")
-SOURCE_BUCKET = "gold-source"
 FORK_PREFIX = "audit-fork"
 SEED_KEYS = ["seed1.txt", "seed2.txt"]
 AGENT_KEYS = {"agent-1.out", "agent-2.out", "agent-3.out"}
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
+
+
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive bucket name."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+
+def bucket_name():
+    trial_id = _read_trial_id()
+    name = f"harbor-isolation-{trial_id}"
+    return re.sub(r"[^a-z0-9.-]", "-", name.lower())
 
 
 def _tigris_cmd():
@@ -55,8 +72,9 @@ def test_index_ts_uses_required_apis():
         "index.ts must use ListObjectsV2Command from @aws-sdk/client-s3 to "
         "audit bucket state."
     )
-    assert SOURCE_BUCKET in contents, (
-        f"index.ts must reference the source bucket '{SOURCE_BUCKET}'."
+    source_bucket = bucket_name()
+    assert source_bucket in contents, (
+        f"index.ts must reference the source bucket '{source_bucket}'."
     )
     assert FORK_PREFIX in contents, (
         f"index.ts must use the fork prefix '{FORK_PREFIX}'."
@@ -200,7 +218,8 @@ def test_source_bucket_unmodified(run_user_script):
     """Priority 1: Use the Tigris CLI to confirm the source bucket still
     holds only the two seed files and none of the agent outputs."""
     run_user_script  # ensure script ran
-    cmd = _tigris_cmd() + ["objects", "list", SOURCE_BUCKET]
+    source_bucket = bucket_name()
+    cmd = _tigris_cmd() + ["objects", "list", source_bucket]
     result = subprocess.run(
         cmd,
         capture_output=True,
@@ -209,19 +228,19 @@ def test_source_bucket_unmodified(run_user_script):
         env=os.environ.copy(),
     )
     assert result.returncode == 0, (
-        f"'tigris objects list {SOURCE_BUCKET}' failed: "
+        f"'tigris objects list {source_bucket}' failed: "
         f"stdout={result.stdout!r} stderr={result.stderr!r}"
     )
     combined = result.stdout + "\n" + result.stderr
 
     for seed in SEED_KEYS:
         assert seed in combined, (
-            f"Expected seed key '{seed}' to remain in '{SOURCE_BUCKET}'. "
+            f"Expected seed key '{seed}' to remain in '{source_bucket}'. "
             f"CLI output:\n{combined}"
         )
     for agent_key in AGENT_KEYS:
         assert agent_key not in combined, (
-            f"Source bucket '{SOURCE_BUCKET}' must NOT contain fork output "
+            f"Source bucket '{source_bucket}' must NOT contain fork output "
             f"'{agent_key}'. CLI output:\n{combined}"
         )
 
@@ -261,10 +280,11 @@ def test_fork_buckets_were_torn_down(run_user_script):
 
 
 def test_cleanup_source_bucket(run_user_script):
-    """Verifier cleanup: delete the source `gold-source` bucket so the task
+    """Verifier cleanup: delete the source bucket so the task
     leaves no residue. This runs at the end of the test session."""
     run_user_script  # ensure script ran first
-    cmd = _tigris_cmd() + ["buckets", "delete", SOURCE_BUCKET, "--force"]
+    source_bucket = bucket_name()
+    cmd = _tigris_cmd() + ["buckets", "delete", source_bucket, "--force"]
     result = subprocess.run(
         cmd,
         capture_output=True,
@@ -274,7 +294,7 @@ def test_cleanup_source_bucket(run_user_script):
     )
     if result.returncode != 0:
         fallback = subprocess.run(
-            _tigris_cmd() + ["buckets", "delete", SOURCE_BUCKET],
+            _tigris_cmd() + ["buckets", "delete", source_bucket],
             capture_output=True,
             text=True,
             timeout=120,
@@ -283,7 +303,7 @@ def test_cleanup_source_bucket(run_user_script):
         assert fallback.returncode == 0 or "not found" in (
             fallback.stderr.lower() + fallback.stdout.lower()
         ), (
-            f"Failed to clean up source bucket '{SOURCE_BUCKET}'. "
+            f"Failed to clean up source bucket '{source_bucket}'. "
             f"First attempt: stdout={result.stdout!r} stderr={result.stderr!r}. "
             f"Fallback attempt: stdout={fallback.stdout!r} "
             f"stderr={fallback.stderr!r}."

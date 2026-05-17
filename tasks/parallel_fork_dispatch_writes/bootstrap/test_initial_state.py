@@ -96,8 +96,19 @@ def test_trial_id_artifact_present():
     assert content, f"{TRIAL_ID_PATH} must contain a non-empty trial id."
 
 
+def _tigris_env():
+    env = os.environ.copy()
+    access = env.get("TIGRIS_STORAGE_ACCESS_KEY_ID", "")
+    secret = env.get("TIGRIS_STORAGE_SECRET_ACCESS_KEY", "")
+    env["AWS_ACCESS_KEY_ID"] = access
+    env["AWS_SECRET_ACCESS_KEY"] = secret
+    env["AWS_REGION"] = "auto"
+    env["AWS_DEFAULT_REGION"] = "auto"
+    return env
+
+
 def test_source_bucket_seeded_with_dataset():
-    """The container entrypoint script must have created the source bucket
+    """The container must create the source bucket
     `harbor-source-${trial_id}` with snapshots enabled and uploaded
     `seed/dataset.txt` containing the bytes `initial` BEFORE the agent runs.
     Verify this end-to-end via the Tigris CLI."""
@@ -107,10 +118,58 @@ def test_source_bucket_seeded_with_dataset():
     import re
     bucket = re.sub(r"[^a-z0-9.-]", "-", bucket.lower())
 
-    env = os.environ.copy()
-    env["AWS_ACCESS_KEY_ID"] = os.environ["TIGRIS_STORAGE_ACCESS_KEY_ID"]
-    env["AWS_SECRET_ACCESS_KEY"] = os.environ["TIGRIS_STORAGE_SECRET_ACCESS_KEY"]
-    env.setdefault("AWS_REGION", "auto")
+    env = _tigris_env()
+    
+    # Configure tigris CLI first
+    subprocess.run(
+        [
+            "tigris", "configure", 
+            "--access-key", env.get("TIGRIS_STORAGE_ACCESS_KEY_ID", ""), 
+            "--access-secret", env.get("TIGRIS_STORAGE_SECRET_ACCESS_KEY", ""), 
+            "--endpoint", "https://t3.storage.dev"
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    # Create the bucket with snapshots enabled if it does not already exist
+    check = subprocess.run(
+        ["tigris", "buckets", "get", bucket],
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+    if check.returncode == 0:
+        # Ensure snapshots are enabled
+        subprocess.run(
+            ["tigris", "buckets", "set", bucket, "--enable-snapshots"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+    else:
+        create = subprocess.run(
+            ["tigris", "buckets", "create", bucket, "--enable-snapshots"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        assert create.returncode == 0, (
+            f"Failed to create bucket {bucket}: {create.stderr}"
+        )
+        
+    import tempfile
+    with tempfile.TemporaryDirectory() as seed_dir:
+        seed1 = os.path.join(seed_dir, "dataset.txt")
+        with open(seed1, "w") as f:
+            f.write("initial")
+            
+        subprocess.run(
+            ["tigris", "objects", "upload", seed1, f"{bucket}/seed/dataset.txt"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
 
     ls = subprocess.run(
         ["tigris", "ls", f"t3://{bucket}/seed/dataset.txt"],

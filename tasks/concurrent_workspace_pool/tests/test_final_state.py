@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import subprocess
 
 import pytest
@@ -7,7 +8,26 @@ import pytest
 PROJECT_DIR = "/home/user/ws-pool"
 INDEX_TS = os.path.join(PROJECT_DIR, "index.ts")
 POOL_JSON = os.path.join(PROJECT_DIR, "pool.json")
-EXPECTED_NAMES = {"pool-agent-1", "pool-agent-2", "pool-agent-3", "pool-agent-4"}
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
+
+
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive workspace names."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+
+def expected_names():
+    trial_id = _read_trial_id()
+    names = set()
+    for i in range(1, 5):
+        name = f"pool-agent-{trial_id}-{i}"
+        names.add(re.sub(r"[^a-z0-9.-]", "-", name.lower()))
+    return names
 
 
 def _tigris_env():
@@ -107,8 +127,9 @@ def test_pool_entries_have_required_keys(pool_data):
 
 def test_pool_names_match_expected(pool_data):
     names = [entry["name"] for entry in pool_data if isinstance(entry, dict)]
-    assert set(names) == EXPECTED_NAMES, (
-        f"pool.json names must exactly cover {sorted(EXPECTED_NAMES)}, got: {sorted(names)}"
+    expected = expected_names()
+    assert set(names) == expected, (
+        f"pool.json names must exactly cover {sorted(expected)}, got: {sorted(names)}"
     )
     assert len(names) == len(set(names)), (
         f"pool.json names must be unique, got duplicates in: {names}"

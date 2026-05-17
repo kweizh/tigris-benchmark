@@ -23,6 +23,7 @@ Using only the `@tigrisdata/storage` SDK from a TypeScript program at `/home/use
 2. Compute the bucket names exactly:
    - `srcBucket = harbor-src-${trial_id}`
    - `dstBucket = harbor-dst-${trial_id}`
+   Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 3. Call `createBucket(dstBucket)` to provision the destination bucket. If it already exists, treat that as success.
 4. Call `list({ prefix: "data/", config: { bucket: srcBucket } })` to enumerate the seeded objects.
 5. For every item returned, call `get(name, "string", { config: { bucket: srcBucket } })` to retrieve the body, then `put(name, body, { config: { bucket: dstBucket } })` to write the same key into the destination bucket. The destination object body must equal the source object body byte-for-byte.
@@ -45,7 +46,7 @@ Using only the `@tigrisdata/storage` SDK from a TypeScript program at `/home/use
 ## Constraints
 - Project path: `/home/user/tigris-task`
 - Source file: `/home/user/tigris-task/copy.ts`
-- Source bucket: `harbor-src-${trial_id}` (must NOT be modified)
+- Source bucket: `harbor-src-${trial_id}` (must NOT be modified). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Destination bucket: `harbor-dst-${trial_id}` (must be created by the agent)
 - The destination bucket must contain EXACTLY the five keys `data/01.json` through `data/05.json` under the `data/` prefix, each with the exact JSON body listed above.
 - Use only `@tigrisdata/storage` for bucket creation, listing, downloading, and uploading. Do not shell out to other tools (no `tigris` CLI, no AWS CLI, no `s3cmd`, etc.).

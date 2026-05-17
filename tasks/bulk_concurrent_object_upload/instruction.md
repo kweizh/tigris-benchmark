@@ -31,6 +31,8 @@ Do NOT delete any object or the bucket -- the verifier will inspect them and the
 
    trial_id = open("/logs/artifacts/trial_id").read().strip()
    bucket = f"harbor-bulk-{trial_id}"
+   import re
+   bucket = re.sub(r"[^a-z0-9.-]", "-", bucket.lower())
 
    client = boto3.client(
        "s3",

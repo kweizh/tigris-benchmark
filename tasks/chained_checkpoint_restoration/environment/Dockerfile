@@ -53,40 +53,11 @@ RUN cat >/home/user/chained-ckpt/tsconfig.json <<'EOF'
 }
 EOF
 
-RUN cat >/home/user/chained-ckpt/setup.sh <<'EOF'
-#!/usr/bin/env bash
-# Pre-task setup: provision the source bucket required by the task.
-# Idempotent — safe to re-run.
-set -u
-
-: "${TIGRIS_STORAGE_ACCESS_KEY_ID:?TIGRIS_STORAGE_ACCESS_KEY_ID is required}"
-: "${TIGRIS_STORAGE_SECRET_ACCESS_KEY:?TIGRIS_STORAGE_SECRET_ACCESS_KEY is required}"
-
-export AWS_ACCESS_KEY_ID="${TIGRIS_STORAGE_ACCESS_KEY_ID}"
-export AWS_SECRET_ACCESS_KEY="${TIGRIS_STORAGE_SECRET_ACCESS_KEY}"
-export AWS_REGION="auto"
-
-BUCKET="pipeline-state"
-
-# Create the bucket with snapshots enabled if it does not already exist.
-if tigris buckets get "${BUCKET}" >/dev/null 2>&1; then
-    echo "Bucket ${BUCKET} already exists; ensuring snapshots are enabled."
-    tigris buckets set "${BUCKET}" --enable-snapshots >/dev/null 2>&1 || true
-else
-    tigris buckets create "${BUCKET}" --enable-snapshots
-fi
-
-echo "setup.sh: bucket ${BUCKET} ready."
-EOF
-
-RUN chmod +x /home/user/chained-ckpt/setup.sh
-
 # Container contents:
 #   - Ubuntu 24.04 base
 #   - Node.js v24 + npm + npx
 #   - @tigrisdata/cli (tigris) and @tigrisdata/agent-kit installed globally
 #   - aws-cli for S3-compatible object verification against Tigris
-#   - /home/user/chained-ckpt: project scaffold with package.json, tsconfig.json, setup.sh
-#   - setup.sh creates the snapshot-enabled bucket `pipeline-state` at task start
+#   - /home/user/chained-ckpt: project scaffold with package.json, tsconfig.json
 
-CMD ["/bin/bash", "-c", "trap : TERM INT; /home/user/chained-ckpt/setup.sh; sleep infinity & wait"]
+CMD ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]

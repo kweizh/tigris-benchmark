@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import subprocess
 
@@ -8,14 +9,42 @@ import pytest
 PROJECT_DIR = "/home/user/inv"
 INDEX_JS = os.path.join(PROJECT_DIR, "index.js")
 INVENTORY_FILE = os.path.join(PROJECT_DIR, "inventory.json")
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
 
-BENCH_BUCKETS = ["inv-bench-a", "inv-bench-b", "inv-bench-c"]
-OTHER_BUCKETS = ["inv-other-x", "inv-other-y", "inv-other-z"]
-EXPECTED_COUNTS = {
-    "inv-bench-a": 2,
-    "inv-bench-b": 1,
-    "inv-bench-c": 3,
-}
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive bucket names."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+def _prefix():
+    trial_id = _read_trial_id()
+    name = f"harbor-inv-{trial_id}-"
+    return re.sub(r"[^a-z0-9.-]", "-", name.lower())
+
+def _bench_buckets():
+    prefix = _prefix()
+    return [f"{prefix}a", f"{prefix}b", f"{prefix}c"]
+
+def _other_buckets():
+    trial_id = _read_trial_id()
+    return [
+        f"harbor-other-{trial_id}-x",
+        f"harbor-other-{trial_id}-y",
+        f"harbor-other-{trial_id}-z",
+    ]
+
+def _expected_counts():
+    prefix = _prefix()
+    return {
+        f"{prefix}a": 2,
+        f"{prefix}b": 1,
+        f"{prefix}c": 3,
+    }
+
 EXPECTED_TOTAL = 6
 EXPECTED_BUCKET_COUNT = 3
 
@@ -92,7 +121,7 @@ def _cleanup_buckets_after_tests():
     so subsequent runs of this evaluation start from a clean Tigris account."""
     yield
     # Best-effort cleanup; do not fail the suite if a bucket is already gone.
-    for bucket in BENCH_BUCKETS + OTHER_BUCKETS:
+    for bucket in _bench_buckets() + _other_buckets():
         _run_tigris(["buckets", "delete", bucket, "--yes"], timeout=120)
 
 
@@ -143,7 +172,7 @@ def test_inventory_file_exists_after_run():
 
 
 def test_inventory_file_has_correct_keys_and_counts():
-    """The aggregated inventory must list exactly the three inv-bench-*
+    """The aggregated inventory must list exactly the three harbor-inv-*
     buckets with the expected snapshot counts."""
     with open(INVENTORY_FILE) as f:
         try:
@@ -157,14 +186,15 @@ def test_inventory_file_has_correct_keys_and_counts():
         f"Got: {type(inventory).__name__}"
     )
     actual_keys = set(inventory.keys())
-    expected_keys = set(EXPECTED_COUNTS.keys())
+    expected_counts = _expected_counts()
+    expected_keys = set(expected_counts.keys())
     assert actual_keys == expected_keys, (
         f"{INVENTORY_FILE} must have exactly the keys {sorted(expected_keys)}, "
-        f"but it has {sorted(actual_keys)}. Distractor buckets (inv-other-*) "
+        f"but it has {sorted(actual_keys)}. Distractor buckets (harbor-other-*) "
         "must be filtered out."
     )
     total = 0
-    for bucket, expected_count in EXPECTED_COUNTS.items():
+    for bucket, expected_count in expected_counts.items():
         value = inventory[bucket]
         assert isinstance(value, list), (
             f"inventory.json[{bucket!r}] must be a list of snapshot version "
@@ -187,12 +217,12 @@ def test_inventory_file_has_correct_keys_and_counts():
 
 
 def test_inventory_versions_match_cli_truth():
-    """Priority 1: For every inv-bench-* bucket, the snapshot version IDs
+    """Priority 1: For every harbor-inv-* bucket, the snapshot version IDs
     recorded in inventory.json must equal the version IDs reported by the
     live Tigris CLI for that bucket."""
     with open(INVENTORY_FILE) as f:
         inventory = json.load(f)
-    for bucket in EXPECTED_COUNTS:
+    for bucket in _expected_counts():
         recorded = set(inventory.get(bucket) or [])
         truth = _list_snapshot_versions(bucket)
         assert recorded == truth, (

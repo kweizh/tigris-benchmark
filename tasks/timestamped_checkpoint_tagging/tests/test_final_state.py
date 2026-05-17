@@ -8,8 +8,24 @@ import pytest
 PROJECT_DIR = "/home/user/ckpt-tag"
 INDEX_TS = os.path.join(PROJECT_DIR, "index.ts")
 SNAPSHOT_JSON = os.path.join(PROJECT_DIR, "snapshot.json")
-SOURCE_BUCKET = "agent-pipeline-data"
 NAME_REGEX = re.compile(r"^release-v42-\d{10,}$")
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
+
+
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive bucket name."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+
+def bucket_name():
+    trial_id = _read_trial_id()
+    name = f"harbor-pipeline-{trial_id}"
+    return re.sub(r"[^a-z0-9.-]", "-", name.lower())
 
 
 def _tigris_env():
@@ -58,7 +74,7 @@ def script_run_result():
     # Best-effort cleanup of the source bucket.
     try:
         subprocess.run(
-            ["tigris", "buckets", "delete", SOURCE_BUCKET, "--force"],
+            ["tigris", "buckets", "delete", bucket_name(), "--force"],
             capture_output=True,
             text=True,
             env=env,
@@ -115,15 +131,16 @@ def test_named_snapshot_exists_in_tigris(script_run_result):
     expected_name = payload["name"]
 
     env = _tigris_env()
+    source_bucket = bucket_name()
     result = subprocess.run(
-        ["tigris", "snapshots", "list", SOURCE_BUCKET, "--format", "json"],
+        ["tigris", "snapshots", "list", source_bucket, "--format", "json"],
         capture_output=True,
         text=True,
         env=env,
         timeout=60,
     )
     assert result.returncode == 0, (
-        "'tigris snapshots list agent-pipeline-data --format json' failed: "
+        f"'tigris snapshots list {source_bucket} --format json' failed: "
         f"stdout={result.stdout!r} stderr={result.stderr!r}"
     )
     stdout = result.stdout.strip()
@@ -147,6 +164,6 @@ def test_named_snapshot_exists_in_tigris(script_run_result):
                 names.append(name)
 
     assert expected_name in names, (
-        f"Expected a snapshot named {expected_name!r} on bucket {SOURCE_BUCKET!r}, "
+        f"Expected a snapshot named {expected_name!r} on bucket {source_bucket!r}, "
         f"found names: {names}"
     )

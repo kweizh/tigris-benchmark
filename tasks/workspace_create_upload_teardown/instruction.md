@@ -6,7 +6,7 @@ Tigris Agent Kit (`@tigrisdata/agent-kit`) provides a `createWorkspace` primitiv
 ## Requirements
 - Write a TypeScript program at `/home/user/tigris-task/run.ts` that:
   1. Reads the current `trial_id` from `/logs/artifacts/trial_id` and `.trim()`s it.
-  2. Builds the workspace name as `harbor-ws-${trial_id}` (use the trial id as-is, no extra normalization).
+  2. Builds the workspace name as `harbor-ws-${trial_id}` (Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.).
   3. Calls `createWorkspace(name, { ttl: { days: 1 }, credentials: { role: "Editor" } })` from `@tigrisdata/agent-kit`. If the call returns an error or returns a workspace without `credentials`, exit with a non-zero exit code.
   4. Using ONLY the scoped credentials returned in `workspace.credentials` (NOT the root `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` env vars), upload a single object with `@tigrisdata/storage`'s `put`:
      - Key: `state.json`

@@ -3,30 +3,31 @@
 ## Background
 A core promise of Tigris Agent Kit (`@tigrisdata/agent-kit`) is *isolation*: when you fork a source bucket for multiple agents, each fork is a copy-on-write clone — writes into one fork are NEVER visible from another fork or from the source bucket. This task exercises that guarantee end-to-end.
 
-A setup script `/home/user/isolation/setup.sh` runs automatically at task start. It (re-)creates a source bucket named `gold-source` with snapshots enabled and pre-seeds it with two objects: `seed1.txt` and `seed2.txt`.
+A setup script `/home/user/isolation/setup.sh` runs automatically at task start. It (re-)creates a source bucket named `harbor-isolation-${trial_id}` (where `${trial_id}` is read from `/logs/artifacts/trial_id`) with snapshots enabled and pre-seeds it with two objects: `seed1.txt` and `seed2.txt`.
 
 Your job is to fork that source bucket for three parallel writer agents, have each writer simultaneously upload its own uniquely-named output file into its own fork using the *fork's* scoped credentials, and then audit the resulting bucket state into a JSON report.
 
 ## Requirements
 Write a TypeScript program at `/home/user/isolation/index.ts` that:
 
-1. Creates **3 forks** of the source bucket `gold-source` using `createForks` from `@tigrisdata/agent-kit`. All three forks must be requested in a single `createForks` invocation:
+1. Read the trial id from `/logs/artifacts/trial_id`. Construct the source bucket name as `harbor-isolation-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+2. Creates **3 forks** of the source bucket using `createForks` from `@tigrisdata/agent-kit`. All three forks must be requested in a single `createForks` invocation:
    - `prefix: "audit-fork"`
    - `credentials: { role: "Editor" }` — the scoped credentials must be `Editor` because each fork is going to be written to. Do NOT request `ReadOnly`.
-2. In parallel, each fork uploads exactly one uniquely-named object using the AWS SDK for JavaScript v3 (`@aws-sdk/client-s3`), where:
+3. In parallel, each fork uploads exactly one uniquely-named object using the AWS SDK for JavaScript v3 (`@aws-sdk/client-s3`), where:
    - The 1st fork (index 0 in `forkSet.forks`) uploads key `agent-1.out`.
    - The 2nd fork (index 1) uploads key `agent-2.out`.
    - The 3rd fork (index 2) uploads key `agent-3.out`.
    - Each `S3Client` MUST be constructed with only that fork's own scoped credentials (`fork.credentials.accessKeyId` / `fork.credentials.secretAccessKey`), the Tigris endpoint `https://t3.storage.dev`, and `region: "auto"`.
    - All three uploads must be issued concurrently (e.g. via `Promise.all`).
-3. After all uploads complete, audit the actual bucket state and assert isolation:
-   - List the objects in `gold-source` using the **admin** Tigris credentials (`TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`) and capture the sorted set of keys.
+4. After all uploads complete, audit the actual bucket state and assert isolation:
+   - List the objects in the source bucket using the **admin** Tigris credentials (`TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`) and capture the sorted set of keys.
    - List the objects in EACH fork bucket using that fork's scoped credentials and capture the sorted set of keys per bucket.
    - Throw a descriptive error if any of these conditions fail:
-     * `gold-source` does not contain exactly `seed1.txt` and `seed2.txt`.
+     * The source bucket does not contain exactly `seed1.txt` and `seed2.txt`.
      * Any fork bucket does not contain exactly its own `agent-N.out` plus the two seed files.
      * Any fork bucket contains another fork's `agent-N.out`.
-4. Write the audit report to `/home/user/isolation/audit.json` (UTF-8) BEFORE teardown. Shape:
+5. Write the audit report to `/home/user/isolation/audit.json` (UTF-8) BEFORE teardown. Shape:
    ```
    {
      "source_keys": ["seed1.txt", "seed2.txt"],
@@ -39,27 +40,27 @@ Write a TypeScript program at `/home/user/isolation/index.ts` that:
    ```
    - `source_keys` must be a sorted array of strings.
    - `fork_results` must be an array of objects in fork index order (fork 0 first, then fork 1, then fork 2), each with the fork's real bucket name (whatever `createForks` returned) and the sorted list of keys in that bucket.
-5. Tear down all three forks by calling `teardownForks` so that the fork buckets and their scoped credentials are removed. Use a `try`/`finally` so teardown runs even on earlier failure.
-6. Exit with status `0` on full success.
+6. Tear down all three forks by calling `teardownForks` so that the fork buckets and their scoped credentials are removed. Use a `try`/`finally` so teardown runs even on earlier failure.
+7. Exit with status `0` on full success.
 
 ## Implementation Guide
 1. Change into the project directory `/home/user/isolation`. The project is pre-initialized with `package.json`, `tsconfig.json`, and a populated local `node_modules` containing `@tigrisdata/agent-kit`, `@tigrisdata/cli`, `@aws-sdk/client-s3`, `tsx`, and `typescript`. You only need to author `index.ts`.
 2. Import `createForks` and `teardownForks` from `@tigrisdata/agent-kit`. Import `S3Client`, `PutObjectCommand`, and `ListObjectsV2Command` from `@aws-sdk/client-s3`. Use `fs/promises` for writing the audit report.
-3. Call `createForks("gold-source", 3, { prefix: "audit-fork", credentials: { role: "Editor" } })`. Check `error` first; if non-null, throw.
+3. Read the trial id and construct the source bucket name. Call `createForks(sourceBucketName, 3, { prefix: "audit-fork", credentials: { role: "Editor" } })`. Check `error` first; if non-null, throw.
 4. For each `fork` in `forkSet.forks`, build a per-fork `S3Client` from its scoped credentials and issue a `PutObjectCommand` for the appropriate `agent-N.out` key. Run the three uploads concurrently via `Promise.all`.
 5. Build the audit report:
-   - Use a separate admin `S3Client` (built from `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`) to `ListObjectsV2` against `gold-source`.
+   - Use a separate admin `S3Client` (built from `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`) to `ListObjectsV2` against the source bucket.
    - Use each fork's scoped `S3Client` to `ListObjectsV2` against its own fork bucket.
    - Validate the keys match the expected isolation invariants described above. Throw a descriptive error on any mismatch.
 6. Write `/home/user/isolation/audit.json` with the documented shape.
-7. Always call `teardownForks(forkSet)` in `finally`. The source bucket `gold-source` and its objects MUST remain intact.
+7. Always call `teardownForks(forkSet)` in `finally`. The source bucket MUST remain intact.
 8. Run the script with `npx tsx index.ts` from `/home/user/isolation`. The exit code must be `0`.
 
 ## Constraints
 - Project path: `/home/user/isolation`
 - Log file: `/home/user/isolation/output.log` (used by the verifier when re-running the script).
-- Setup script (auto-runs at task start, idempotent): `/home/user/isolation/setup.sh` — creates `gold-source` with snapshots enabled and uploads `seed1.txt`, `seed2.txt`. Do not modify it.
-- Source bucket: `gold-source` (must remain unmodified at the end of the run).
+- Setup script (auto-runs at task start, idempotent): `/home/user/isolation/setup.sh` — creates the source bucket with snapshots enabled and uploads `seed1.txt`, `seed2.txt`. Do not modify it.
+- Source bucket: dynamically constructed as `harbor-isolation-${trial_id}` (must remain unmodified at the end of the run).
 - Fork prefix: `audit-fork` (so the three fork buckets are named `audit-fork-0`, `audit-fork-1`, `audit-fork-2`).
 - Fork count: exactly 3, requested in a single `createForks` call.
 - Fork credentials role: `Editor` (each fork must have its own scoped key — the uploads MUST use the per-fork scoped credentials, not the admin keys).

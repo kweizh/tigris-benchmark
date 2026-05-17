@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import subprocess
 
@@ -8,9 +9,25 @@ import pytest
 PROJECT_DIR = "/home/user/inv"
 PACKAGE_JSON = os.path.join(PROJECT_DIR, "package.json")
 NODE_MODULES = os.path.join(PROJECT_DIR, "node_modules")
-SETUP_SCRIPT = os.path.join(PROJECT_DIR, "setup.sh")
 INDEX_JS = os.path.join(PROJECT_DIR, "index.js")
 INVENTORY_FILE = os.path.join(PROJECT_DIR, "inventory.json")
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
+
+
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive bucket names."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+
+def _prefix():
+    trial_id = _read_trial_id()
+    name = f"harbor-inv-{trial_id}-"
+    return re.sub(r"[^a-z0-9.-]", "-", name.lower())
 
 
 def test_node_binary_available():
@@ -90,42 +107,84 @@ def test_agent_kit_installed():
     )
 
 
-def test_setup_script_exists():
-    assert os.path.isfile(SETUP_SCRIPT), (
-        f"Setup script {SETUP_SCRIPT} does not exist. The container must "
-        "ship the setup script that prepares the buckets at task start."
-    )
+def _tigris_env():
+    env = os.environ.copy()
+    access = env.get("TIGRIS_STORAGE_ACCESS_KEY_ID", "")
+    secret = env.get("TIGRIS_STORAGE_SECRET_ACCESS_KEY", "")
+    env["AWS_ACCESS_KEY_ID"] = access
+    env["AWS_SECRET_ACCESS_KEY"] = secret
+    env["AWS_REGION"] = "auto"
+    env["AWS_DEFAULT_REGION"] = "auto"
+    return env
 
 
-def test_setup_script_is_executable():
-    assert os.access(SETUP_SCRIPT, os.X_OK), (
-        f"Setup script {SETUP_SCRIPT} is not executable."
+def test_pre_create_buckets():
+    prefix = _prefix()
+    env = _tigris_env()
+    
+    # Configure tigris CLI first
+    subprocess.run(
+        [
+            "tigris", "configure", 
+            "--access-key", env.get("TIGRIS_STORAGE_ACCESS_KEY_ID", ""), 
+            "--access-secret", env.get("TIGRIS_STORAGE_SECRET_ACCESS_KEY", ""), 
+            "--endpoint", "https://t3.storage.dev"
+        ],
+        capture_output=True,
+        text=True,
     )
 
+    all_buckets = [
+        f"{prefix}a",
+        f"{prefix}b",
+        f"{prefix}c",
+        f"harbor-other-{_read_trial_id()}-x",
+        f"harbor-other-{_read_trial_id()}-y",
+        f"harbor-other-{_read_trial_id()}-z",
+    ]
 
-def test_setup_script_references_required_buckets():
-    """The setup script must mention every bucket it is supposed to provision
-    so that running it produces the expected starting state."""
-    with open(SETUP_SCRIPT) as f:
-        content = f.read()
-    for bucket in [
-        "inv-bench-a",
-        "inv-bench-b",
-        "inv-bench-c",
-        "inv-other-x",
-        "inv-other-y",
-        "inv-other-z",
-    ]:
-        assert bucket in content, (
-            f"setup.sh must reference the bucket '{bucket}' so that "
-            "the initial state can be provisioned."
-        )
-    assert "tigris" in content, (
-        "setup.sh must invoke the tigris CLI to prepare the buckets."
-    )
-    assert "snapshots take" in content, (
-        "setup.sh must call 'tigris snapshots take' to pre-populate snapshots."
-    )
+    for bucket in all_buckets:
+        subprocess.run(["tigris", "buckets", "delete", bucket, "--yes"], capture_output=True, text=True, env=env)
+
+    import time
+    time.sleep(3)
+
+    # inv-bench-a (2 snapshots)
+    subprocess.run(["tigris", "buckets", "create", f"{prefix}a", "--enable-snapshots"], capture_output=True, text=True, env=env)
+    subprocess.run(["tigris", "snapshots", "take", f"{prefix}a", f"{prefix}a-s1"], capture_output=True, text=True, env=env)
+    time.sleep(1)
+    subprocess.run(["tigris", "snapshots", "take", f"{prefix}a", f"{prefix}a-s2"], capture_output=True, text=True, env=env)
+    time.sleep(1)
+
+    # inv-bench-b (1 snapshot)
+    subprocess.run(["tigris", "buckets", "create", f"{prefix}b", "--enable-snapshots"], capture_output=True, text=True, env=env)
+    subprocess.run(["tigris", "snapshots", "take", f"{prefix}b", f"{prefix}b-s1"], capture_output=True, text=True, env=env)
+    time.sleep(1)
+
+    # inv-bench-c (3 snapshots)
+    subprocess.run(["tigris", "buckets", "create", f"{prefix}c", "--enable-snapshots"], capture_output=True, text=True, env=env)
+    subprocess.run(["tigris", "snapshots", "take", f"{prefix}c", f"{prefix}c-s1"], capture_output=True, text=True, env=env)
+    time.sleep(1)
+    subprocess.run(["tigris", "snapshots", "take", f"{prefix}c", f"{prefix}c-s2"], capture_output=True, text=True, env=env)
+    time.sleep(1)
+    subprocess.run(["tigris", "snapshots", "take", f"{prefix}c", f"{prefix}c-s3"], capture_output=True, text=True, env=env)
+    time.sleep(1)
+
+    # inv-other-x (2 snapshots)
+    x = f"harbor-other-{_read_trial_id()}-x"
+    subprocess.run(["tigris", "buckets", "create", x, "--enable-snapshots"], capture_output=True, text=True, env=env)
+    subprocess.run(["tigris", "snapshots", "take", x, f"{x}-s1"], capture_output=True, text=True, env=env)
+    time.sleep(1)
+    subprocess.run(["tigris", "snapshots", "take", x, f"{x}-s2"], capture_output=True, text=True, env=env)
+    time.sleep(1)
+
+    # inv-other-y (0 snapshots)
+    y = f"harbor-other-{_read_trial_id()}-y"
+    subprocess.run(["tigris", "buckets", "create", y], capture_output=True, text=True, env=env)
+
+    # inv-other-z (0 snapshots)
+    z = f"harbor-other-{_read_trial_id()}-z"
+    subprocess.run(["tigris", "buckets", "create", z], capture_output=True, text=True, env=env)
 
 
 def test_index_js_does_not_exist_yet():

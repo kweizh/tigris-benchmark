@@ -24,6 +24,8 @@ Then execute the script once from `/home/user/tigris-task` so that the bucket, t
 
    trial_id = pathlib.Path("/logs/artifacts/trial_id").read_text().strip()
    bucket = f"harbor-boto3-{trial_id}"
+   import re
+   bucket = re.sub(r"[^a-z0-9.-]", "-", bucket.lower())
    key = "data/payload.json"
    payload = b'{"hello":"tigris"}'
 

@@ -3,18 +3,18 @@
 ## Background
 Release pipelines often need to capture a snapshot of an AI agent's data bucket at the exact moment a build is cut, then tag that snapshot with both the build identifier and a wall-clock timestamp. The Tigris Agent Kit `checkpoint` primitive accepts an optional `name` that maps directly onto the underlying snapshot label, which makes it the right tool for this job.
 
-A Tigris bucket named `agent-pipeline-data` already exists with snapshots enabled (a `setup.sh` script in the project directory provisions it before the task starts). A file `build_id.txt` at the root of the project contains the build identifier `v42`. Your job is to write a TypeScript program that reads the build id, takes a named checkpoint of the bucket, and records the result on disk.
+A Tigris bucket named `harbor-pipeline-${trial_id}` (where `${trial_id}` is read from `/logs/artifacts/trial_id`) already exists with snapshots enabled. A file `build_id.txt` at the root of the project contains the build identifier `v42`. Your job is to write a TypeScript program that reads the build id, takes a named checkpoint of the bucket, and records the result on disk.
 
 ## Requirements
 Write a TypeScript program at `/home/user/ckpt-tag/index.ts` that performs the following steps in order:
 
 1. **Read the build id**. Read the file `/home/user/ckpt-tag/build_id.txt` synchronously. The file contains a single line like `v42` (trim trailing whitespace/newlines before using the value).
 2. **Compute a unix timestamp**. Use `Math.floor(Date.now() / 1000)` to get the current unix timestamp in seconds.
-3. **Take a named checkpoint** of the bucket `agent-pipeline-data` using `@tigrisdata/agent-kit`:
+3. **Take a named checkpoint** of the bucket `harbor-pipeline-${trial_id}` (normalized to lowercase, invalid characters replaced with hyphens) using `@tigrisdata/agent-kit`:
    ```ts
    import { checkpoint } from "@tigrisdata/agent-kit";
    const name = `release-${buildId}-${unixTimestamp}`;
-   const { data: ckpt, error } = await checkpoint("agent-pipeline-data", { name });
+   const { data: ckpt, error } = await checkpoint(bucketName, { name });
    if (error) throw error;
    ```
    The name MUST be exactly `release-<buildId>-<unixTimestamp>` with no extra prefix/suffix. With the pre-provisioned `build_id.txt` containing `v42`, the name will match the regex `^release-v42-\d{10,}$`.
@@ -37,7 +37,7 @@ The script must exit with status 0 on success. Credentials are pre-provisioned i
 
 ## Constraints
 - Project path: `/home/user/ckpt-tag`
-- Source bucket name: `agent-pipeline-data` (already exists with snapshots enabled)
+- Source bucket name: dynamically constructed as `harbor-pipeline-${trial_id}`
 - Build id source: `/home/user/ckpt-tag/build_id.txt` (contains `v42`)
 - Checkpoint name format: `release-<buildId>-<unixTimestamp>` (must match regex `^release-v42-\d{10,}$`)
 - Output file: `/home/user/ckpt-tag/snapshot.json` with shape `{"snapshotId": "...", "name": "release-v42-<timestamp>"}`

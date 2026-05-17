@@ -3,7 +3,7 @@
 ## Background
 Tigris Agent Kit (`@tigrisdata/agent-kit`) exposes a `createForks` primitive that snapshots a source bucket once and provisions N copy-on-write fork buckets from that snapshot. This is the recommended pattern for fanning out the same starting dataset to multiple parallel agents without paying N times the storage cost.
 
-A source bucket has already been pre-seeded on the live Tigris service by the container's entrypoint script BEFORE the agent starts:
+A source bucket must be created with snapshots enabled and pre-seeded with an object BEFORE the agent starts:
 
 - Bucket name: `harbor-source-${trial_id}` (snapshots enabled), where `${trial_id}` is the content of `/logs/artifacts/trial_id` (newline-trimmed). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
 - Pre-seeded object: `seed/dataset.txt` with body bytes `initial` (no trailing newline).
@@ -14,8 +14,8 @@ Your job is to write a TypeScript program that uses Agent Kit to fork that sourc
 Write a TypeScript program at `/home/user/tigris-task/run.ts` that does ALL of the following, in order:
 
 1. Read the current trial id from `/logs/artifacts/trial_id` and `.trim()` it.
-2. Compute `sourceBucket = "harbor-source-${trial_id}"` and `forkPrefix = "harbor-fork-${trial_id}"`.
-3. Call `createForks(sourceBucket, 3, { prefix: forkPrefix })` from `@tigrisdata/agent-kit`. This must produce exactly 3 fork buckets named `harbor-fork-${trial_id}-0`, `harbor-fork-${trial_id}-1`, `harbor-fork-${trial_id}-2`.
+2. Compute `sourceBucket = "harbor-source-${trial_id}"` and `forkPrefix = "harbor-fork-${trial_id}"` (normalized to lowercase, invalid characters replaced with hyphens).
+3. Call `createForks(sourceBucket, 3, { prefix: forkPrefix })` from `@tigrisdata/agent-kit`. This must produce exactly 3 fork buckets named `harbor-fork-${trial_id}-0`, `harbor-fork-${trial_id}-1`, `harbor-fork-${trial_id}-2` (with `${trial_id}` normalized).
 4. Check the returned `TigrisResponse<Forks>` envelope for an `error` field and exit non-zero on failure.
 5. Using `@tigrisdata/storage`'s `put(key, body, { config: { bucket } })`, fan out IN PARALLEL with `Promise.all` to write the object `worker/output.txt` into each of the three fork buckets, where fork index `i` (0, 1, 2) receives the body bytes `worker-${i}` (e.g. fork `...-0` receives `worker-0`).
 6. Print the resulting fork bucket names to stdout (one per line, in `forks[]` order) so the run is auditable.
@@ -38,8 +38,8 @@ Run the program with `tsx /home/user/tigris-task/run.ts`. `tsx` is pre-installed
 ## Constraints
 - Project path: `/home/user/tigris-task`
 - Source file: `/home/user/tigris-task/run.ts`
-- Source bucket (created by the entrypoint script, do NOT re-create or delete): `harbor-source-${trial_id}`.
-- Fork bucket names (created by `createForks` via the `prefix` option): `harbor-fork-${trial_id}-0`, `harbor-fork-${trial_id}-1`, `harbor-fork-${trial_id}-2`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Source bucket (must be created with snapshots enabled and pre-seeded before the agent runs): `harbor-source-${trial_id}` (normalized).
+- Fork bucket names (created by `createForks` via the `prefix` option): `harbor-fork-${trial_id}-0`, `harbor-fork-${trial_id}-1`, `harbor-fork-${trial_id}-2` (normalized).
 - The three fork writes MUST happen in parallel via `Promise.all`. Sequential `for await` loops are not acceptable — the verifier will inspect `run.ts` for `Promise.all`.
 - Use `@tigrisdata/agent-kit`'s `createForks` exclusively for fork creation. Do not implement forking via `tigris buckets create` or raw S3 calls.
 - Use `@tigrisdata/storage`'s `put` for the per-fork writes. Do not shell out to the CLI for the worker writes.

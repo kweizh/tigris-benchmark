@@ -48,77 +48,6 @@ EOF
 
 RUN cd /home/user/inv && npm install --no-audit --no-fund
 
-# Ship the setup.sh helper that recreates the six buckets and their
-# snapshots at task start. It must run at runtime (not build time) because
-# the Tigris admin credentials are only available inside the running
-# container.
-RUN cat >/home/user/inv/setup.sh <<'EOF'
-#!/usr/bin/env bash
-set -euo pipefail
-
-ENDPOINT="${TIGRIS_STORAGE_ENDPOINT:-https://t3.storage.dev}"
-
-if [[ -z "${TIGRIS_STORAGE_ACCESS_KEY_ID:-}" || -z "${TIGRIS_STORAGE_SECRET_ACCESS_KEY:-}" ]]; then
-  echo "ERROR: TIGRIS_STORAGE_ACCESS_KEY_ID and TIGRIS_STORAGE_SECRET_ACCESS_KEY must be set." >&2
-  exit 1
-fi
-
-echo "[setup] Configuring tigris CLI..."
-tigris configure \
-  --access-key "${TIGRIS_STORAGE_ACCESS_KEY_ID}" \
-  --access-secret "${TIGRIS_STORAGE_SECRET_ACCESS_KEY}" \
-  --endpoint "${ENDPOINT}"
-
-ALL_BUCKETS=(inv-bench-a inv-bench-b inv-bench-c inv-other-x inv-other-y inv-other-z)
-
-echo "[setup] Tearing down any pre-existing buckets..."
-for bucket in "${ALL_BUCKETS[@]}"; do
-  tigris buckets delete "${bucket}" --yes >/dev/null 2>&1 || true
-done
-
-# Let deletions propagate before recreating.
-sleep 3
-
-echo "[setup] Creating snapshot-enabled bucket inv-bench-a (2 snapshots)..."
-tigris buckets create inv-bench-a --enable-snapshots
-tigris snapshots take inv-bench-a inv-bench-a-s1
-sleep 1
-tigris snapshots take inv-bench-a inv-bench-a-s2
-sleep 1
-
-echo "[setup] Creating snapshot-enabled bucket inv-bench-b (1 snapshot)..."
-tigris buckets create inv-bench-b --enable-snapshots
-tigris snapshots take inv-bench-b inv-bench-b-s1
-sleep 1
-
-echo "[setup] Creating snapshot-enabled bucket inv-bench-c (3 snapshots)..."
-tigris buckets create inv-bench-c --enable-snapshots
-tigris snapshots take inv-bench-c inv-bench-c-s1
-sleep 1
-tigris snapshots take inv-bench-c inv-bench-c-s2
-sleep 1
-tigris snapshots take inv-bench-c inv-bench-c-s3
-sleep 1
-
-echo "[setup] Creating distractor bucket inv-other-x (snapshot-enabled with 2 snapshots that must be ignored)..."
-tigris buckets create inv-other-x --enable-snapshots
-tigris snapshots take inv-other-x inv-other-x-s1
-sleep 1
-tigris snapshots take inv-other-x inv-other-x-s2
-sleep 1
-
-echo "[setup] Creating distractor bucket inv-other-y (no snapshots)..."
-tigris buckets create inv-other-y
-
-echo "[setup] Creating distractor bucket inv-other-z (no snapshots)..."
-tigris buckets create inv-other-z
-
-echo "[setup] Done. Final bucket list:"
-tigris buckets list --format json
-EOF
-
-RUN chmod +x /home/user/inv/setup.sh
-
 # Container contents:
 #   - Ubuntu 24.04 base with curl, wget, ca-certificates, git, python3,
 #     python3-pip, python3-pytest, bash, gnupg, and jq.
@@ -128,9 +57,7 @@ RUN chmod +x /home/user/inv/setup.sh
 #     TIGRIS_STORAGE_ACCESS_KEY_ID / TIGRIS_STORAGE_SECRET_ACCESS_KEY into
 #     the AWS_* variables used by the Tigris CLI.
 #   - /home/user/inv — pre-initialized project directory with package.json
-#     and node_modules containing @tigrisdata/agent-kit, plus an executable
-#     setup.sh that provisions the six buckets and their snapshots at task
-#     start (the build itself does not have Tigris credentials).
+#     and node_modules containing @tigrisdata/agent-kit.
 #   - /home/user/inv/index.js and /home/user/inv/inventory.json are
 #     intentionally absent — the user creates them as part of the task.
 

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import subprocess
 
@@ -7,7 +8,23 @@ import pytest
 
 PROJECT_DIR = "/home/user/lifecycle"
 LOCAL_FILE = os.path.join(PROJECT_DIR, "local.txt")
-BUCKET_NAME = "lifecycle-demo"
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
+
+
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive bucket name."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+
+def bucket_name():
+    trial_id = _read_trial_id()
+    name = f"harbor-lifecycle-{trial_id}"
+    return re.sub(r"[^a-z0-9.-]", "-", name.lower())
 
 
 def _tigris_env():
@@ -115,8 +132,9 @@ def test_target_bucket_does_not_yet_exist():
     else:
         buckets = payload
     bucket_names = [b.get("name") for b in buckets if isinstance(b, dict)]
-    assert BUCKET_NAME not in bucket_names, (
-        f"Bucket {BUCKET_NAME!r} unexpectedly already exists in the Tigris "
+    name = bucket_name()
+    assert name not in bucket_names, (
+        f"Bucket {name!r} unexpectedly already exists in the Tigris "
         f"organization before the task begins. Existing buckets: {bucket_names}"
     )
 

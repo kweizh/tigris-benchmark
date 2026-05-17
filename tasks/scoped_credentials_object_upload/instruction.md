@@ -5,11 +5,12 @@ Tigris Agent Kit (`@tigrisdata/agent-kit`) provisions per-agent buckets ("worksp
 
 ## Requirements
 - Write a TypeScript script at `/home/user/scoped-upload/index.ts` that:
-  1. Calls `createWorkspace` from `@tigrisdata/agent-kit` to provision a workspace named `scoped-upload-ws` with `credentials: { role: "Editor" }`.
-  2. Validates that both the bucket and scoped credentials are present in the response (throw a descriptive error otherwise).
-  3. Uses the AWS SDK for JavaScript v3 (`@aws-sdk/client-s3`) — configured with ONLY the scoped credentials from the workspace (NOT the admin `TIGRIS_STORAGE_ACCESS_KEY_ID`/`TIGRIS_STORAGE_SECRET_ACCESS_KEY` env vars) and the Tigris endpoint (`https://t3.storage.dev`, region `auto`) — to `PutObject` a file with key `greeting.txt` and body `hello scoped` into the workspace bucket.
-  4. Tears down the workspace at the end with `teardownWorkspace` so the bucket and scoped key are cleaned up.
-  5. On success, prints a final line `SCOPED_UPLOAD_OK <bucket-name>` to stdout (where `<bucket-name>` is the workspace bucket name).
+  1. Read the trial id from `/logs/artifacts/trial_id`. Construct a workspace name as `harbor-scoped-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the workspace name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+  2. Calls `createWorkspace` from `@tigrisdata/agent-kit` to provision the workspace with `credentials: { role: "Editor" }`.
+  3. Validates that both the bucket and scoped credentials are present in the response (throw a descriptive error otherwise).
+  4. Uses the AWS SDK for JavaScript v3 (`@aws-sdk/client-s3`) — configured with ONLY the scoped credentials from the workspace (NOT the admin `TIGRIS_STORAGE_ACCESS_KEY_ID`/`TIGRIS_STORAGE_SECRET_ACCESS_KEY` env vars) and the Tigris endpoint (`https://t3.storage.dev`, region `auto`) — to `PutObject` a file with key `greeting.txt` and body `hello scoped` into the workspace bucket.
+  5. Tears down the workspace at the end with `teardownWorkspace` so the bucket and scoped key are cleaned up.
+  6. On success, prints a final line `SCOPED_UPLOAD_OK <bucket-name>` to stdout (where `<bucket-name>` is the workspace bucket name).
 
 ## Implementation Guide
 1. Change into the project directory at `/home/user/scoped-upload`. The project already has `package.json`, `tsconfig.json`, and an installed local `node_modules` containing `@tigrisdata/agent-kit`, `@tigrisdata/cli`, `@aws-sdk/client-s3`, and `tsx`. You only need to create `index.ts`.
@@ -24,7 +25,7 @@ Tigris Agent Kit (`@tigrisdata/agent-kit`) provisions per-agent buckets ("worksp
 - Log file: `/home/user/scoped-upload/output.log`
 - Use ONLY the scoped workspace credentials with the AWS SDK upload — do not pass the admin Tigris env vars to the `S3Client` constructor.
 - Do not modify `package.json`, `tsconfig.json`, or `node_modules`.
-- Do not invent another workspace name — it must be exactly `scoped-upload-ws`.
+- Do not invent another workspace name — it must be exactly `harbor-scoped-${trial_id}` (normalized).
 
 ## Integrations
 - Tigris (real `@tigrisdata/agent-kit` API and `@tigrisdata/cli`; admin credentials provided via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).

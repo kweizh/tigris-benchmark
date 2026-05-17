@@ -61,27 +61,22 @@ def cleanup_bucket_after_tests():
 
 
 def _parse_ls_keys(stdout):
-    """Parse `tigris ls` text output into the set of object keys present.
-
-    The Tigris CLI's `ls` output format is a table with rows; the object key
-    is the last whitespace-separated token on each non-header line. We are
-    deliberately permissive: any non-empty token ending in `.txt` whose path
-    component contains a slash is treated as a candidate key. The verifier
-    then asserts on the SET of distinct keys observed.
-    """
+    """Parse `tigris ls` text output into the set of object keys present."""
     keys = set()
     for raw in stdout.splitlines():
         line = raw.strip()
         if not line:
             continue
-        # Skip obvious table headers / separators.
-        lowered = line.lower()
-        if lowered.startswith("key") or set(line) <= set("-+ |"):
-            continue
-        # Last whitespace-separated token is typically the object key.
-        token = line.split()[-1]
-        if "/" in token and token.endswith(".txt"):
-            keys.add(token)
+        if "│" in line:
+            parts = line.split("│")
+            if len(parts) > 1:
+                key = parts[1].strip()
+                if key.endswith(".txt"):
+                    keys.add(key)
+        else:
+            token = line.split()[-1]
+            if token.endswith(".txt"):
+                keys.add(token)
     return keys
 
 

@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -9,7 +10,23 @@ import pytest
 PROJECT_DIR = "/home/user/seeded-fork"
 NODE_MODULES = os.path.join(PROJECT_DIR, "node_modules")
 DATA_DIR = os.path.join(PROJECT_DIR, "data")
-SETUP_SH = os.path.join(PROJECT_DIR, "setup.sh")
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
+
+
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive bucket name."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+
+def bucket_name():
+    trial_id = _read_trial_id()
+    name = f"harbor-seeded-{trial_id}"
+    return re.sub(r"[^a-z0-9.-]", "-", name.lower())
 
 
 def test_node_binary_available():
@@ -130,13 +147,59 @@ def test_data_files_exist():
         )
 
 
-def test_setup_sh_exists_and_is_executable():
-    assert os.path.isfile(SETUP_SH), (
-        f"Task setup script {SETUP_SH} does not exist."
+def _tigris_env():
+    env = os.environ.copy()
+    access = env.get("TIGRIS_STORAGE_ACCESS_KEY_ID", "")
+    secret = env.get("TIGRIS_STORAGE_SECRET_ACCESS_KEY", "")
+    env["AWS_ACCESS_KEY_ID"] = access
+    env["AWS_SECRET_ACCESS_KEY"] = secret
+    env["AWS_REGION"] = "auto"
+    env["AWS_DEFAULT_REGION"] = "auto"
+    return env
+
+
+def test_pre_create_bucket():
+    """Pre-create the empty bucket using the dynamically constructed name with snapshots enabled."""
+    name = bucket_name()
+    env = _tigris_env()
+    
+    # Configure tigris CLI first
+    subprocess.run(
+        [
+            "tigris", "configure", 
+            "--access-key", env.get("TIGRIS_STORAGE_ACCESS_KEY_ID", ""), 
+            "--access-secret", env.get("TIGRIS_STORAGE_SECRET_ACCESS_KEY", ""), 
+            "--endpoint", "https://t3.storage.dev"
+        ],
+        capture_output=True,
+        text=True,
     )
-    assert os.access(SETUP_SH, os.X_OK), (
-        f"Task setup script {SETUP_SH} must be executable."
+
+    # Create the bucket with snapshots enabled if it does not already exist
+    check = subprocess.run(
+        ["tigris", "buckets", "get", name],
+        capture_output=True,
+        text=True,
+        env=env,
     )
+    if check.returncode == 0:
+        # Ensure snapshots are enabled
+        subprocess.run(
+            ["tigris", "buckets", "set", name, "--enable-snapshots"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+    else:
+        create = subprocess.run(
+            ["tigris", "buckets", "create", name, "--enable-snapshots"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        assert create.returncode == 0, (
+            f"Failed to create bucket {name}: {create.stderr}"
+        )
 
 
 def test_index_ts_does_not_exist_yet():

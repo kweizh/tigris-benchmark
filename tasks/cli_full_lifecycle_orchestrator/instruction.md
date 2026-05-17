@@ -8,11 +8,11 @@ Snapshots MUST be enabled at bucket-creation time (the `--enable-snapshots` flag
 ## Requirements
 Write a single bash script at `/home/user/lifecycle/run.sh` that, **using ONLY the Tigris CLI (`tigris`)**, performs the following steps in order:
 
-1. Creates a bucket named `lifecycle-demo` with snapshots enabled at creation time.
-2. Uploads the file `/home/user/lifecycle/local.txt` (already present in the project directory) into the bucket as the object key `seed.txt`.
+1. Read the trial id from `/logs/artifacts/trial_id`. Construct a bucket name as `harbor-lifecycle-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens. Create this bucket with snapshots enabled at creation time.
+2. Upload the file `/home/user/lifecycle/local.txt` (already present in the project directory) into the bucket as the object key `seed.txt`.
 3. Takes a named snapshot of the bucket called `state-A`.
 4. Lists every snapshot of the bucket and writes the snapshot `version` IDs — one per line — to `/home/user/lifecycle/snapshots.txt`. The file must contain at least one snapshot version line.
-5. Deletes the bucket `lifecycle-demo` as a final cleanup step so subsequent runs are repeatable.
+5. Deletes the bucket as a final cleanup step so subsequent runs are repeatable.
 
 The script must exit with status `0` on success. The verifier will invoke it as `bash run.sh` from `/home/user/lifecycle`.
 
@@ -22,15 +22,15 @@ The script must exit with status `0` on success. The verifier will invoke it as 
 3. The container's login shell sources `/etc/profile.d/tigris-auth.sh`, which maps `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` onto `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` (and `AWS_REGION=auto`). When invoked via `bash run.sh` (a non-login shell) you should explicitly source it at the top of your script or export the AWS-compatible variables yourself before running `tigris` commands.
 4. Use the CLI commands listed below — they are the canonical surface for this workflow:
    ```bash
-   tigris buckets create lifecycle-demo --enable-snapshots
-   tigris objects put lifecycle-demo seed.txt /home/user/lifecycle/local.txt
-   tigris snapshots take lifecycle-demo state-A
-   tigris snapshots list lifecycle-demo --format json   # parse versions
-   tigris buckets delete lifecycle-demo --yes
+   tigris buckets create harbor-lifecycle-${trial_id} --enable-snapshots
+   tigris objects put harbor-lifecycle-${trial_id} seed.txt /home/user/lifecycle/local.txt
+   tigris snapshots take harbor-lifecycle-${trial_id} state-A
+   tigris snapshots list harbor-lifecycle-${trial_id} --format json   # parse versions
+   tigris buckets delete harbor-lifecycle-${trial_id} --yes
    ```
 5. Parse the `tigris snapshots list ... --format json` output to extract every `version` value (one per line) and write them to `/home/user/lifecycle/snapshots.txt`. `jq` is preinstalled in the environment, e.g.
    ```bash
-   tigris snapshots list lifecycle-demo --format json \
+   tigris snapshots list harbor-lifecycle-${trial_id} --format json \
      | jq -r '.snapshots[].version' >/home/user/lifecycle/snapshots.txt
    ```
 6. Make `run.sh` executable (`chmod +x run.sh`) — although the verifier runs it as `bash run.sh`, leaving the execute bit on is good hygiene.
@@ -39,12 +39,12 @@ The script must exit with status `0` on success. The verifier will invoke it as 
 - Project path: `/home/user/lifecycle`
 - Script path (fixed): `/home/user/lifecycle/run.sh`
 - Snapshot file path (fixed): `/home/user/lifecycle/snapshots.txt`
-- Bucket name (fixed): `lifecycle-demo`
+- Bucket name: dynamically constructed as `harbor-lifecycle-${trial_id}`
 - Object key (fixed): `seed.txt`
 - Snapshot name (fixed): `state-A`
 - Source file to upload (fixed, already present on disk): `/home/user/lifecycle/local.txt`
 - The script MUST use only the Tigris CLI (`tigris`) for all bucket / object / snapshot operations — do NOT call raw S3 / HTTP APIs or other SDKs.
-- The script MUST delete the bucket at the end (cleanup). After the script exits, `tigris buckets list` must no longer show `lifecycle-demo`.
+- The script MUST delete the bucket at the end (cleanup). After the script exits, `tigris buckets list` must no longer show the bucket.
 - The script MUST exit with status `0` on success.
 - Snapshots MUST be enabled at creation time using `--enable-snapshots`; enabling snapshots on an existing bucket is not supported.
 

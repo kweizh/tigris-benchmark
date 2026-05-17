@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -8,8 +9,23 @@ import pytest
 PROJECT_DIR = "/home/user/scoped-upload"
 INDEX_TS = os.path.join(PROJECT_DIR, "index.ts")
 OUTPUT_LOG = os.path.join(PROJECT_DIR, "output.log")
-WORKSPACE_BUCKET = "scoped-upload-ws"
-SUCCESS_MARKER = f"SCOPED_UPLOAD_OK {WORKSPACE_BUCKET}"
+TRIAL_ID_FILE = "/logs/artifacts/trial_id"
+
+
+def _read_trial_id():
+    assert os.path.isfile(TRIAL_ID_FILE), (
+        f"Trial id file {TRIAL_ID_FILE} does not exist; cannot derive workspace name."
+    )
+    with open(TRIAL_ID_FILE, "r") as f:
+        trial_id = f.read().strip()
+    assert trial_id, f"Trial id file {TRIAL_ID_FILE} is empty."
+    return trial_id
+
+
+def workspace_bucket():
+    trial_id = _read_trial_id()
+    name = f"harbor-scoped-{trial_id}"
+    return re.sub(r"[^a-z0-9.-]", "-", name.lower())
 
 
 def _tigris_cmd():
@@ -68,8 +84,11 @@ def test_script_runs_successfully_and_emits_success_marker():
         f"'npx tsx index.ts' exited with {result.returncode}. "
         f"Output:\n{log_contents}"
     )
-    assert SUCCESS_MARKER in log_contents, (
-        f"Expected success marker '{SUCCESS_MARKER}' in script output. "
+    
+    bucket = workspace_bucket()
+    success_marker = f"SCOPED_UPLOAD_OK {bucket}"
+    assert success_marker in log_contents, (
+        f"Expected success marker '{success_marker}' in script output. "
         f"Got:\n{log_contents}"
     )
 
@@ -89,12 +108,13 @@ def test_workspace_bucket_torn_down():
     # The workspace bucket name should be absent because teardownWorkspace
     # deleted it. We assert the exact bucket token does not appear as a
     # listed bucket.
+    bucket = workspace_bucket()
     for line in combined.splitlines():
         # Split on whitespace and compare exact tokens to avoid spurious
         # substring matches.
         tokens = line.strip().split()
-        assert WORKSPACE_BUCKET not in tokens, (
-            f"Workspace bucket '{WORKSPACE_BUCKET}' still appears in "
+        assert bucket not in tokens, (
+            f"Workspace bucket '{bucket}' still appears in "
             f"'tigris bucket list' output — teardownWorkspace did not run. "
             f"Full output:\n{combined}"
         )

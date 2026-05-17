@@ -3,38 +3,34 @@
 ## Background
 The Tigris Agent Kit provisions and manages many short-lived buckets on the Tigris control plane. Operators frequently need a quick "what do I currently own?" report — specifically, which evaluation buckets exist and how many point-in-time snapshots each one has. The Tigris CLI (`@tigrisdata/cli`) exposes both pieces via `tigris buckets list --format json` and `tigris snapshots list <bucket> --format json`. Each snapshot has a unique `version` string (a UNIX nanosecond-precision timestamp) that doubles as an ascending creation-time ordering key.
 
-For this task an operator has primed the Tigris account with six buckets. Three of them are evaluation buckets whose names begin with the prefix `inv-bench-` (and have snapshots enabled); the others have unrelated names and are owned by a separate workflow that must NOT be touched. A helper script `/home/user/inv/setup.sh` is already on disk — it reads the admin Tigris credentials from the environment and recreates all six buckets along with the right number of named snapshots. You must run that script first, then write a Node.js program that walks the account, filters by the `inv-bench-` prefix, gathers every snapshot version per bucket, persists the result as JSON, and prints a one-line summary.
+For this task an operator has primed the Tigris account with six buckets. Three of them are evaluation buckets whose names begin with the prefix `harbor-inv-${trial_id}-` (and have snapshots enabled); the others have unrelated names and are owned by a separate workflow that must NOT be touched. You must write a Node.js program that walks the account, filters by the `harbor-inv-${trial_id}-` prefix, gathers every snapshot version per bucket, persists the result as JSON, and prints a one-line summary.
 
 ## Requirements
-1. Run the helper `bash /home/user/inv/setup.sh` from inside `/home/user/inv` to (re)create the six buckets and pre-populate them with snapshots. The script is idempotent and must complete successfully (exit status 0).
-2. Implement a Node.js program at `/home/user/inv/index.js` that, **when invoked with `node index.js` from `/home/user/inv`**, performs the following steps:
-   1. Shells out to the Tigris CLI to obtain the list of buckets visible to the current credentials using `tigris buckets list --format json`.
-   2. Filters the bucket list down to exactly the buckets whose name **starts with** the literal prefix `inv-bench-`. Buckets with any other name MUST be ignored.
-   3. For each filtered bucket, shells out to `tigris snapshots list <bucket> --format json` and collects every snapshot's `version` field.
-   4. Sorts the snapshot version IDs for each bucket in **ascending creation-time order** (i.e. oldest first). Because each `version` is a UNIX nanosecond timestamp, ascending lexicographic / numeric sort matches ascending creation time.
-   5. Aggregates the result into a JSON object whose keys are bucket names and whose values are the sorted array of snapshot version IDs (strings).
-   6. Writes the aggregated object to `/home/user/inv/inventory.json` as pretty-printed JSON (a trailing newline is allowed).
-   7. Writes exactly one summary line to stdout of the form `<bucketCount> buckets, <snapshotTotal> snapshots` where `<bucketCount>` is the number of `inv-bench-*` buckets included and `<snapshotTotal>` is the sum of every snapshot count.
-3. The program MUST exit with status 0 on success.
+1. Implement a Node.js program at `/home/user/inv/index.js` that, **when invoked with `node index.js` from `/home/user/inv`**, performs the following steps:
+   1. Read the trial id from `/logs/artifacts/trial_id`. Construct the prefix as `harbor-inv-${trial_id}-` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the prefix by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+   2. Shells out to the Tigris CLI to obtain the list of buckets visible to the current credentials using `tigris buckets list --format json`.
+   3. Filters the bucket list down to exactly the buckets whose name **starts with** the normalized prefix. Buckets with any other name MUST be ignored.
+   4. For each filtered bucket, shells out to `tigris snapshots list <bucket> --format json` and collects every snapshot's `version` field.
+   5. Sorts the snapshot version IDs for each bucket in **ascending creation-time order** (i.e. oldest first). Because each `version` is a UNIX nanosecond timestamp, ascending lexicographic / numeric sort matches ascending creation time.
+   6. Aggregates the result into a JSON object whose keys are bucket names and whose values are the sorted array of snapshot version IDs (strings).
+   7. Writes the aggregated object to `/home/user/inv/inventory.json` as pretty-printed JSON (a trailing newline is allowed).
+   8. Writes exactly one summary line to stdout of the form `<bucketCount> buckets, <snapshotTotal> snapshots` where `<bucketCount>` is the number of `harbor-inv-${trial_id}-*` buckets included and `<snapshotTotal>` is the sum of every snapshot count.
+2. The program MUST exit with status 0 on success.
 
 ## Implementation Guide
 1. Change into the project directory: `cd /home/user/inv`.
-2. Prepare the account by running `bash setup.sh`. The script will:
-   * Configure the Tigris CLI persistently using the admin credentials from the environment.
-   * Delete any pre-existing `inv-bench-*` and `inv-other-*` buckets that linger from previous runs.
-   * Create three snapshot-enabled buckets `inv-bench-a`, `inv-bench-b`, `inv-bench-c` and take 2, 1, and 3 named snapshots on them respectively.
-   * Create three additional buckets with names that do NOT start with `inv-bench-` (`inv-other-x`, `inv-other-y`, `inv-other-z`); one of them is snapshot-enabled with snapshots taken to make sure your filter rejects it.
-3. Implement `/home/user/inv/index.js`. A reasonable structure (you do not have to match it verbatim):
+2. Implement `/home/user/inv/index.js`. A reasonable structure (you do not have to match it verbatim):
    ```js
    import { execFileSync } from "node:child_process";
-   import { writeFileSync } from "node:fs";
+   import { readFileSync, writeFileSync } from "node:fs";
 
    function tigrisJSON(args) {
      const stdout = execFileSync("tigris", args, { encoding: "utf8" });
      return JSON.parse(stdout);
    }
 
-   const PREFIX = "inv-bench-";
+   const trialId = readFileSync("/logs/artifacts/trial_id", "utf8").trim();
+   const PREFIX = `harbor-inv-${trialId}-`.toLowerCase().replace(/[^a-z0-9.-]/g, "-");
 
    const bucketsPayload = tigrisJSON(["buckets", "list", "--format", "json"]);
    const allBuckets = Array.isArray(bucketsPayload)
@@ -58,7 +54,7 @@ For this task an operator has primed the Tigris account with six buckets. Three 
    writeFileSync("/home/user/inv/inventory.json", JSON.stringify(inventory, null, 2) + "\n");
    console.log(`${targetNames.length} buckets, ${total} snapshots`);
    ```
-4. Run your script:
+3. Run your script:
    ```bash
    node /home/user/inv/index.js
    ```
@@ -68,10 +64,9 @@ For this task an operator has primed the Tigris account with six buckets. Three 
 - Project path: `/home/user/inv`
 - Entrypoint script (the one you write): `/home/user/inv/index.js`
 - Output JSON (the one you write): `/home/user/inv/inventory.json`
-- Setup script (already provided, do NOT modify): `/home/user/inv/setup.sh`
-- Bucket prefix to include: `inv-bench-` (must be matched literally with `String.startsWith`).
+- Bucket prefix to include: dynamically constructed as `harbor-inv-${trial_id}-` (must be matched literally with `String.startsWith`).
 - Use the real Tigris CLI (`@tigrisdata/cli`) against the live Tigris control plane via Node's `child_process` APIs. Do not invent fake data and do not use the AWS S3 API directly.
-- The admin credentials are available as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` in the environment, but `setup.sh` already persists them into `~/.tigris/config.json` via `tigris configure`, so subsequent `tigris` invocations from inside Node work without any extra wiring.
+- The admin credentials are available as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` in the environment, but the environment already persists them into `~/.tigris/config.json` via `tigris configure`, so subsequent `tigris` invocations from inside Node work without any extra wiring.
 
 ## Integrations
 - Tigris Object Storage (admin credentials `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` are injected into both the task and verifier environments).

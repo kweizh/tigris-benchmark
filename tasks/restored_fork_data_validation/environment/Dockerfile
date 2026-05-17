@@ -29,7 +29,7 @@ RUN mkdir -p /home/user/restore-validate && \
   "dependencies": {
     "@aws-sdk/client-s3": "^3.658.0",
     "@tigrisdata/agent-kit": "^0.1.0",
-    "@tigrisdata/cli": "^1.0.0",
+    "@tigrisdata/cli": "2.18.0",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   }
