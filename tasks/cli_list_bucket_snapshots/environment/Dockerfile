@@ -5,7 +5,7 @@ RUN apt-get update -y && \
         curl wget ca-certificates git python3 python3-pip python3-pytest bash jq && \
     curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install -y --no-install-recommends nodejs && \
-    npm install -g @tigrisdata/cli && \
+    npm install -g @tigrisdata/cli@2.18.0 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
