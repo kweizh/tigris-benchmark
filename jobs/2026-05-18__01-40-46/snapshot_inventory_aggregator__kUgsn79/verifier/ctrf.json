@@ -1,0 +1,83 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 3,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779041108.6970026,
+            "stop": 1779041120.987718
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_tigris_cli_available",
+                "status": "passed",
+                "duration": 0.0006721909157931805,
+                "start": 1779041108.7189894,
+                "stop": 1779041108.7198718,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_js_authored_by_user",
+                "status": "passed",
+                "duration": 0.00044166669249534607,
+                "start": 1779041108.7200732,
+                "stop": 1779041108.7206502,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_node_script_runs_and_prints_summary",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 4.724152799230069,
+                "start": 1779041108.7208219,
+                "stop": 1779041113.461824,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_node_script_runs_and_prints_summary():\n        \"\"\"Priority 1: Re-run the user's script and assert exit code + stdout\n        summary line. This also (re)produces /home/user/inv/inventory.json.\"\"\"\n        assert os.path.isfile(INDEX_JS), (\n            f\"Expected user-authored script at {INDEX_JS}; run cannot proceed.\"\n        )\n        result = subprocess.run(\n            [\"node\", \"index.js\"],\n            capture_output=True,\n            text=True,\n            cwd=PROJECT_DIR,\n            env=_tigris_env(),\n            timeout=180,\n        )\n        assert result.returncode == 0, (\n            f\"'node index.js' failed with returncode {result.returncode}. \"\n            f\"stdout={result.stdout!r}, stderr={result.stderr!r}\"\n        )\n        expected = f\"{EXPECTED_BUCKET_COUNT} buckets, {EXPECTED_TOTAL} snapshots\"\n>       assert expected in result.stdout, (\n            f\"Expected stdout of 'node index.js' to contain {expected!r}, \"\n            f\"but it did not. Full stdout: {result.stdout!r}\"\n        )\nE       AssertionError: Expected stdout of 'node index.js' to contain '3 buckets, 6 snapshots', but it did not. Full stdout: '3 buckets, 0 snapshots\\n'\nE       assert '3 buckets, 6 snapshots' in '3 buckets, 0 snapshots\\n'\nE        +  where '3 buckets, 0 snapshots\\n' = CompletedProcess(args=['node', 'index.js'], returncode=0, stdout='3 buckets, 0 snapshots\\n', stderr='').stdout\n\ntests/test_final_state.py:162: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_inventory_file_exists_after_run",
+                "status": "passed",
+                "duration": 0.0004090452566742897,
+                "start": 1779041113.4620328,
+                "stop": 1779041113.462571,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_inventory_file_has_correct_keys_and_counts",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0007768538780510426,
+                "start": 1779041113.46274,
+                "stop": 1779041113.4683955,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_inventory_file_has_correct_keys_and_counts():\n        \"\"\"The aggregated inventory must list exactly the three harbor-inv-*\n        buckets with the expected snapshot counts.\"\"\"\n        with open(INVENTORY_FILE) as f:\n            try:\n                inventory = json.load(f)\n            except json.JSONDecodeError as exc:\n                pytest.fail(\n                    f\"{INVENTORY_FILE} is not valid JSON: {exc!s}.\"\n                )\n        assert isinstance(inventory, dict), (\n            f\"{INVENTORY_FILE} must be a JSON object keyed by bucket name. \"\n            f\"Got: {type(inventory).__name__}\"\n        )\n        actual_keys = set(inventory.keys())\n        expected_counts = _expected_counts()\n        expected_keys = set(expected_counts.keys())\n        assert actual_keys == expected_keys, (\n            f\"{INVENTORY_FILE} must have exactly the keys {sorted(expected_keys)}, \"\n            f\"but it has {sorted(actual_keys)}. Distractor buckets (harbor-other-*) \"\n            \"must be filtered out.\"\n        )\n        total = 0\n        for bucket, expected_count in expected_counts.items():\n            value = inventory[bucket]\n            assert isinstance(value, list), (\n                f\"inventory.json[{bucket!r}] must be a list of snapshot version \"\n                f\"strings, got: {type(value).__name__}\"\n            )\n            for v in value:\n                assert isinstance(v, str) and v, (\n                    f\"Each snapshot version under inventory.json[{bucket!r}] \"\n                    f\"must be a non-empty string, got: {v!r}\"\n                )\n>           assert len(value) == expected_count, (\n                f\"inventory.json[{bucket!r}] must list {expected_count} \"\n                f\"snapshot version(s); got {len(value)}: {value!r}\"\n            )\nE           AssertionError: inventory.json['harbor-inv-snapshot-inventory-aggregator--kugsn79-a'] must list 2 snapshot version(s); got 0: []\nE           assert 0 == 2\nE            +  where 0 = len([])\n\ntests/test_final_state.py:208: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_inventory_versions_match_cli_truth",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 7.496078981086612,
+                "start": 1779041113.468579,
+                "stop": 1779041120.9874585,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "bucket = 'harbor-inv-snapshot-inventory-aggregator--kugsn79-a'\n\n    def _list_snapshot_versions(bucket):\n        \"\"\"Return the set of snapshot version strings for `bucket` as reported by\n        `tigris snapshots list <bucket> --format json`.\"\"\"\n        result = _run_tigris(\n            [\"snapshots\", \"list\", bucket, \"--format\", \"json\"], timeout=120\n        )\n        assert result.returncode == 0, (\n            f\"'tigris snapshots list {bucket} --format json' failed: \"\n            f\"returncode={result.returncode}, stdout={result.stdout!r}, \"\n            f\"stderr={result.stderr!r}\"\n        )\n        try:\n>           payload = json.loads(result.stdout)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_final_state.py:93: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nusr/lib/python3.12/json/__init__.py:346: in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nusr/lib/python3.12/json/decoder.py:337: in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <json.decoder.JSONDecoder object at 0x7e68b8e16270>, s = '', idx = 0\n\n    def raw_decode(self, s, idx=0):\n        \"\"\"Decode a JSON document from ``s`` (a ``str`` beginning with\n        a JSON document) and return a 2-tuple of the Python\n        representation and the index in ``s`` where the document ended.\n    \n        This can be used to decode a JSON document from a string that may\n        have extraneous data at the end.\n    \n        \"\"\"\n        try:\n            obj, end = self.scan_once(s, idx)\n        except StopIteration as err:\n>           raise JSONDecodeError(\"Expecting value\", s, err.value) from None\nE           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)\n\nusr/lib/python3.12/json/decoder.py:355: JSONDecodeError\n\nDuring handling of the above exception, another exception occurred:\n\n    def test_inventory_versions_match_cli_truth():\n        \"\"\"Priority 1: For every harbor-inv-* bucket, the snapshot version IDs\n        recorded in inventory.json must equal the version IDs reported by the\n        live Tigris CLI for that bucket.\"\"\"\n        with open(INVENTORY_FILE) as f:\n            inventory = json.load(f)\n        for bucket in _expected_counts():\n            recorded = set(inventory.get(bucket) or [])\n>           truth = _list_snapshot_versions(bucket)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_final_state.py:227: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nbucket = 'harbor-inv-snapshot-inventory-aggregator--kugsn79-a'\n\n    def _list_snapshot_versions(bucket):\n        \"\"\"Return the set of snapshot version strings for `bucket` as reported by\n        `tigris snapshots list <bucket> --format json`.\"\"\"\n        result = _run_tigris(\n            [\"snapshots\", \"list\", bucket, \"--format\", \"json\"], timeout=120\n        )\n        assert result.returncode == 0, (\n            f\"'tigris snapshots list {bucket} --format json' failed: \"\n            f\"returncode={result.returncode}, stdout={result.stdout!r}, \"\n            f\"stderr={result.stderr!r}\"\n        )\n        try:\n            payload = json.loads(result.stdout)\n        except json.JSONDecodeError as exc:\n>           pytest.fail(\n                f\"'tigris snapshots list {bucket} --format json' did not emit \"\n                f\"valid JSON: {exc!s}; stdout={result.stdout!r}\"\n            )\nE           Failed: 'tigris snapshots list harbor-inv-snapshot-inventory-aggregator--kugsn79-a --format json' did not emit valid JSON: Expecting value: line 1 column 1 (char 0); stdout=''\n\ntests/test_final_state.py:95: Failed",
+                "message": "The test failed in the call phase"
+            }
+        ]
+    }
+}

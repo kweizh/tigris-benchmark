@@ -1,0 +1,8 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /bootstrap
+collected 9 items
+
+bootstrap/test_initial_state.py .........                                [100%]
+
+============================== 9 passed in 3.13s ===============================

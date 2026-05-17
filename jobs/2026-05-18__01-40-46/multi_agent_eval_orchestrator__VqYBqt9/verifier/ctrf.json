@@ -1,0 +1,89 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 1,
+            "failed": 6,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779040550.894664,
+            "stop": 1779040561.594482
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_created",
+                "status": "passed",
+                "duration": 0.000571093987673521,
+                "start": 1779040550.916859,
+                "stop": 1779040550.917687,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_orchestrator_exits_zero",
+                "status": "failed",
+                "duration": 10.621761134825647,
+                "start": 1779040550.91792,
+                "stop": 1779040561.5601616,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def run_user_script():\n        \"\"\"Priority 1: Execute the user's orchestrator end-to-end against real\n        Tigris. The fixture defensively re-runs setup.sh first so the gold dataset\n        bucket is guaranteed to exist with the canonical prompts.\"\"\"\n    \n        # Best-effort cleanup of any prior outputs.\n        for path in (AGGREGATED_JSON, OUTPUT_LOG):\n            if os.path.exists(path):\n                try:\n                    os.remove(path)\n                except OSError:\n                    pass\n    \n        # Defensive: ensure the gold-eval-dataset bucket exists and is freshly\n        # seeded before invoking the user's orchestrator.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SH],\n            cwd=PROJECT_DIR,\n            capture_output=True,\n            text=True,\n            env=os.environ.copy(),\n            timeout=300,\n        )\n        if setup_result.returncode != 0:\n>           pytest.fail(\n                f\"setup.sh failed before running the orchestrator. \"\n                f\"stdout={setup_result.stdout!r} stderr={setup_result.stderr!r}\"\n            )\nE           Failed: setup.sh failed before running the orchestrator. stdout='' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\n\ntests/test_final_state.py:84: Failed"
+            },
+            {
+                "name": "test_final_state.py::test_aggregated_json_top_level_shape",
+                "status": "failed",
+                "duration": 0.00040367478504776955,
+                "start": 1779040561.560437,
+                "stop": 1779040561.5672405,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def run_user_script():\n        \"\"\"Priority 1: Execute the user's orchestrator end-to-end against real\n        Tigris. The fixture defensively re-runs setup.sh first so the gold dataset\n        bucket is guaranteed to exist with the canonical prompts.\"\"\"\n    \n        # Best-effort cleanup of any prior outputs.\n        for path in (AGGREGATED_JSON, OUTPUT_LOG):\n            if os.path.exists(path):\n                try:\n                    os.remove(path)\n                except OSError:\n                    pass\n    \n        # Defensive: ensure the gold-eval-dataset bucket exists and is freshly\n        # seeded before invoking the user's orchestrator.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SH],\n            cwd=PROJECT_DIR,\n            capture_output=True,\n            text=True,\n            env=os.environ.copy(),\n            timeout=300,\n        )\n        if setup_result.returncode != 0:\n>           pytest.fail(\n                f\"setup.sh failed before running the orchestrator. \"\n                f\"stdout={setup_result.stdout!r} stderr={setup_result.stderr!r}\"\n            )\nE           Failed: setup.sh failed before running the orchestrator. stdout='' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\n\ntests/test_final_state.py:84: Failed"
+            },
+            {
+                "name": "test_final_state.py::test_aggregated_inner_shape_and_answers",
+                "status": "failed",
+                "duration": 0.0003444347530603409,
+                "start": 1779040561.5675285,
+                "stop": 1779040561.5734522,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def run_user_script():\n        \"\"\"Priority 1: Execute the user's orchestrator end-to-end against real\n        Tigris. The fixture defensively re-runs setup.sh first so the gold dataset\n        bucket is guaranteed to exist with the canonical prompts.\"\"\"\n    \n        # Best-effort cleanup of any prior outputs.\n        for path in (AGGREGATED_JSON, OUTPUT_LOG):\n            if os.path.exists(path):\n                try:\n                    os.remove(path)\n                except OSError:\n                    pass\n    \n        # Defensive: ensure the gold-eval-dataset bucket exists and is freshly\n        # seeded before invoking the user's orchestrator.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SH],\n            cwd=PROJECT_DIR,\n            capture_output=True,\n            text=True,\n            env=os.environ.copy(),\n            timeout=300,\n        )\n        if setup_result.returncode != 0:\n>           pytest.fail(\n                f\"setup.sh failed before running the orchestrator. \"\n                f\"stdout={setup_result.stdout!r} stderr={setup_result.stderr!r}\"\n            )\nE           Failed: setup.sh failed before running the orchestrator. stdout='' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\n\ntests/test_final_state.py:84: Failed"
+            },
+            {
+                "name": "test_final_state.py::test_fork_and_writer_buckets_torn_down",
+                "status": "failed",
+                "duration": 0.00037097325548529625,
+                "start": 1779040561.5737064,
+                "stop": 1779040561.580549,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def run_user_script():\n        \"\"\"Priority 1: Execute the user's orchestrator end-to-end against real\n        Tigris. The fixture defensively re-runs setup.sh first so the gold dataset\n        bucket is guaranteed to exist with the canonical prompts.\"\"\"\n    \n        # Best-effort cleanup of any prior outputs.\n        for path in (AGGREGATED_JSON, OUTPUT_LOG):\n            if os.path.exists(path):\n                try:\n                    os.remove(path)\n                except OSError:\n                    pass\n    \n        # Defensive: ensure the gold-eval-dataset bucket exists and is freshly\n        # seeded before invoking the user's orchestrator.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SH],\n            cwd=PROJECT_DIR,\n            capture_output=True,\n            text=True,\n            env=os.environ.copy(),\n            timeout=300,\n        )\n        if setup_result.returncode != 0:\n>           pytest.fail(\n                f\"setup.sh failed before running the orchestrator. \"\n                f\"stdout={setup_result.stdout!r} stderr={setup_result.stderr!r}\"\n            )\nE           Failed: setup.sh failed before running the orchestrator. stdout='' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\n\ntests/test_final_state.py:84: Failed"
+            },
+            {
+                "name": "test_final_state.py::test_gold_dataset_still_has_prompts",
+                "status": "failed",
+                "duration": 0.0004119747318327427,
+                "start": 1779040561.5808606,
+                "stop": 1779040561.58731,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def run_user_script():\n        \"\"\"Priority 1: Execute the user's orchestrator end-to-end against real\n        Tigris. The fixture defensively re-runs setup.sh first so the gold dataset\n        bucket is guaranteed to exist with the canonical prompts.\"\"\"\n    \n        # Best-effort cleanup of any prior outputs.\n        for path in (AGGREGATED_JSON, OUTPUT_LOG):\n            if os.path.exists(path):\n                try:\n                    os.remove(path)\n                except OSError:\n                    pass\n    \n        # Defensive: ensure the gold-eval-dataset bucket exists and is freshly\n        # seeded before invoking the user's orchestrator.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SH],\n            cwd=PROJECT_DIR,\n            capture_output=True,\n            text=True,\n            env=os.environ.copy(),\n            timeout=300,\n        )\n        if setup_result.returncode != 0:\n>           pytest.fail(\n                f\"setup.sh failed before running the orchestrator. \"\n                f\"stdout={setup_result.stdout!r} stderr={setup_result.stderr!r}\"\n            )\nE           Failed: setup.sh failed before running the orchestrator. stdout='' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\n\ntests/test_final_state.py:84: Failed"
+            },
+            {
+                "name": "test_final_state.py::test_cleanup_residual_buckets",
+                "status": "failed",
+                "duration": 0.00042321253567934036,
+                "start": 1779040561.587611,
+                "stop": 1779040561.594243,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def run_user_script():\n        \"\"\"Priority 1: Execute the user's orchestrator end-to-end against real\n        Tigris. The fixture defensively re-runs setup.sh first so the gold dataset\n        bucket is guaranteed to exist with the canonical prompts.\"\"\"\n    \n        # Best-effort cleanup of any prior outputs.\n        for path in (AGGREGATED_JSON, OUTPUT_LOG):\n            if os.path.exists(path):\n                try:\n                    os.remove(path)\n                except OSError:\n                    pass\n    \n        # Defensive: ensure the gold-eval-dataset bucket exists and is freshly\n        # seeded before invoking the user's orchestrator.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SH],\n            cwd=PROJECT_DIR,\n            capture_output=True,\n            text=True,\n            env=os.environ.copy(),\n            timeout=300,\n        )\n        if setup_result.returncode != 0:\n>           pytest.fail(\n                f\"setup.sh failed before running the orchestrator. \"\n                f\"stdout={setup_result.stdout!r} stderr={setup_result.stderr!r}\"\n            )\nE           Failed: setup.sh failed before running the orchestrator. stdout='' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\n\ntests/test_final_state.py:84: Failed"
+            }
+        ]
+    }
+}
