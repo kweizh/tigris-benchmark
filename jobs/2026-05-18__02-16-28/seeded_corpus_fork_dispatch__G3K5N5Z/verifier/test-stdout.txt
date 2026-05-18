@@ -1,0 +1,131 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 34ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 7 items
+
+tests/test_final_state.py .F..F.F                                        [100%]
+
+=================================== FAILURES ===================================
+_______________________ test_index_ts_uses_required_apis _______________________
+
+    def test_index_ts_uses_required_apis():
+        with open(INDEX_TS) as f:
+            contents = f.read()
+        assert "@tigrisdata/agent-kit" in contents, (
+            "index.ts must import from '@tigrisdata/agent-kit'."
+        )
+        assert "createForks" in contents, (
+            "index.ts must call createForks from @tigrisdata/agent-kit."
+        )
+        assert "teardownForks" in contents, (
+            "index.ts must call teardownForks to clean up the fork buckets."
+        )
+        assert "@aws-sdk/client-s3" in contents, (
+            "index.ts must import from '@aws-sdk/client-s3'."
+        )
+        assert "PutObjectCommand" in contents, (
+            "index.ts must use PutObjectCommand from @aws-sdk/client-s3 to upload."
+        )
+>       assert SOURCE_BUCKET in contents, (
+            f"index.ts must reference the source bucket '{SOURCE_BUCKET}'."
+        )
+E       AssertionError: index.ts must reference the source bucket 'seed-corpus'.
+E       assert 'seed-corpus' in 'import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";\nimport { createForks, teardownForks } from "@tigris... process.exit(0);\n  } catch (error) {\n    console.error("Error:", error);\n    process.exit(1);\n  }\n}\n\nmain();\n'
+
+tests/test_final_state.py:54: AssertionError
+__________________ test_seed_corpus_contains_expected_objects __________________
+
+run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=0), "Uploaded a.txt to harbor-seeded-seeded-corpus-fork-...,\n    'eval-dispatch-seeded-corpus-fork-dispatch--g3k5n5z-v2-1'\n  ]\n}\nTearing down forks...\nTeardown complete.\n")
+
+    def test_seed_corpus_contains_expected_objects(run_user_script):
+        """Priority 1: Use the Tigris CLI to confirm the seed bucket now contains
+        exactly the three expected keys."""
+        run_user_script  # ensure script ran
+        cmd = _tigris_cmd() + ["objects", "list", SOURCE_BUCKET]
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env=os.environ.copy(),
+        )
+>       assert result.returncode == 0, (
+            f"'tigris objects list {SOURCE_BUCKET}' failed: "
+            f"stdout={result.stdout!r} stderr={result.stderr!r}"
+        )
+E       AssertionError: 'tigris objects list seed-corpus' failed: stdout='' stderr='✖ Failed to list objects\n  Unable to list objects The specified bucket does not exist\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['tigris', 'objects', 'list', 'seed-corpus'], returncode=1, stdout='', stderr='✖ Failed to list objects\n  Unable to list objects The specified bucket does not exist\n').returncode
+
+tests/test_final_state.py:144: AssertionError
+_______________________ test_cleanup_seed_corpus_bucket ________________________
+
+run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=0), "Uploaded a.txt to harbor-seeded-seeded-corpus-fork-...,\n    'eval-dispatch-seeded-corpus-fork-dispatch--g3k5n5z-v2-1'\n  ]\n}\nTearing down forks...\nTeardown complete.\n")
+
+    def test_cleanup_seed_corpus_bucket(run_user_script):
+        """Verifier cleanup: delete the source seed bucket so the task leaves no
+        residue. This runs at the end of the test session."""
+        run_user_script  # ensure script ran first
+        cmd = _tigris_cmd() + ["buckets", "delete", SOURCE_BUCKET, "--force"]
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env=os.environ.copy(),
+        )
+        # Best-effort: if the bucket doesn't exist or the flag differs, fall back
+        # to the plain delete. We do not fail the test suite on cleanup errors,
+        # but we do surface them in the assertion message so the operator notices.
+        if result.returncode != 0:
+            fallback = subprocess.run(
+                _tigris_cmd() + ["buckets", "delete", SOURCE_BUCKET],
+                capture_output=True,
+                text=True,
+                timeout=120,
+                env=os.environ.copy(),
+            )
+>           assert fallback.returncode == 0 or "not found" in (
+                fallback.stderr.lower() + fallback.stdout.lower()
+            ), (
+                f"Failed to clean up source bucket '{SOURCE_BUCKET}'. "
+                f"First attempt: stdout={result.stdout!r} stderr={result.stderr!r}. "
+                f"Fallback attempt: stdout={fallback.stdout!r} "
+                f"stderr={fallback.stderr!r}."
+            )
+E           AssertionError: Failed to clean up source bucket 'seed-corpus'. First attempt: stdout='' stderr="✖ Failed to delete bucket 'seed-corpus'\n  Unable to remove bucket The specified bucket does not exist\n". Fallback attempt: stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\nHint: Use --yes to skip confirmation\n'.
+E           assert (1 == 0 or 'not found' in ('error: this command requires interactive input (not available in piped/scripted mode)\nhint: use --yes to skip confirmation\n' + ''))
+E            +  where 1 = CompletedProcess(args=['tigris', 'buckets', 'delete', 'seed-corpus'], returncode=1, stdout='', stderr='Error: this command requires interactive input (not available in piped/scripted mode)\nHint: Use --yes to skip confirmation\n').returncode
+E            +  and   'error: this command requires interactive input (not available in piped/scripted mode)\nhint: use --yes to skip confirmation\n' = <built-in method lower of str object at 0x78151bdae080>()
+E            +    where <built-in method lower of str object at 0x78151bdae080> = 'Error: this command requires interactive input (not available in piped/scripted mode)\nHint: Use --yes to skip confirmation\n'.lower
+E            +      where 'Error: this command requires interactive input (not available in piped/scripted mode)\nHint: Use --yes to skip confirmation\n' = CompletedProcess(args=['tigris', 'buckets', 'delete', 'seed-corpus'], returncode=1, stdout='', stderr='Error: this command requires interactive input (not available in piped/scripted mode)\nHint: Use --yes to skip confirmation\n').stderr
+E            +  and   '' = <built-in method lower of str object at 0xb3b3f0>()
+E            +    where <built-in method lower of str object at 0xb3b3f0> = ''.lower
+E            +      where '' = CompletedProcess(args=['tigris', 'buckets', 'delete', 'seed-corpus'], returncode=1, stdout='', stderr='Error: this command requires interactive input (not available in piped/scripted mode)\nHint: Use --yes to skip confirmation\n').stdout
+
+tests/test_final_state.py:217: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_index_ts_created
+PASSED tests/test_final_state.py::test_script_exits_zero
+PASSED tests/test_final_state.py::test_forks_json_exists_and_has_two_unique_fork_names
+PASSED tests/test_final_state.py::test_fork_buckets_were_torn_down
+FAILED tests/test_final_state.py::test_index_ts_uses_required_apis - Assertio...
+FAILED tests/test_final_state.py::test_seed_corpus_contains_expected_objects
+FAILED tests/test_final_state.py::test_cleanup_seed_corpus_bucket - Assertion...
+========================= 3 failed, 4 passed in 15.57s =========================

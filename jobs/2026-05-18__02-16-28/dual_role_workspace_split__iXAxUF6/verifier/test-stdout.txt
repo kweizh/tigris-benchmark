@@ -1,0 +1,79 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 27ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 5 items
+
+tests/test_final_state.py ..FF.                                          [100%]
+
+=================================== FAILURES ===================================
+________________________ test_script_runs_successfully _________________________
+
+    def test_script_runs_successfully():
+        """Priority 1: Execute the user's script end-to-end against real Tigris."""
+        result = subprocess.run(
+            ["npx", "tsx", "index.ts"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=os.environ.copy(),
+            timeout=300,
+        )
+>       assert result.returncode == 0, (
+            f"'npx tsx index.ts' exited with {result.returncode}. "
+            f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+        )
+E       AssertionError: 'npx tsx index.ts' exited with 1. stdout:
+E         
+E         stderr:
+E         Error: Failed to create writer workspace: Failed to create workspace bucket "writer-ws": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.
+E             at main (/home/user/dual-role/index.ts:16:11)
+E             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Error: Failed to create writer work.../user/dual-role/index.ts:16:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n').returncode
+
+tests/test_final_state.py:65: AssertionError
+_____________________ test_result_json_has_expected_flags ______________________
+
+    def test_result_json_has_expected_flags():
+        """Priority 3: parse the result.json summary the script produced."""
+        assert os.path.isfile(RESULT_JSON), (
+            f"Expected the user's script to produce {RESULT_JSON}."
+        )
+        with open(RESULT_JSON) as f:
+            data = json.load(f)
+>       assert data.get("writer_bucket") == WRITER_BUCKET, (
+            f"Expected result.json.writer_bucket == '{WRITER_BUCKET}', "
+            f"got {data.get('writer_bucket')!r}."
+        )
+E       AssertionError: Expected result.json.writer_bucket == 'writer-ws', got 'writer-ws2'.
+E       assert 'writer-ws2' == 'writer-ws'
+E         
+E         - writer-ws
+E         + writer-ws2
+E         ?          +
+
+tests/test_final_state.py:78: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_index_ts_created
+PASSED tests/test_final_state.py::test_index_ts_uses_required_apis
+PASSED tests/test_final_state.py::test_workspaces_torn_down
+FAILED tests/test_final_state.py::test_script_runs_successfully - AssertionEr...
+FAILED tests/test_final_state.py::test_result_json_has_expected_flags - Asser...
+========================= 2 failed, 3 passed in 2.39s ==========================

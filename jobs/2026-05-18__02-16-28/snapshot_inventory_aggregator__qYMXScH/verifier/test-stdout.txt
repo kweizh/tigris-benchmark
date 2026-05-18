@@ -1,0 +1,194 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 33ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 6 items
+
+tests/test_final_state.py ..F.FF                                         [100%]
+
+=================================== FAILURES ===================================
+___________________ test_node_script_runs_and_prints_summary ___________________
+
+    def test_node_script_runs_and_prints_summary():
+        """Priority 1: Re-run the user's script and assert exit code + stdout
+        summary line. This also (re)produces /home/user/inv/inventory.json."""
+        assert os.path.isfile(INDEX_JS), (
+            f"Expected user-authored script at {INDEX_JS}; run cannot proceed."
+        )
+        result = subprocess.run(
+            ["node", "index.js"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_DIR,
+            env=_tigris_env(),
+            timeout=180,
+        )
+        assert result.returncode == 0, (
+            f"'node index.js' failed with returncode {result.returncode}. "
+            f"stdout={result.stdout!r}, stderr={result.stderr!r}"
+        )
+        expected = f"{EXPECTED_BUCKET_COUNT} buckets, {EXPECTED_TOTAL} snapshots"
+>       assert expected in result.stdout, (
+            f"Expected stdout of 'node index.js' to contain {expected!r}, "
+            f"but it did not. Full stdout: {result.stdout!r}"
+        )
+E       AssertionError: Expected stdout of 'node index.js' to contain '3 buckets, 6 snapshots', but it did not. Full stdout: '3 buckets, 0 snapshots\n'
+E       assert '3 buckets, 6 snapshots' in '3 buckets, 0 snapshots\n'
+E        +  where '3 buckets, 0 snapshots\n' = CompletedProcess(args=['node', 'index.js'], returncode=0, stdout='3 buckets, 0 snapshots\n', stderr='').stdout
+
+tests/test_final_state.py:162: AssertionError
+_______________ test_inventory_file_has_correct_keys_and_counts ________________
+
+    def test_inventory_file_has_correct_keys_and_counts():
+        """The aggregated inventory must list exactly the three harbor-inv-*
+        buckets with the expected snapshot counts."""
+        with open(INVENTORY_FILE) as f:
+            try:
+                inventory = json.load(f)
+            except json.JSONDecodeError as exc:
+                pytest.fail(
+                    f"{INVENTORY_FILE} is not valid JSON: {exc!s}."
+                )
+        assert isinstance(inventory, dict), (
+            f"{INVENTORY_FILE} must be a JSON object keyed by bucket name. "
+            f"Got: {type(inventory).__name__}"
+        )
+        actual_keys = set(inventory.keys())
+        expected_counts = _expected_counts()
+        expected_keys = set(expected_counts.keys())
+        assert actual_keys == expected_keys, (
+            f"{INVENTORY_FILE} must have exactly the keys {sorted(expected_keys)}, "
+            f"but it has {sorted(actual_keys)}. Distractor buckets (harbor-other-*) "
+            "must be filtered out."
+        )
+        total = 0
+        for bucket, expected_count in expected_counts.items():
+            value = inventory[bucket]
+            assert isinstance(value, list), (
+                f"inventory.json[{bucket!r}] must be a list of snapshot version "
+                f"strings, got: {type(value).__name__}"
+            )
+            for v in value:
+                assert isinstance(v, str) and v, (
+                    f"Each snapshot version under inventory.json[{bucket!r}] "
+                    f"must be a non-empty string, got: {v!r}"
+                )
+>           assert len(value) == expected_count, (
+                f"inventory.json[{bucket!r}] must list {expected_count} "
+                f"snapshot version(s); got {len(value)}: {value!r}"
+            )
+E           AssertionError: inventory.json['harbor-inv-snapshot-inventory-aggregator--qymxsch-a'] must list 2 snapshot version(s); got 0: []
+E           assert 0 == 2
+E            +  where 0 = len([])
+
+tests/test_final_state.py:208: AssertionError
+___________________ test_inventory_versions_match_cli_truth ____________________
+
+bucket = 'harbor-inv-snapshot-inventory-aggregator--qymxsch-a'
+
+    def _list_snapshot_versions(bucket):
+        """Return the set of snapshot version strings for `bucket` as reported by
+        `tigris snapshots list <bucket> --format json`."""
+        result = _run_tigris(
+            ["snapshots", "list", bucket, "--format", "json"], timeout=120
+        )
+        assert result.returncode == 0, (
+            f"'tigris snapshots list {bucket} --format json' failed: "
+            f"returncode={result.returncode}, stdout={result.stdout!r}, "
+            f"stderr={result.stderr!r}"
+        )
+        try:
+>           payload = json.loads(result.stdout)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_final_state.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+usr/lib/python3.12/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.decoder.JSONDecoder object at 0x75cdc10edc40>, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+>           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+usr/lib/python3.12/json/decoder.py:355: JSONDecodeError
+
+During handling of the above exception, another exception occurred:
+
+    def test_inventory_versions_match_cli_truth():
+        """Priority 1: For every harbor-inv-* bucket, the snapshot version IDs
+        recorded in inventory.json must equal the version IDs reported by the
+        live Tigris CLI for that bucket."""
+        with open(INVENTORY_FILE) as f:
+            inventory = json.load(f)
+        for bucket in _expected_counts():
+            recorded = set(inventory.get(bucket) or [])
+>           truth = _list_snapshot_versions(bucket)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_final_state.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+bucket = 'harbor-inv-snapshot-inventory-aggregator--qymxsch-a'
+
+    def _list_snapshot_versions(bucket):
+        """Return the set of snapshot version strings for `bucket` as reported by
+        `tigris snapshots list <bucket> --format json`."""
+        result = _run_tigris(
+            ["snapshots", "list", bucket, "--format", "json"], timeout=120
+        )
+        assert result.returncode == 0, (
+            f"'tigris snapshots list {bucket} --format json' failed: "
+            f"returncode={result.returncode}, stdout={result.stdout!r}, "
+            f"stderr={result.stderr!r}"
+        )
+        try:
+            payload = json.loads(result.stdout)
+        except json.JSONDecodeError as exc:
+>           pytest.fail(
+                f"'tigris snapshots list {bucket} --format json' did not emit "
+                f"valid JSON: {exc!s}; stdout={result.stdout!r}"
+            )
+E           Failed: 'tigris snapshots list harbor-inv-snapshot-inventory-aggregator--qymxsch-a --format json' did not emit valid JSON: Expecting value: line 1 column 1 (char 0); stdout=''
+
+tests/test_final_state.py:95: Failed
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_tigris_cli_available
+PASSED tests/test_final_state.py::test_index_js_authored_by_user
+PASSED tests/test_final_state.py::test_inventory_file_exists_after_run
+FAILED tests/test_final_state.py::test_node_script_runs_and_prints_summary - ...
+FAILED tests/test_final_state.py::test_inventory_file_has_correct_keys_and_counts
+FAILED tests/test_final_state.py::test_inventory_versions_match_cli_truth - F...
+========================= 3 failed, 3 passed in 13.52s =========================

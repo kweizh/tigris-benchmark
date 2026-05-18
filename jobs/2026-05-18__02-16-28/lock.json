@@ -1,0 +1,1027 @@
+{
+    "schema_version": 1,
+    "created_at": "2026-05-17T18:16:29.999136Z",
+    "harbor": {
+        "version": "0.7.0",
+        "is_editable": false
+    },
+    "invocation": [
+        "/home/kw/.local/bin/harbor",
+        "run",
+        "--yes",
+        "--job-name",
+        "2026-05-18__02-16-28",
+        "--agent-import-path",
+        "agents.pochi:Pochi",
+        "--artifact",
+        "/home/user",
+        "--mounts",
+        "[{\"type\": \"bind\",\"source\":\"bootstrap\",\"target\":\"/bootstrap\"}]",
+        "--model",
+        "google/gemini-3.1-pro",
+        "-p",
+        "/home/kw/code/zealt/tigris-benchmark/tasks",
+        "--n-attempts",
+        "1",
+        "--max-retries",
+        "0",
+        "-n",
+        "5"
+    ],
+    "n_concurrent_trials": 5,
+    "retry": {
+        "max_retries": 0,
+        "exclude_exceptions": [
+            "VerifierTimeoutError",
+            "VerifierOutputParseError",
+            "AgentTimeoutError",
+            "RewardFileNotFoundError",
+            "RewardFileEmptyError"
+        ],
+        "wait_multiplier": 1.0,
+        "min_wait_sec": 1.0,
+        "max_wait_sec": 60.0
+    },
+    "trials": [
+        {
+            "task": {
+                "name": "aws_cli_s3_putobject_basic",
+                "type": "local",
+                "digest": "sha256:703440da5e0824c83a3445daba04add6eb7053093bee5f9a6f740a459200e03b",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/aws_cli_s3_putobject_basic"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "boto3_object_roundtrip",
+                "type": "local",
+                "digest": "sha256:9b8a327a5d40309120b3682791564eeb1e00cb1fa68a7544a506bc016b8d5b32",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/boto3_object_roundtrip"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "bucket_snapshot_enabled_creation",
+                "type": "local",
+                "digest": "sha256:e649732f85c2674725a038084ed6ecfc72efc38fcd6d57b2cfa12e20c9711489",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/bucket_snapshot_enabled_creation"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "bucket_to_bucket_copy_via_sdk",
+                "type": "local",
+                "digest": "sha256:976c4de911b2ac34379cfe90bdf40fb8cc3e30611e5c7a7d366cb40ec3dac870",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/bucket_to_bucket_copy_via_sdk"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "bucket_ttl_policy_set",
+                "type": "local",
+                "digest": "sha256:13cec92e9b4500ec1d5bb0b00657228e26d6c06ca20afecc8f8763c26b9688da",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/bucket_ttl_policy_set"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "bulk_concurrent_object_upload",
+                "type": "local",
+                "digest": "sha256:4eedea77edf25f9a3730ba7897a2f0a33c1e9a099247b24ede90b9bd6336df33",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/bulk_concurrent_object_upload"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "checkpoint_create_then_restore_fork",
+                "type": "local",
+                "digest": "sha256:9d55ccef39387d27fc007341696402213df8fea28eb1654bacdcea5bdafd216a",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/checkpoint_create_then_restore_fork"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "cli_list_bucket_snapshots",
+                "type": "local",
+                "digest": "sha256:81d7b27e5245885a1374ac8abbced3bfa78935a21b4e0594ec06a2ed2a6829d3",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/cli_list_bucket_snapshots"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "cli_object_prefix_listing",
+                "type": "local",
+                "digest": "sha256:a4192fed218ba9384fa665437287434ccb778a3c31bd6a2ff37d43fbda96732b",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/cli_object_prefix_listing"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "cli_sdk_interop_bucket_lifecycle",
+                "type": "local",
+                "digest": "sha256:e3dd4ad79b50a441c7d8d3c2ee3e0388a4da1a602d570170e1ca01817cfa1e7d",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/cli_sdk_interop_bucket_lifecycle"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "multipart_upload_completion",
+                "type": "local",
+                "digest": "sha256:75875a06efc77cb96260028dcb07c1093381ac6116ca16ff657a2bb945106d00",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/multipart_upload_completion"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "object_user_metadata_persistence",
+                "type": "local",
+                "digest": "sha256:799d0d3ad25515b58b5c67f7b9ce602672116728f9ee78e84b0fe3df1e18eb5b",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/object_user_metadata_persistence"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "presigned_url_unauthenticated_download",
+                "type": "local",
+                "digest": "sha256:f84a52ba7fbb8d2b7d643ddcad93d436bc0f44f687805528ed4e411ee0266d9e",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/presigned_url_unauthenticated_download"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "readonly_workspace_write_denial",
+                "type": "local",
+                "digest": "sha256:21a323e2bba924352386a0def5e5109a8264cf2ffa9fadc9e1b7c4e3cdfa1242",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/readonly_workspace_write_denial"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "typescript_sdk_putobject_workflow",
+                "type": "local",
+                "digest": "sha256:3181382d038af20a618bcc5aff85dfd1e711509a6e22ebddc06f60aa77bd90f6",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/typescript_sdk_putobject_workflow"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "workspace_create_upload_teardown",
+                "type": "local",
+                "digest": "sha256:188a835388f40afa86d5d1befed8ef6535f702bc7492c1015e2b0f6d7a534360",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/workspace_create_upload_teardown"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "agent_pool_lifecycle_manager",
+                "type": "local",
+                "digest": "sha256:0c8b72de721817f01ee6f9bdce30d6fcddf8636113489c307ee6fa27cef749d8",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/agent_pool_lifecycle_manager"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "chained_checkpoint_restoration",
+                "type": "local",
+                "digest": "sha256:003d4c447c3d15493fbb8c4c51342e5132abb794aad27e86feb1e7dc2aa677e1",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/chained_checkpoint_restoration"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "dual_role_workspace_split",
+                "type": "local",
+                "digest": "sha256:90c0e3feb4dcc861f4a8ad77e14af3fb5129cfea801220916dfd7e85ba22b851",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/dual_role_workspace_split"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "isolated_fork_writer_audit",
+                "type": "local",
+                "digest": "sha256:6be661db6d9ff4e3e5673486c121df11f8b60c20f19def5742fef8de877e26a3",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/isolated_fork_writer_audit"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "multi_agent_eval_orchestrator",
+                "type": "local",
+                "digest": "sha256:aaea79450acf4bda483efe42663fcbf661b968519a6130ad201b0f95caf051e7",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/multi_agent_eval_orchestrator"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "cli_full_lifecycle_orchestrator",
+                "type": "local",
+                "digest": "sha256:be83afc22c1f7594bb3761407a973557519be583cbf6c3932e9585d022f8b82f",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/cli_full_lifecycle_orchestrator"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "concurrent_workspace_pool",
+                "type": "local",
+                "digest": "sha256:5121a8f731fd82a5e09b3893841d19be4e25d9eaf93474a6df1f3c5a8cf6f9ec",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/concurrent_workspace_pool"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "timestamped_checkpoint_tagging",
+                "type": "local",
+                "digest": "sha256:43fc0bb47e14f7c6adf67e5577e8e5bf173a3130851356304a90085aafe4c447",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/timestamped_checkpoint_tagging"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "scoped_credentials_object_upload",
+                "type": "local",
+                "digest": "sha256:9f6a4124a071056184e0033322a27878ebf9036c85158bda38a46f321081681a",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/scoped_credentials_object_upload"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "restored_fork_data_validation",
+                "type": "local",
+                "digest": "sha256:e3274c5abc5f1d418c9679331e9ce7d9e0ff94903411c8042cf45597f3a08b27",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/restored_fork_data_validation"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "snapshot_inventory_aggregator",
+                "type": "local",
+                "digest": "sha256:56ab6ddb1baf4b23e265bc9eacdc9a080d7b6c721bdd4ab916a1369be4ef0880",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/snapshot_inventory_aggregator"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "seeded_corpus_fork_dispatch",
+                "type": "local",
+                "digest": "sha256:01374cfbee2e6724b32a6dbaad85a51a13ce0bb9aff65a020907505943e28e21",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/seeded_corpus_fork_dispatch"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "google/gemini-3.1-pro",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        }
+    ]
+}

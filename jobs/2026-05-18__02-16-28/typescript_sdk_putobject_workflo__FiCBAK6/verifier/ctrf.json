@@ -1,0 +1,56 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 4,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779042562.759403,
+            "stop": 1779042564.6895318
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_exists_and_uses_sdk",
+                "status": "passed",
+                "duration": 0.0005893739871680737,
+                "start": 1779042562.774083,
+                "stop": 1779042562.7748942,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_listing_txt_contains_all_keys",
+                "status": "passed",
+                "duration": 0.0005036061629652977,
+                "start": 1779042562.7751,
+                "stop": 1779042562.7757475,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_listing_contains_expected_keys",
+                "status": "passed",
+                "duration": 1.9120379537343979,
+                "start": 1779042562.7759295,
+                "stop": 1779042564.688198,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_object_contents_match_expected",
+                "status": "passed",
+                "duration": 0.0005544289015233517,
+                "start": 1779042564.6884747,
+                "stop": 1779042564.6891973,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

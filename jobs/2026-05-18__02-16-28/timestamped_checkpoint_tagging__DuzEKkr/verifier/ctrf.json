@@ -1,0 +1,56 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 3,
+            "passed": 0,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779043664.6824782,
+            "stop": 1779043667.7032733
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_user_script_runs_successfully",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.5894909179769456,
+                "start": 1779043664.6975536,
+                "stop": 1779043666.3039577,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Checkpoint error: Error: Failed to ...icksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/ckpt-tag/index.ts:13:33)\\n')\n\n    def test_user_script_runs_successfully(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"User script 'npx tsx index.ts' did not exit 0. \"\n            f\"stdout={script_run_result.stdout!r} stderr={script_run_result.stderr!r}\"\n        )\nE       AssertionError: User script 'npx tsx index.ts' did not exit 0. stdout='' stderr='Checkpoint error: Error: Failed to checkpoint bucket \"harbor-pipeline-timestamped-checkpoint-tagging--duzekkr\": Unable to create bucket snapshot Invalid Request\\n    at h (file:///home/user/ckpt-tag/node_modules/@tigrisdata/agent-kit/dist/index.js:1:196)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/ckpt-tag/index.ts:13:33)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Checkpoint error: Error: Failed to ...icksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/ckpt-tag/index.ts:13:33)\\n').returncode\n\ntests/test_final_state.py:88: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_snapshot_json_exists_and_has_expected_shape",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0006417394615709782,
+                "start": 1779043666.3041952,
+                "stop": 1779043666.3083022,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Checkpoint error: Error: Failed to ...icksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/ckpt-tag/index.ts:13:33)\\n')\n\n    def test_snapshot_json_exists_and_has_expected_shape(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping snapshot.json check because the user script failed: \"\n            f\"{script_run_result.stderr!r}\"\n        )\nE       AssertionError: Skipping snapshot.json check because the user script failed: 'Checkpoint error: Error: Failed to checkpoint bucket \"harbor-pipeline-timestamped-checkpoint-tagging--duzekkr\": Unable to create bucket snapshot Invalid Request\\n    at h (file:///home/user/ckpt-tag/node_modules/@tigrisdata/agent-kit/dist/index.js:1:196)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/ckpt-tag/index.ts:13:33)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Checkpoint error: Error: Failed to ...icksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/ckpt-tag/index.ts:13:33)\\n').returncode\n\ntests/test_final_state.py:95: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_named_snapshot_exists_in_tigris",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.3913187305442989,
+                "start": 1779043666.3085227,
+                "stop": 1779043667.7029102,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Checkpoint error: Error: Failed to ...icksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/ckpt-tag/index.ts:13:33)\\n')\n\n    def test_named_snapshot_exists_in_tigris(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping snapshot existence check because the user script failed.\"\n        )\nE       AssertionError: Skipping snapshot existence check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Checkpoint error: Error: Failed to ...icksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/ckpt-tag/index.ts:13:33)\\n').returncode\n\ntests/test_final_state.py:126: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

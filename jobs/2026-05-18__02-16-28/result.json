@@ -1,0 +1,79 @@
+{
+    "id": "848f0121-193d-407f-aa37-b32c2e215b05",
+    "started_at": "2026-05-18T02:16:29.942152",
+    "updated_at": "2026-05-18T02:53:23.428754",
+    "finished_at": "2026-05-18T02:53:23.428754",
+    "n_total_trials": 28,
+    "stats": {
+        "n_completed_trials": 28,
+        "n_errored_trials": 8,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "pochi__gemini-3.1-pro__tasks": {
+                "n_trials": 28,
+                "n_errors": 8,
+                "metrics": [
+                    {
+                        "mean": 0.39285714285714285
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "aws_cli_s3_putobject_basic__gXS4deq",
+                            "boto3_object_roundtrip__nhYigKX",
+                            "bucket_snapshot_enabled_creation__csuxMoe",
+                            "bulk_concurrent_object_upload__pGGBRjV",
+                            "cli_object_prefix_listing__dNGZqVP",
+                            "multipart_upload_completion__rQ5DK5e",
+                            "object_user_metadata_persistence__7u48tvJ",
+                            "presigned_url_unauthenticated_do__e9GAMHx",
+                            "typescript_sdk_putobject_workflo__FiCBAK6",
+                            "workspace_create_upload_teardown__wDiurbc",
+                            "agent_pool_lifecycle_manager__CzmEZtB"
+                        ],
+                        "0.0": [
+                            "bucket_to_bucket_copy_via_sdk__XbyKaPF",
+                            "bucket_ttl_policy_set__iKxgR34",
+                            "checkpoint_create_then_restore_f__qQqXvkm",
+                            "cli_list_bucket_snapshots__e2NgP9z",
+                            "cli_sdk_interop_bucket_lifecycle__hyaNAae",
+                            "readonly_workspace_write_denial__QV4Ss4g",
+                            "chained_checkpoint_restoration__aqMMGss",
+                            "dual_role_workspace_split__iXAxUF6",
+                            "isolated_fork_writer_audit__KJhYX5H",
+                            "multi_agent_eval_orchestrator__UaLhHc8",
+                            "cli_full_lifecycle_orchestrator__6RCMrzr",
+                            "concurrent_workspace_pool__nTx2FQf",
+                            "timestamped_checkpoint_tagging__DuzEKkr",
+                            "scoped_credentials_object_upload__knGfYh5",
+                            "restored_fork_data_validation__ntvbuLq",
+                            "snapshot_inventory_aggregator__qYMXScH",
+                            "seeded_corpus_fork_dispatch__G3K5N5Z"
+                        ]
+                    }
+                },
+                "exception_stats": {
+                    "AgentTimeoutError": [
+                        "bucket_to_bucket_copy_via_sdk__XbyKaPF",
+                        "checkpoint_create_then_restore_f__qQqXvkm",
+                        "cli_list_bucket_snapshots__e2NgP9z",
+                        "chained_checkpoint_restoration__aqMMGss",
+                        "cli_full_lifecycle_orchestrator__6RCMrzr",
+                        "timestamped_checkpoint_tagging__DuzEKkr",
+                        "restored_fork_data_validation__ntvbuLq",
+                        "seeded_corpus_fork_dispatch__G3K5N5Z"
+                    ]
+                }
+            }
+        },
+        "n_input_tokens": 0,
+        "n_cache_tokens": 0,
+        "n_output_tokens": 470725,
+        "cost_usd": null
+    }
+}

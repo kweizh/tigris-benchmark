@@ -1,0 +1,345 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 56ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 5 items
+
+tests/test_final_state.py EEEEE                                          [100%]
+
+==================================== ERRORS ====================================
+_____________ ERROR at setup of test_user_script_runs_successfully _____________
+
+    @pytest.fixture(scope="module")
+    def script_run_result():
+        assert os.path.isfile(INDEX_TS), (
+            f"User script not found at {INDEX_TS}; the agent must create it."
+        )
+    
+        env = _tigris_env()
+    
+        # Make sure dependencies are installed before running.
+        install = subprocess.run(
+            ["npm", "install", "--no-audit", "--no-fund"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+        assert install.returncode == 0, (
+            f"'npm install' failed in {PROJECT_DIR}: "
+            f"stdout={install.stdout!r} stderr={install.stderr!r}"
+        )
+    
+>       result = subprocess.run(
+            ["npx", "tsx", "index.ts"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+
+tests/test_final_state.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+usr/lib/python3.12/subprocess.py:550: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:1209: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:2116: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: -9 args: ['npx', 'tsx', 'index.ts']>
+endtime = 2685633.400158861, orig_timeout = 300
+stdout_seq = [b'Uploaded v1.txt with version=1\n', b'Checkpoint created: 1779043173624993523\n', b'Uploaded v1.txt with version=2\n...leted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', ...]
+stderr_seq = [], skip_check_and_raise = False
+
+    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+                       skip_check_and_raise=False):
+        """Convenience for checking if a timeout has expired."""
+        if endtime is None:
+            return
+        if skip_check_and_raise or _time() > endtime:
+>           raise TimeoutExpired(
+                    self.args, orig_timeout,
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['npx', 'tsx', 'index.ts']' timed out after 300 seconds
+
+usr/lib/python3.12/subprocess.py:1253: TimeoutExpired
+_____ ERROR at setup of test_recovery_json_exists_and_has_expected_bucket ______
+
+    @pytest.fixture(scope="module")
+    def script_run_result():
+        assert os.path.isfile(INDEX_TS), (
+            f"User script not found at {INDEX_TS}; the agent must create it."
+        )
+    
+        env = _tigris_env()
+    
+        # Make sure dependencies are installed before running.
+        install = subprocess.run(
+            ["npm", "install", "--no-audit", "--no-fund"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+        assert install.returncode == 0, (
+            f"'npm install' failed in {PROJECT_DIR}: "
+            f"stdout={install.stdout!r} stderr={install.stderr!r}"
+        )
+    
+>       result = subprocess.run(
+            ["npx", "tsx", "index.ts"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+
+tests/test_final_state.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+usr/lib/python3.12/subprocess.py:550: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:1209: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:2116: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: -9 args: ['npx', 'tsx', 'index.ts']>
+endtime = 2685633.400158861, orig_timeout = 300
+stdout_seq = [b'Uploaded v1.txt with version=1\n', b'Checkpoint created: 1779043173624993523\n', b'Uploaded v1.txt with version=2\n...leted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', ...]
+stderr_seq = [], skip_check_and_raise = False
+
+    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+                       skip_check_and_raise=False):
+        """Convenience for checking if a timeout has expired."""
+        if endtime is None:
+            return
+        if skip_check_and_raise or _time() > endtime:
+>           raise TimeoutExpired(
+                    self.args, orig_timeout,
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['npx', 'tsx', 'index.ts']' timed out after 300 seconds
+
+usr/lib/python3.12/subprocess.py:1253: TimeoutExpired
+_______ ERROR at setup of test_source_bucket_v1_now_contains_version_two _______
+
+    @pytest.fixture(scope="module")
+    def script_run_result():
+        assert os.path.isfile(INDEX_TS), (
+            f"User script not found at {INDEX_TS}; the agent must create it."
+        )
+    
+        env = _tigris_env()
+    
+        # Make sure dependencies are installed before running.
+        install = subprocess.run(
+            ["npm", "install", "--no-audit", "--no-fund"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+        assert install.returncode == 0, (
+            f"'npm install' failed in {PROJECT_DIR}: "
+            f"stdout={install.stdout!r} stderr={install.stderr!r}"
+        )
+    
+>       result = subprocess.run(
+            ["npx", "tsx", "index.ts"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+
+tests/test_final_state.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+usr/lib/python3.12/subprocess.py:550: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:1209: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:2116: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: -9 args: ['npx', 'tsx', 'index.ts']>
+endtime = 2685633.400158861, orig_timeout = 300
+stdout_seq = [b'Uploaded v1.txt with version=1\n', b'Checkpoint created: 1779043173624993523\n', b'Uploaded v1.txt with version=2\n...leted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', ...]
+stderr_seq = [], skip_check_and_raise = False
+
+    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+                       skip_check_and_raise=False):
+        """Convenience for checking if a timeout has expired."""
+        if endtime is None:
+            return
+        if skip_check_and_raise or _time() > endtime:
+>           raise TimeoutExpired(
+                    self.args, orig_timeout,
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['npx', 'tsx', 'index.ts']' timed out after 300 seconds
+
+usr/lib/python3.12/subprocess.py:1253: TimeoutExpired
+_____________ ERROR at setup of test_recovery_bucket_was_torn_down _____________
+
+    @pytest.fixture(scope="module")
+    def script_run_result():
+        assert os.path.isfile(INDEX_TS), (
+            f"User script not found at {INDEX_TS}; the agent must create it."
+        )
+    
+        env = _tigris_env()
+    
+        # Make sure dependencies are installed before running.
+        install = subprocess.run(
+            ["npm", "install", "--no-audit", "--no-fund"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+        assert install.returncode == 0, (
+            f"'npm install' failed in {PROJECT_DIR}: "
+            f"stdout={install.stdout!r} stderr={install.stderr!r}"
+        )
+    
+>       result = subprocess.run(
+            ["npx", "tsx", "index.ts"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+
+tests/test_final_state.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+usr/lib/python3.12/subprocess.py:550: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:1209: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:2116: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: -9 args: ['npx', 'tsx', 'index.ts']>
+endtime = 2685633.400158861, orig_timeout = 300
+stdout_seq = [b'Uploaded v1.txt with version=1\n', b'Checkpoint created: 1779043173624993523\n', b'Uploaded v1.txt with version=2\n...leted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', ...]
+stderr_seq = [], skip_check_and_raise = False
+
+    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+                       skip_check_and_raise=False):
+        """Convenience for checking if a timeout has expired."""
+        if endtime is None:
+            return
+        if skip_check_and_raise or _time() > endtime:
+>           raise TimeoutExpired(
+                    self.args, orig_timeout,
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['npx', 'tsx', 'index.ts']' timed out after 300 seconds
+
+usr/lib/python3.12/subprocess.py:1253: TimeoutExpired
+____________ ERROR at setup of test_before_mutation_snapshot_exists ____________
+
+    @pytest.fixture(scope="module")
+    def script_run_result():
+        assert os.path.isfile(INDEX_TS), (
+            f"User script not found at {INDEX_TS}; the agent must create it."
+        )
+    
+        env = _tigris_env()
+    
+        # Make sure dependencies are installed before running.
+        install = subprocess.run(
+            ["npm", "install", "--no-audit", "--no-fund"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+        assert install.returncode == 0, (
+            f"'npm install' failed in {PROJECT_DIR}: "
+            f"stdout={install.stdout!r} stderr={install.stderr!r}"
+        )
+    
+>       result = subprocess.run(
+            ["npx", "tsx", "index.ts"],
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            env=env,
+            timeout=300,
+        )
+
+tests/test_final_state.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+usr/lib/python3.12/subprocess.py:550: in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:1209: in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+usr/lib/python3.12/subprocess.py:2116: in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Popen: returncode: -9 args: ['npx', 'tsx', 'index.ts']>
+endtime = 2685633.400158861, orig_timeout = 300
+stdout_seq = [b'Uploaded v1.txt with version=1\n', b'Checkpoint created: 1779043173624993523\n', b'Uploaded v1.txt with version=2\n...leted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', b'Bucket recently deleted, waiting 2s...\n', ...]
+stderr_seq = [], skip_check_and_raise = False
+
+    def _check_timeout(self, endtime, orig_timeout, stdout_seq, stderr_seq,
+                       skip_check_and_raise=False):
+        """Convenience for checking if a timeout has expired."""
+        if endtime is None:
+            return
+        if skip_check_and_raise or _time() > endtime:
+>           raise TimeoutExpired(
+                    self.args, orig_timeout,
+                    output=b''.join(stdout_seq) if stdout_seq else None,
+                    stderr=b''.join(stderr_seq) if stderr_seq else None)
+E           subprocess.TimeoutExpired: Command '['npx', 'tsx', 'index.ts']' timed out after 300 seconds
+
+usr/lib/python3.12/subprocess.py:1253: TimeoutExpired
+=========================== short test summary info ============================
+ERROR tests/test_final_state.py::test_user_script_runs_successfully - subproc...
+ERROR tests/test_final_state.py::test_recovery_json_exists_and_has_expected_bucket
+ERROR tests/test_final_state.py::test_source_bucket_v1_now_contains_version_two
+ERROR tests/test_final_state.py::test_recovery_bucket_was_torn_down - subproc...
+ERROR tests/test_final_state.py::test_before_mutation_snapshot_exists - subpr...
+======================== 5 errors in 300.90s (0:05:00) =========================

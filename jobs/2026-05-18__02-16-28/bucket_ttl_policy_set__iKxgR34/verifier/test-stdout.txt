@@ -1,0 +1,83 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 31ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 2 items
+
+tests/test_final_state.py .F                                             [100%]
+
+=================================== FAILURES ===================================
+________________________ test_bucket_ttl_is_seven_days _________________________
+
+    def test_bucket_ttl_is_seven_days():
+        """Priority 1: confirm via Tigris CLI that the bucket's TTL is 7 days.
+    
+        The Tigris CLI documents `tigris buckets set-ttl <name> --days 7` as the
+        canonical way to set a bucket's object-expiration TTL. The verifier
+        inspects the bucket configuration with `tigris buckets get --format json`
+        and asserts that a TTL/expiration-related property reflects a 7-day
+        window.
+        """
+        bucket_name = _bucket_name()
+        result = _run_tigris(["buckets", "get", bucket_name, "--format", "json"])
+        assert result.returncode == 0, (
+            f"'tigris buckets get {bucket_name} --format json' failed: returncode="
+            f"{result.returncode}, stderr={result.stderr!r}"
+        )
+        try:
+            payload = json.loads(result.stdout)
+        except json.JSONDecodeError as exc:
+            pytest.fail(
+                f"'tigris buckets get {bucket_name} --format json' returned invalid "
+                f"JSON: {exc}. stdout={result.stdout!r}"
+            )
+    
+        # The CLI may emit either:
+        #   - a list of {"property": <label>, "value": <value>} rows, or
+        #   - a structured object with fields like "ttl"/"objectTtl"/"expiration".
+        # Accept either shape: search for any TTL/Expiration-related entry whose
+        # value contains "7" and "day".
+        ttl_keywords = ("ttl", "expir")
+        seven_day_pattern = re.compile(r"\b7\s*day", re.IGNORECASE)
+    
+        # Shape 1: list of {property, value} rows.
+        if isinstance(payload, list):
+            matched_value = None
+            for row in payload:
+                if not isinstance(row, dict):
+                    continue
+                prop = str(row.get("property", "")).lower()
+                if any(kw in prop for kw in ttl_keywords):
+                    matched_value = row.get("value")
+                    if matched_value is not None and seven_day_pattern.search(str(matched_value)):
+                        return
+                    # Also accept value being the integer 7 with property naming "days"
+                    if "day" in prop and str(matched_value).strip() == "7":
+                        return
+>           pytest.fail(
+                "Did not find a TTL/Expiration property reflecting a 7-day window "
+                f"in `tigris buckets get {bucket_name} --format json` output. "
+                f"Last TTL-related value seen: {matched_value!r}. Full payload: {payload!r}"
+            )
+E           Failed: Did not find a TTL/Expiration property reflecting a 7-day window in `tigris buckets get harbor-ttl-bucket-ttl-policy-set--ikxgr34 --format json` output. Last TTL-related value seen: None. Full payload: [{'property': 'Name', 'value': 'harbor-ttl-bucket-ttl-policy-set--ikxgr34'}, {'property': 'Number of Objects', 'value': '0'}, {'property': 'Total Size', 'value': '0 B'}, {'property': 'All Versions Count', 'value': '0'}, {'property': 'Default Tier', 'value': 'STANDARD'}, {'property': 'Snapshots Enabled', 'value': 'No'}, {'property': 'Delete Protection', 'value': 'No'}, {'property': 'Allow Object ACL', 'value': 'No'}, {'property': 'Custom Domain', 'value': 'None'}, {'property': 'Has Forks', 'value': 'No'}, {'property': 'Lifecycle Rules', 'value': 'undefined'}]
+
+tests/test_final_state.py:153: Failed
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_bucket_appears_in_list
+FAILED tests/test_final_state.py::test_bucket_ttl_is_seven_days - Failed: Did...
+========================= 1 failed, 1 passed in 3.54s ==========================

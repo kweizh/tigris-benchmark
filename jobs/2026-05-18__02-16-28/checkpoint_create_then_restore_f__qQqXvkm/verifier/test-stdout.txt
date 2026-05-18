@@ -1,0 +1,116 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 20ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 6 items
+
+tests/test_final_state.py FFFFFF                                         [100%]
+
+=================================== FAILURES ===================================
+_________________ test_run_ts_exists_and_uses_required_symbols _________________
+
+    def test_run_ts_exists_and_uses_required_symbols():
+>       assert os.path.isfile(RUN_TS), f"Expected {RUN_TS} to exist."
+E       AssertionError: Expected /home/user/tigris-task/run.ts to exist.
+E       assert False
+E        +  where False = <function isfile at 0x7ac232720220>('/home/user/tigris-task/run.ts')
+E        +    where <function isfile at 0x7ac232720220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:206: AssertionError
+_____________ test_fork_bucket_contains_exactly_two_seeded_objects _____________
+
+verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}
+
+    def test_fork_bucket_contains_exactly_two_seeded_objects(verify_payload):
+        fork = verify_payload.get("fork", {})
+        listing = fork.get("listing")
+>       assert listing is not None, (
+            f"Verifier could not list fork bucket. Errors: {verify_payload.get('errors')}"
+        )
+E       AssertionError: Verifier could not list fork bucket. Errors: [{'where': 'list-fork', 'message': 'Unable to list objects The specified bucket does not exist'}, {'where': 'list-base', 'message': 'Unable to list objects The specified bucket does not exist'}]
+E       assert None is not None
+
+tests/test_final_state.py:224: AssertionError
+_____________________ test_fork_bucket_does_not_contain_v3 _____________________
+
+verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}
+
+    def test_fork_bucket_does_not_contain_v3(verify_payload):
+        fork = verify_payload.get("fork", {})
+        listing = fork.get("listing") or []
+        assert "data/v3.txt" not in listing, (
+            "Fork bucket must NOT contain 'data/v3.txt': the checkpoint was supposed "
+            f"to be taken before that upload, but the fork listing was: {listing}"
+        )
+        v3_entry = fork.get("objects", {}).get("data/v3.txt", {})
+        # Trying to GET v3 from the fork should fail (NoSuchKey or similar).
+>       assert "error" in v3_entry, (
+            "Fork bucket appears to contain 'data/v3.txt' (the GET succeeded). "
+            f"The fork must reflect the pre-v3 state. Got: {v3_entry}"
+        )
+E       AssertionError: Fork bucket appears to contain 'data/v3.txt' (the GET succeeded). The fork must reflect the pre-v3 state. Got: {}
+E       assert 'error' in {}
+
+tests/test_final_state.py:244: AssertionError
+____________ test_fork_bucket_object_contents_match_pre_checkpoint _____________
+
+verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}
+
+    def test_fork_bucket_object_contents_match_pre_checkpoint(verify_payload):
+        fork_objects = verify_payload.get("fork", {}).get("objects", {})
+        for key, expected_body in EXPECTED_FORK_BODIES.items():
+            entry = fork_objects.get(key)
+>           assert entry is not None, f"Verifier did not fetch {key} from fork bucket."
+E           AssertionError: Verifier did not fetch data/v1.txt from fork bucket.
+E           assert None is not None
+
+tests/test_final_state.py:254: AssertionError
+______________ test_base_bucket_still_contains_all_three_objects _______________
+
+verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}
+
+    def test_base_bucket_still_contains_all_three_objects(verify_payload):
+        base = verify_payload.get("base", {})
+        listing = base.get("listing")
+>       assert listing is not None, (
+            f"Verifier could not list base bucket. Errors: {verify_payload.get('errors')}"
+        )
+E       AssertionError: Verifier could not list base bucket. Errors: [{'where': 'list-fork', 'message': 'Unable to list objects The specified bucket does not exist'}, {'where': 'list-base', 'message': 'Unable to list objects The specified bucket does not exist'}]
+E       assert None is not None
+
+tests/test_final_state.py:268: AssertionError
+_______________ test_base_bucket_v3_object_has_expected_content ________________
+
+verify_payload = {'base': {'listing': None, 'objects': {}}, 'cleanup': {}, 'errors': [{'message': 'Unable to list objects The specified...to list objects The specified bucket does not exist', 'where': 'list-base'}], 'fork': {'listing': None, 'objects': {}}}
+
+    def test_base_bucket_v3_object_has_expected_content(verify_payload):
+        base_objects = verify_payload.get("base", {}).get("objects", {})
+        entry = base_objects.get("data/v3.txt")
+>       assert entry is not None, "Verifier did not fetch data/v3.txt from base bucket."
+E       AssertionError: Verifier did not fetch data/v3.txt from base bucket.
+E       assert None is not None
+
+tests/test_final_state.py:281: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_final_state.py::test_run_ts_exists_and_uses_required_symbols
+FAILED tests/test_final_state.py::test_fork_bucket_contains_exactly_two_seeded_objects
+FAILED tests/test_final_state.py::test_fork_bucket_does_not_contain_v3 - Asse...
+FAILED tests/test_final_state.py::test_fork_bucket_object_contents_match_pre_checkpoint
+FAILED tests/test_final_state.py::test_base_bucket_still_contains_all_three_objects
+FAILED tests/test_final_state.py::test_base_bucket_v3_object_has_expected_content
+============================== 6 failed in 5.09s ===============================

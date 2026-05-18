@@ -1,0 +1,77 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 6,
+            "passed": 5,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779042162.3327162,
+            "stop": 1779042168.1747901
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_exists_and_uses_sdk",
+                "status": "passed",
+                "duration": 0.0005811392329633236,
+                "start": 1779042162.3511074,
+                "stop": 1779042162.3518953,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_appears_in_list",
+                "status": "passed",
+                "duration": 1.7987810778431594,
+                "start": 1779042162.3520868,
+                "stop": 1779042164.1511102,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_has_snapshots_enabled_and_seven_day_ttl",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.9215605640783906,
+                "start": 1779042164.1514196,
+                "stop": 1779042165.0973334,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_bucket_has_snapshots_enabled_and_seven_day_ttl():\n        \"\"\"Priority 1: parse `tigris buckets get --format json` and assert both\n        snapshots-enabled and 7-day TTL are reflected in the bucket configuration.\"\"\"\n        bucket_name = _bucket_name()\n        result = _run_tigris([\"buckets\", \"get\", bucket_name, \"--format\", \"json\"])\n        assert result.returncode == 0, (\n            f\"'tigris buckets get {bucket_name} --format json' failed: returncode=\"\n            f\"{result.returncode}, stderr={result.stderr!r}\"\n        )\n        try:\n            payload = json.loads(result.stdout)\n        except json.JSONDecodeError as exc:\n            pytest.fail(\n                f\"'tigris buckets get {bucket_name} --format json' returned invalid JSON: \"\n                f\"{exc}. stdout={result.stdout!r}\"\n            )\n    \n        snapshot_keywords = (\"snapshot\", \"version\")\n        ttl_keywords = (\"ttl\", \"expir\")\n        seven_day_pattern = re.compile(r\"\\b7\\s*day\", re.IGNORECASE)\n        enabled_pattern = re.compile(r\"\\benable\", re.IGNORECASE)\n    \n        rows = []\n        if isinstance(payload, list):\n            rows = payload\n        elif isinstance(payload, dict):\n            # Some `tigris buckets get` outputs are property/value row lists nested\n            # under a key; others are a structured object.\n            for value in payload.values():\n                if isinstance(value, list):\n                    rows.extend(value)\n    \n        snapshot_ok = False\n        ttl_ok = False\n    \n        # Shape 1: list of {property, value} rows.\n        for row in rows:\n            if not isinstance(row, dict):\n                continue\n            prop = str(row.get(\"property\", \"\")).lower()\n            value = row.get(\"value\")\n            value_str = \"\" if value is None else str(value)\n            if not snapshot_ok and any(kw in prop for kw in snapshot_keywords):\n                if enabled_pattern.search(value_str) or value_str.strip().lower() in {\n                    \"true\",\n                    \"yes\",\n                    \"on\",\n                }:\n                    snapshot_ok = True\n            if not ttl_ok and any(kw in prop for kw in ttl_keywords):\n                if seven_day_pattern.search(value_str):\n                    ttl_ok = True\n                elif \"day\" in prop and value_str.strip() == \"7\":\n                    ttl_ok = True\n    \n        # Shape 2: structured object. Walk all keys looking for snapshot/TTL fields.\n        if not (snapshot_ok and ttl_ok) and isinstance(payload, dict):\n            for key, value in _flatten_for_search(payload):\n                key_lower = key.lower()\n                value_str = \"\" if value is None else str(value)\n                if not snapshot_ok and any(kw in key_lower for kw in snapshot_keywords):\n                    if isinstance(value, bool) and value:\n                        snapshot_ok = True\n                    elif value_str.lower() in {\"true\", \"yes\", \"on\", \"enabled\"}:\n                        snapshot_ok = True\n                    elif enabled_pattern.search(value_str):\n                        snapshot_ok = True\n                if not ttl_ok and any(kw in key_lower for kw in ttl_keywords):\n                    if seven_day_pattern.search(value_str):\n                        ttl_ok = True\n                    elif \"day\" in key_lower and value_str.strip() == \"7\":\n                        ttl_ok = True\n                    elif isinstance(value, (int, float)) and \"day\" in key_lower and int(value) == 7:\n                        ttl_ok = True\n    \n>       assert snapshot_ok, (\n            \"Expected `tigris buckets get` output to indicate that snapshots are enabled on \"\n            f\"{bucket_name!r}, but no snapshot/version-related field reflected an enabled \"\n            f\"state. Payload: {payload!r}\"\n        )\nE       AssertionError: Expected `tigris buckets get` output to indicate that snapshots are enabled on 'harbor-interop-cli-sdk-interop-bucket-lifecycle--hyanaae', but no snapshot/version-related field reflected an enabled state. Payload: [{'property': 'Name', 'value': 'harbor-interop-cli-sdk-interop-bucket-lifecycle--hyanaae'}, {'property': 'Number of Objects', 'value': '0'}, {'property': 'Total Size', 'value': '92 B'}, {'property': 'All Versions Count', 'value': '1'}, {'property': 'Default Tier', 'value': 'STANDARD'}, {'property': 'Snapshots Enabled', 'value': 'No'}, {'property': 'Delete Protection', 'value': 'No'}, {'property': 'Allow Object ACL', 'value': 'No'}, {'property': 'Custom Domain', 'value': 'None'}, {'property': 'Has Forks', 'value': 'No'}, {'property': 'Lifecycle Rules', 'value': 'undefined'}]\nE       assert False\n\ntests/test_final_state.py:308: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_snapshots_list_succeeds_for_bucket",
+                "status": "passed",
+                "duration": 1.0881032436154783,
+                "start": 1779042165.0976403,
+                "stop": 1779042166.185976,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_manifest_object_body_matches_expected",
+                "status": "passed",
+                "duration": 0.4764309097081423,
+                "start": 1779042166.1864061,
+                "stop": 1779042166.663291,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_listing_file_mentions_manifest",
+                "status": "passed",
+                "duration": 1.5103570288047194,
+                "start": 1779042166.663842,
+                "stop": 1779042168.174475,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

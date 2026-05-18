@@ -1,0 +1,56 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 4,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779042532.7964869,
+            "stop": 1779042535.3285053
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_agent_kit_and_storage",
+                "status": "passed",
+                "duration": 0.0005173459649085999,
+                "start": 1779042532.811327,
+                "stop": 1779042532.8120456,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_output_log_contains_scoped_access_key",
+                "status": "passed",
+                "duration": 0.00042965495958924294,
+                "start": 1779042532.8122683,
+                "stop": 1779042532.8128297,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_state_json_listed_in_workspace_bucket",
+                "status": "passed",
+                "duration": 2.5142978969961405,
+                "start": 1779042532.8129976,
+                "stop": 1779042535.327476,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_state_json_body_matches_expected",
+                "status": "passed",
+                "duration": 0.0005032340995967388,
+                "start": 1779042535.327697,
+                "stop": 1779042535.3283384,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

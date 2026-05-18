@@ -1,0 +1,76 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 15ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 7 items
+
+tests/test_final_state.py F..F...                                        [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_script_exits_zero ____________________________
+
+script_run = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Failed to create workspace pool-age...ocess/task_queues:104:5)\n    at async Promise.all (index 0)\n    at async main (/home/user/ws-pool/index.ts:21:30)\n')
+
+    def test_script_exits_zero(script_run):
+>       assert script_run.returncode == 0, (
+            f"`npx tsx index.ts` exited with status {script_run.returncode}. "
+            f"stdout: {script_run.stdout[:1000]}\nstderr: {script_run.stderr[:1000]}"
+        )
+E       AssertionError: `npx tsx index.ts` exited with status 1. stdout: 
+E         stderr: Failed to create workspace pool-agent-concurrent-workspace-pool--ntx2fqf-1: Error: Failed to create workspace bucket "pool-agent-concurrent-workspace-pool--ntx2fqf-1": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.
+E             at I (file:///home/user/ws-pool/node_modules/@tigrisdata/agent-kit/dist/index.js:3:343)
+E             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+E             at async Promise.all (index 0)
+E             at async main (/home/user/ws-pool/index.ts:21:30)
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='Failed to create workspace pool-age...ocess/task_queues:104:5)\n    at async Promise.all (index 0)\n    at async main (/home/user/ws-pool/index.ts:21:30)\n').returncode
+
+tests/test_final_state.py:100: AssertionError
+________________________ test_pool_names_match_expected ________________________
+
+pool_data = [{'bucket': 'pool-agent-concurrent-workspace-pool--test123-1', 'name': 'pool-agent-concurrent-workspace-pool--test123-...bucket': 'pool-agent-concurrent-workspace-pool--test123-4', 'name': 'pool-agent-concurrent-workspace-pool--test123-4'}]
+
+    def test_pool_names_match_expected(pool_data):
+        names = [entry["name"] for entry in pool_data if isinstance(entry, dict)]
+        expected = expected_names()
+>       assert set(names) == expected, (
+            f"pool.json names must exactly cover {sorted(expected)}, got: {sorted(names)}"
+        )
+E       AssertionError: pool.json names must exactly cover ['pool-agent-concurrent-workspace-pool--ntx2fqf-1', 'pool-agent-concurrent-workspace-pool--ntx2fqf-2', 'pool-agent-concurrent-workspace-pool--ntx2fqf-3', 'pool-agent-concurrent-workspace-pool--ntx2fqf-4'], got: ['pool-agent-concurrent-workspace-pool--test123-1', 'pool-agent-concurrent-workspace-pool--test123-2', 'pool-agent-concurrent-workspace-pool--test123-3', 'pool-agent-concurrent-workspace-pool--test123-4']
+E       assert {'pool-agent-...l--test123-4'} == {'pool-agent-...l--ntx2fqf-4'}
+E         
+E         Extra items in the left set:
+E         'pool-agent-concurrent-workspace-pool--test123-3'
+E         'pool-agent-concurrent-workspace-pool--test123-2'
+E         'pool-agent-concurrent-workspace-pool--test123-4'
+E         'pool-agent-concurrent-workspace-pool--test123-1'
+E         Extra items in the right set:...
+E         
+E         ...Full output truncated (5 lines hidden), use '-vv' to show
+
+tests/test_final_state.py:131: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_pool_json_is_list_of_four
+PASSED tests/test_final_state.py::test_pool_entries_have_required_keys
+PASSED tests/test_final_state.py::test_index_ts_uses_promise_all_for_creation
+PASSED tests/test_final_state.py::test_index_ts_uses_promise_all_settled_for_teardown
+PASSED tests/test_final_state.py::test_all_buckets_torn_down_via_cli
+FAILED tests/test_final_state.py::test_script_exits_zero - AssertionError: `n...
+FAILED tests/test_final_state.py::test_pool_names_match_expected - AssertionE...
+========================= 2 failed, 5 passed in 5.82s ==========================
