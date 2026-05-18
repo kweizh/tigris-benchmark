@@ -1,0 +1,68 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 4,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779044644.3900158,
+            "stop": 1779044648.322834
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_required_sdks",
+                "status": "passed",
+                "duration": 0.000570178497582674,
+                "start": 1779044644.4050894,
+                "stop": 1779044644.4058645,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_write_denial_log_contains_access_keyword",
+                "status": "passed",
+                "duration": 0.00044723181053996086,
+                "start": 1779044644.4060543,
+                "stop": 1779044644.4066322,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_readback_txt_matches_expected_body",
+                "status": "passed",
+                "duration": 0.0004116031341254711,
+                "start": 1779044644.4068015,
+                "stop": 1779044644.4073343,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_workspace_welcome_object_present_with_expected_body",
+                "status": "passed",
+                "duration": 3.8958866260945797,
+                "start": 1779044644.4074974,
+                "stop": 1779044648.3040235,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_fork_forbidden_object_does_not_exist",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0016817101277410984,
+                "start": 1779044648.3048818,
+                "stop": 1779044648.3226628,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'harbor-ro-readonly-workspace-write-denial--dsbjt6s': {'ok': True}, 'harbor-ro-readonly-workspace-write-d...sbjt6s-readonly-0': {'ok': True}}, 'fork_forbidden': {'exists': True}, 'workspace_welcome': {'body': 'hello readonly'}}\n\n    def test_fork_forbidden_object_does_not_exist(verify_payload):\n        entry = verify_payload.get(\"fork_forbidden\", {})\n        # The verifier expects an error (object missing). If it reports `exists: true`,\n        # the forbidden write actually succeeded \u2014 that's a verification failure.\n>       assert entry.get(\"exists\") is not True, (\n            f\"notes/forbidden.txt unexpectedly exists in fork bucket {_fork_bucket()}; \"\n            f\"the readonly credentials must have been able to write.\"\n        )\nE       AssertionError: notes/forbidden.txt unexpectedly exists in fork bucket harbor-ro-readonly-workspace-write-denial--dsbjt6s-readonly-0; the readonly credentials must have been able to write.\nE       assert True is not True\nE        +  where True = <built-in method get of dict object at 0x773e74025a80>('exists')\nE        +    where <built-in method get of dict object at 0x773e74025a80> = {'exists': True}.get\n\ntests/test_final_state.py:206: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

@@ -1,0 +1,86 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 6,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779045029.527458,
+            "stop": 1779045034.8586955
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_script_exits_zero",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.2344764196313918,
+                "start": 1779045029.5480757,
+                "stop": 1779045031.8243074,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Trial ID (raw): concurrent_workspace_pool__9Pc...ket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n')\n\n    def test_script_exits_zero(script_run):\n>       assert script_run.returncode == 0, (\n            f\"`npx tsx index.ts` exited with status {script_run.returncode}. \"\n            f\"stdout: {script_run.stdout[:1000]}\\nstderr: {script_run.stderr[:1000]}\"\n        )\nE       AssertionError: `npx tsx index.ts` exited with status 1. stdout: Trial ID (raw): concurrent_workspace_pool__9Pcf6fe\nE         Trial ID (normalized): concurrent-workspace-pool--9pcf6fe\nE         Workspace names: [\nE           'pool-agent-concurrent-workspace-pool--9pcf6fe-1',\nE           'pool-agent-concurrent-workspace-pool--9pcf6fe-2',\nE           'pool-agent-concurrent-workspace-pool--9pcf6fe-3',\nE           'pool-agent-concurrent-workspace-pool--9pcf6fe-4'\nE         ]\nE         \nE         Provisioning workspaces in parallel\u2026\nE         \nE         stderr: \nE         Workspace creation failed:\nE           [pool-agent-concurrent-workspace-pool--9pcf6fe-1] Failed to create workspace bucket \"pool-agent-concurrent-workspace-pool--9pcf6fe-1\": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\nE           [pool-agent-concurrent-workspace-pool--9pcf6fe-2] Failed to create workspace bucket \"pool-agent-concurrent-workspace-pool--9pcf6fe-2\": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\nE           [pool-agent-concurrent-workspace-pool--9pcf6fe-3] Failed to create workspace bucket \"pool-agent-concurrent-workspace-pool--9pcf6fe-3\": Unable to create bucket The requested bucket name is not available. The bucket namespace is shared by all users of the system. Specify a different name and try again.\nE           [pool-agent-concurrent-workspace-pool--9pcf6fe-4] Failed to create workspace b\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Trial ID (raw): concurrent_workspace_pool__9Pc...ket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n').returncode\n\ntests/test_final_state.py:100: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_pool_json_is_list_of_four",
+                "status": "passed",
+                "duration": 0.0005374690517783165,
+                "start": 1779045031.8245707,
+                "stop": 1779045031.8252866,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_pool_entries_have_required_keys",
+                "status": "passed",
+                "duration": 0.0004890570417046547,
+                "start": 1779045031.8255038,
+                "stop": 1779045031.8261418,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_pool_names_match_expected",
+                "status": "passed",
+                "duration": 0.0006598932668566704,
+                "start": 1779045031.8263574,
+                "stop": 1779045031.8271801,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_uses_promise_all_for_creation",
+                "status": "passed",
+                "duration": 0.000535293947905302,
+                "start": 1779045031.8273942,
+                "stop": 1779045031.8280911,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_uses_promise_all_settled_for_teardown",
+                "status": "passed",
+                "duration": 0.000487450510263443,
+                "start": 1779045031.8283124,
+                "stop": 1779045031.8289397,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_all_buckets_torn_down_via_cli",
+                "status": "passed",
+                "duration": 3.029088874347508,
+                "start": 1779045031.8291264,
+                "stop": 1779045034.8584654,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

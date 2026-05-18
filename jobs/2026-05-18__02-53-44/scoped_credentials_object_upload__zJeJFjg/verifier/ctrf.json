@@ -1,0 +1,59 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 3,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779045452.8487484,
+            "stop": 1779045455.1575892
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_created",
+                "status": "passed",
+                "duration": 0.00047558825463056564,
+                "start": 1779045452.8623106,
+                "stop": 1779045452.8629923,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_uses_required_apis",
+                "status": "passed",
+                "duration": 0.00042983563616871834,
+                "start": 1779045452.8632166,
+                "stop": 1779045452.863776,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_script_runs_successfully_and_emits_success_marker",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.2221301472745836,
+                "start": 1779045452.863943,
+                "stop": 1779045455.103224,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_script_runs_successfully_and_emits_success_marker():\n        \"\"\"Priority 1: Execute the user's script end-to-end against real Tigris.\"\"\"\n        # Run the script, capturing stdout/stderr to output.log so we can inspect\n        # the success marker afterwards.\n        with open(OUTPUT_LOG, \"w\") as logf:\n            result = subprocess.run(\n                [\"npx\", \"tsx\", \"index.ts\"],\n                cwd=PROJECT_DIR,\n                stdout=logf,\n                stderr=subprocess.STDOUT,\n                env=os.environ.copy(),\n                timeout=300,\n            )\n        assert os.path.isfile(OUTPUT_LOG), f\"Expected log file at {OUTPUT_LOG}.\"\n        with open(OUTPUT_LOG) as f:\n            log_contents = f.read()\n>       assert result.returncode == 0, (\n            f\"'npx tsx index.ts' exited with {result.returncode}. \"\n            f\"Output:\\n{log_contents}\"\n        )\nE       AssertionError: 'npx tsx index.ts' exited with 1. Output:\nE         Error: Failed to create workspace: Failed to create workspace bucket \"harbor-scoped-scoped-credentials-object-upload--zjejfjg\": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\nE             at main (/home/user/scoped-upload/index.ts:17:11)\nE             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nE         \nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1).returncode\n\ntests/test_final_state.py:83: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_workspace_bucket_torn_down",
+                "status": "passed",
+                "duration": 0.053690418135374784,
+                "start": 1779045455.1034837,
+                "stop": 1779045455.1573892,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

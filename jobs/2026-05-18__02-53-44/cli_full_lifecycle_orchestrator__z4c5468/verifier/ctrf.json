@@ -1,0 +1,65 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 1,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779045524.4781823,
+            "stop": 1779045529.9448478
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_script_exits_zero",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.289641010109335,
+                "start": 1779045524.4912715,
+                "stop": 1779045526.7971153,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "execute_run_script = CompletedProcess(args=['bash', 'run.sh'], returncode=1, stdout='==> Using bucket: harbor-lifecycle-cli-full-lifecycle-...s not available. The bucket namespace is shared by all users of the system. Specify a different name and try again.\\n')\n\n    def test_run_script_exits_zero(execute_run_script):\n        proc = execute_run_script\n>       assert proc.returncode == 0, (\n            f\"`bash run.sh` exited with status {proc.returncode}. \"\n            f\"stdout={proc.stdout!r} stderr={proc.stderr!r}\"\n        )\nE       AssertionError: `bash run.sh` exited with status 1. stdout='==> Using bucket: harbor-lifecycle-cli-full-lifecycle-orchestrator-z4c5468\\n' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket name is not available. The bucket namespace is shared by all users of the system. Specify a different name and try again.\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['bash', 'run.sh'], returncode=1, stdout='==> Using bucket: harbor-lifecycle-cli-full-lifecycle-...s not available. The bucket namespace is shared by all users of the system. Specify a different name and try again.\\n').returncode\n\ntests/test_final_state.py:109: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_snapshots_file_exists",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0006111781112849712,
+                "start": 1779045526.7973733,
+                "stop": 1779045526.8009965,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "execute_run_script = CompletedProcess(args=['bash', 'run.sh'], returncode=1, stdout='==> Using bucket: harbor-lifecycle-cli-full-lifecycle-...s not available. The bucket namespace is shared by all users of the system. Specify a different name and try again.\\n')\n\n    def test_snapshots_file_exists(execute_run_script):\n>       assert os.path.isfile(SNAPSHOTS_FILE), (\n            f\"Expected snapshot ID file {SNAPSHOTS_FILE} to exist after `run.sh` \"\n            \"completed.\"\n        )\nE       AssertionError: Expected snapshot ID file /home/user/lifecycle/snapshots.txt to exist after `run.sh` completed.\nE       assert False\nE        +  where False = <function isfile at 0x7d6c4304c220>('/home/user/lifecycle/snapshots.txt')\nE        +    where <function isfile at 0x7d6c4304c220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:116: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_snapshots_file_has_at_least_one_line",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.00048668403178453445,
+                "start": 1779045526.8012395,
+                "stop": 1779045526.804386,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "execute_run_script = CompletedProcess(args=['bash', 'run.sh'], returncode=1, stdout='==> Using bucket: harbor-lifecycle-cli-full-lifecycle-...s not available. The bucket namespace is shared by all users of the system. Specify a different name and try again.\\n')\n\n    def test_snapshots_file_has_at_least_one_line(execute_run_script):\n>       with open(SNAPSHOTS_FILE) as f:\n             ^^^^^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/lifecycle/snapshots.txt'\n\ntests/test_final_state.py:123: FileNotFoundError",
+                "message": "The test failed in the call phase"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_was_deleted_at_end",
+                "status": "passed",
+                "duration": 3.1397931119427085,
+                "start": 1779045526.8045754,
+                "stop": 1779045529.944573,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

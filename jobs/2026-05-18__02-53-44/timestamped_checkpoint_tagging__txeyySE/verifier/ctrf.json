@@ -1,0 +1,50 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 3,
+            "passed": 2,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779045337.1947572,
+            "stop": 1779045342.8927011
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_user_script_runs_successfully",
+                "status": "passed",
+                "duration": 3.2089486019685864,
+                "start": 1779045337.210478,
+                "stop": 1779045340.41983,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_snapshot_json_exists_and_has_expected_shape",
+                "status": "passed",
+                "duration": 0.0008674925193190575,
+                "start": 1779045340.4202447,
+                "stop": 1779045340.4213612,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_named_snapshot_exists_in_tigris",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.4513218919746578,
+                "start": 1779045340.4216745,
+                "stop": 1779045342.8921702,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=0, stdout='Bucket: harbor-pipeline-timestamped-checkpoint...-v42-1779045338\\nCheckpoint created: snapshotId=1779045340198111513\\nsnapshot.json written successfully.\\n', stderr='')\n\n    def test_named_snapshot_exists_in_tigris(script_run_result):\n        assert script_run_result.returncode == 0, (\n            \"Skipping snapshot existence check because the user script failed.\"\n        )\n        with open(SNAPSHOT_JSON) as f:\n            payload = json.load(f)\n        expected_name = payload[\"name\"]\n    \n        env = _tigris_env()\n        source_bucket = bucket_name()\n        result = subprocess.run(\n            [\"tigris\", \"snapshots\", \"list\", source_bucket, \"--format\", \"json\"],\n            capture_output=True,\n            text=True,\n            env=env,\n            timeout=60,\n        )\n        assert result.returncode == 0, (\n            f\"'tigris snapshots list {source_bucket} --format json' failed: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\n        stdout = result.stdout.strip()\n        assert stdout, \"Expected non-empty output from 'tigris snapshots list'.\"\n        try:\n            data = json.loads(stdout)\n        except json.JSONDecodeError as exc:\n            pytest.fail(f\"Could not parse snapshots-list JSON: {exc}\\nOutput: {stdout!r}\")\n    \n        snapshots = []\n        if isinstance(data, list):\n            snapshots = data\n        elif isinstance(data, dict):\n            snapshots = data.get(\"snapshots\") or data.get(\"Snapshots\") or []\n    \n        names = []\n        for entry in snapshots:\n            if isinstance(entry, dict):\n                name = entry.get(\"name\") or entry.get(\"Name\")\n                if isinstance(name, str):\n                    names.append(name)\n    \n>       assert expected_name in names, (\n            f\"Expected a snapshot named {expected_name!r} on bucket {source_bucket!r}, \"\n            f\"found names: {names}\"\n        )\nE       AssertionError: Expected a snapshot named 'release-v42-1779045338' on bucket 'harbor-pipeline-timestamped-checkpoint-tagging--txeyyse', found names: []\nE       assert 'release-v42-1779045338' in []\n\ntests/test_final_state.py:166: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

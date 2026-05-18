@@ -1,0 +1,1027 @@
+{
+    "schema_version": 1,
+    "created_at": "2026-05-17T18:53:47.106721Z",
+    "harbor": {
+        "version": "0.7.0",
+        "is_editable": false
+    },
+    "invocation": [
+        "/home/kw/.local/bin/harbor",
+        "run",
+        "--yes",
+        "--job-name",
+        "2026-05-18__02-53-44",
+        "--agent-import-path",
+        "agents.pochi:Pochi",
+        "--artifact",
+        "/home/user",
+        "--mounts",
+        "[{\"type\": \"bind\",\"source\":\"bootstrap\",\"target\":\"/bootstrap\"}]",
+        "--model",
+        "anthropic/claude-4-6-sonnet",
+        "-p",
+        "/home/kw/code/zealt/tigris-benchmark/tasks",
+        "--n-attempts",
+        "1",
+        "--max-retries",
+        "0",
+        "-n",
+        "5"
+    ],
+    "n_concurrent_trials": 5,
+    "retry": {
+        "max_retries": 0,
+        "exclude_exceptions": [
+            "AgentTimeoutError",
+            "VerifierTimeoutError",
+            "VerifierOutputParseError",
+            "RewardFileEmptyError",
+            "RewardFileNotFoundError"
+        ],
+        "wait_multiplier": 1.0,
+        "min_wait_sec": 1.0,
+        "max_wait_sec": 60.0
+    },
+    "trials": [
+        {
+            "task": {
+                "name": "aws_cli_s3_putobject_basic",
+                "type": "local",
+                "digest": "sha256:4e356b9d5168c8b8092dfa1e2c6a4931f0ac939edbcaf1504541b642d3129a58",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/aws_cli_s3_putobject_basic"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "boto3_object_roundtrip",
+                "type": "local",
+                "digest": "sha256:36c135538ebf2e06872fd552acd86799324f8f1b2158cafa17c6ad397f6b6246",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/boto3_object_roundtrip"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "bucket_snapshot_enabled_creation",
+                "type": "local",
+                "digest": "sha256:da9bc1fb1e10eede5b1f6bb4768602639ef745d02f6fc02907457111ee91fc76",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/bucket_snapshot_enabled_creation"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "bucket_to_bucket_copy_via_sdk",
+                "type": "local",
+                "digest": "sha256:976c4de911b2ac34379cfe90bdf40fb8cc3e30611e5c7a7d366cb40ec3dac870",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/bucket_to_bucket_copy_via_sdk"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "bucket_ttl_policy_set",
+                "type": "local",
+                "digest": "sha256:77ed0892083882d12c9b6682733e2ada887d3763c9b18debae82f71689c8a839",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/bucket_ttl_policy_set"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "bulk_concurrent_object_upload",
+                "type": "local",
+                "digest": "sha256:6f1a6dee5348d69c5f1f0fc69b682df32b11b42529f5ac31523cb409fc6a7205",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/bulk_concurrent_object_upload"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "checkpoint_create_then_restore_fork",
+                "type": "local",
+                "digest": "sha256:9d55ccef39387d27fc007341696402213df8fea28eb1654bacdcea5bdafd216a",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/checkpoint_create_then_restore_fork"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "cli_list_bucket_snapshots",
+                "type": "local",
+                "digest": "sha256:81d7b27e5245885a1374ac8abbced3bfa78935a21b4e0594ec06a2ed2a6829d3",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/cli_list_bucket_snapshots"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "cli_object_prefix_listing",
+                "type": "local",
+                "digest": "sha256:ba0ecc3c358d15be3ec788deda5a2bb2e1baed9bb536b44c600c44b91cc3ec9c",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/cli_object_prefix_listing"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "cli_sdk_interop_bucket_lifecycle",
+                "type": "local",
+                "digest": "sha256:d9b370ff5ec8f62b5396e78de0dd8ecaee727a476e0cab6a843e88abd64490e2",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/cli_sdk_interop_bucket_lifecycle"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "multipart_upload_completion",
+                "type": "local",
+                "digest": "sha256:cc617754ee32859ec8a50c12f47f4829fbcde95e05db26c2a78ff27eab1f6913",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/multipart_upload_completion"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "object_user_metadata_persistence",
+                "type": "local",
+                "digest": "sha256:df22ffe403d0f0e2a8cbe309a7b7a02dbeb1a24fd238020d49ea2c65bdbadb91",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/object_user_metadata_persistence"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "presigned_url_unauthenticated_download",
+                "type": "local",
+                "digest": "sha256:dfc3bae1e2f9322d52537e81ea7ede3431e968f07efa8d55459ceb86afb3ded7",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/presigned_url_unauthenticated_download"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "readonly_workspace_write_denial",
+                "type": "local",
+                "digest": "sha256:8a74ff8790409ce273f2666ae60d681dc0178460dfbff5dd9cb1feaac4f8e871",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/readonly_workspace_write_denial"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "typescript_sdk_putobject_workflow",
+                "type": "local",
+                "digest": "sha256:4cef8d88bb51fbee8329817bd8e3397e03d1a20fc82d6efd5acd25a9430b8115",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/typescript_sdk_putobject_workflow"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "workspace_create_upload_teardown",
+                "type": "local",
+                "digest": "sha256:76536059581201a34fff334a2ad448be11241163ac93b6bb27bea4b47b1d7220",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/workspace_create_upload_teardown"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "agent_pool_lifecycle_manager",
+                "type": "local",
+                "digest": "sha256:a4f825860dd24ef281ca5eec44eae25f2bcc11a27244a2baa0341b897b871acc",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/agent_pool_lifecycle_manager"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "chained_checkpoint_restoration",
+                "type": "local",
+                "digest": "sha256:6e5800acae7726b8348b2731026e6487d4dd8cfb3bc67343393bcdf1aefd5d08",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/chained_checkpoint_restoration"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "dual_role_workspace_split",
+                "type": "local",
+                "digest": "sha256:104b4608673bcf8234205853eb98adba617bf1bfa04933c2b01d11620f6acadc",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/dual_role_workspace_split"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "isolated_fork_writer_audit",
+                "type": "local",
+                "digest": "sha256:2d26070cb5dc7c096c2281d2bf74a8f283fcfc70d6894c66a3d6fe3648ca0ad0",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/isolated_fork_writer_audit"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "multi_agent_eval_orchestrator",
+                "type": "local",
+                "digest": "sha256:b56225159a554a083120afdff789dd98bc3410cf193dd498a5af2cf850d28d6b",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/multi_agent_eval_orchestrator"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "cli_full_lifecycle_orchestrator",
+                "type": "local",
+                "digest": "sha256:75959ba3116f53257258533b61f46866b296986b26274f018e35ab6018986582",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/cli_full_lifecycle_orchestrator"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "concurrent_workspace_pool",
+                "type": "local",
+                "digest": "sha256:854881749e5af3933dd118b8b6a25a11c764863196abcbe0f2bec76780b9185b",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/concurrent_workspace_pool"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "timestamped_checkpoint_tagging",
+                "type": "local",
+                "digest": "sha256:c187a06c4c1f569b368a91fb3b73bd269928332d50bf31173e2b88315729cb16",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/timestamped_checkpoint_tagging"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "scoped_credentials_object_upload",
+                "type": "local",
+                "digest": "sha256:23f50690bf8f09d25e172ed02eb6713065c6fddf0f975fa9d4068700287be534",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/scoped_credentials_object_upload"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "restored_fork_data_validation",
+                "type": "local",
+                "digest": "sha256:c6b7bdafaf65af0a7ace2d71c63d5881e4746ff2214e39426a9e62235cf6b25c",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/restored_fork_data_validation"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "snapshot_inventory_aggregator",
+                "type": "local",
+                "digest": "sha256:5ef640834238cc2985f706f595ebe8df9e7ed85227f804ea38187e7bbb198924",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/snapshot_inventory_aggregator"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "seeded_corpus_fork_dispatch",
+                "type": "local",
+                "digest": "sha256:e7ca13e6185c5c7bef3e3da96afc3145d8673db252c3f1a5861d1234d9507e6f",
+                "source": "tasks",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks/seeded_corpus_fork_dispatch"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "anthropic/claude-4-6-sonnet",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        }
+    ]
+}

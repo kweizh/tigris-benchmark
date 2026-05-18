@@ -1,0 +1,97 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 19ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 5 items
+
+tests/test_final_state.py FFFFF                                          [100%]
+
+=================================== FAILURES ===================================
+______________________ test_user_script_runs_successfully ______________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n')
+
+    def test_user_script_runs_successfully(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "User script 'npx tsx index.ts' did not exit 0. "
+            f"stdout={script_run_result.stdout!r} stderr={script_run_result.stderr!r}"
+        )
+E       AssertionError: User script 'npx tsx index.ts' did not exit 0. stdout='Trial ID  : chained_checkpoint_restoration__XSMuspe\nBucket    : harbor-awscli-chained-checkpoint-restoration--xsmuspe\n\n[0] Ensuring snapshot feature is enabled on bucket …\n    ✓ Bucket already exists (snapshot feature enabled)\n\n[1] Uploading v1.txt (version=1) …\n    ✓ v1.txt uploaded\n\n[2] Creating checkpoint \'before-mutation\' …\n    ✓ snapshotId = 1779045362179528175\n\n[3] Overwriting v1.txt with version=2 …\n    ✓ v1.txt mutated to version=2\n\n[4] Restoring checkpoint into fork \'rollback-recovery\' …\n    ⚠ Restore attempt 1 failed (Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.), retrying in 8s …\n    ⚠ Restore attempt 2 failed (Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.), retrying in 8s …\n    ⚠ Restore attempt 3 failed (Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.), retrying in 8s …\n    ⚠ Restore attempt 4 failed (Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.), retrying in 8s …\n    ⚠ Restore attempt 5 failed (Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.), retrying in 8s …\n    ⚠ Restore attempt 6 failed (Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.), retrying in 8s …\n    ⚠ Restore attempt 7 failed (Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.), retrying in 8s …\n    ⚠ Restore attempt 8 failed (Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.), retrying in 8s …\n    ⚠ Restore attempt 9 failed (Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.), retrying in 8s …\n' stderr='/home/user/chained-ckpt/index.ts:127\n      throw new Error(`Restore failed after ${MAX_RESTORE_RETRIES} attempts: ${restoreErr.message}`);\n            ^\n\nError: Restore failed after 10 attempts: Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\n    at <anonymous> (/home/user/chained-ckpt/index.ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n').returncode
+
+tests/test_final_state.py:132: AssertionError
+______________ test_recovery_json_exists_and_has_expected_bucket _______________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n')
+
+    def test_recovery_json_exists_and_has_expected_bucket(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping recovery.json check because the user script failed: "
+            f"{script_run_result.stderr!r}"
+        )
+E       AssertionError: Skipping recovery.json check because the user script failed: '/home/user/chained-ckpt/index.ts:127\n      throw new Error(`Restore failed after ${MAX_RESTORE_RETRIES} attempts: ${restoreErr.message}`);\n            ^\n\nError: Restore failed after 10 attempts: Failed to restore from snapshot "1779045362179528175": Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\n    at <anonymous> (/home/user/chained-ckpt/index.ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n').returncode
+
+tests/test_final_state.py:139: AssertionError
+________________ test_source_bucket_v1_now_contains_version_two ________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n')
+
+    def test_source_bucket_v1_now_contains_version_two(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping source bucket content check because the user script failed."
+        )
+E       AssertionError: Skipping source bucket content check because the user script failed.
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n').returncode
+
+tests/test_final_state.py:164: AssertionError
+______________________ test_recovery_bucket_was_torn_down ______________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n')
+
+    def test_recovery_bucket_was_torn_down(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping recovery-bucket teardown check because the user script failed."
+        )
+E       AssertionError: Skipping recovery-bucket teardown check because the user script failed.
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n').returncode
+
+tests/test_final_state.py:199: AssertionError
+_____________________ test_before_mutation_snapshot_exists _____________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n')
+
+    def test_before_mutation_snapshot_exists(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping snapshot check because the user script failed."
+        )
+E       AssertionError: Skipping snapshot check because the user script failed.
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='Trial ID  : chained_checkpoint_restoration__XS....ts:127:13)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n\nNode.js v24.15.0\n').returncode
+
+tests/test_final_state.py:225: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_final_state.py::test_user_script_runs_successfully - Assert...
+FAILED tests/test_final_state.py::test_recovery_json_exists_and_has_expected_bucket
+FAILED tests/test_final_state.py::test_source_bucket_v1_now_contains_version_two
+FAILED tests/test_final_state.py::test_recovery_bucket_was_torn_down - Assert...
+FAILED tests/test_final_state.py::test_before_mutation_snapshot_exists - Asse...
+========================= 5 failed in 90.49s (0:01:30) =========================
