@@ -1,0 +1,97 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 18ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 5 items
+
+tests/test_final_state.py FFFFF                                          [100%]
+
+=================================== FAILURES ===================================
+______________________ test_user_script_runs_successfully ______________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n')
+
+    def test_user_script_runs_successfully(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "User script 'npx tsx index.ts' did not exit 0. "
+            f"stdout={script_run_result.stdout!r} stderr={script_run_result.stderr!r}"
+        )
+E       AssertionError: User script 'npx tsx index.ts' did not exit 0. stdout="Using bucket: harbor-awscli-chained-checkpoint-restoration--asoq6wf\nUploading v1.txt with body version=1...\nCreating checkpoint 'before-mutation'...\nSnapshot created: 1779087773839203440\nUploading v1.txt with body version=2 (mutation)...\nRestoring checkpoint into fork 'rollback-recovery'...\n" stderr='Error: restore failed: Failed to restore from snapshot "1779087773839203440": Unable to create bucket Source bucket must be of snapshot type.\n    at main (/home/user/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n').returncode
+
+tests/test_final_state.py:132: AssertionError
+______________ test_recovery_json_exists_and_has_expected_bucket _______________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n')
+
+    def test_recovery_json_exists_and_has_expected_bucket(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping recovery.json check because the user script failed: "
+            f"{script_run_result.stderr!r}"
+        )
+E       AssertionError: Skipping recovery.json check because the user script failed: 'Error: restore failed: Failed to restore from snapshot "1779087773839203440": Unable to create bucket Source bucket must be of snapshot type.\n    at main (/home/user/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n'
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n').returncode
+
+tests/test_final_state.py:139: AssertionError
+________________ test_source_bucket_v1_now_contains_version_two ________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n')
+
+    def test_source_bucket_v1_now_contains_version_two(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping source bucket content check because the user script failed."
+        )
+E       AssertionError: Skipping source bucket content check because the user script failed.
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n').returncode
+
+tests/test_final_state.py:164: AssertionError
+______________________ test_recovery_bucket_was_torn_down ______________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n')
+
+    def test_recovery_bucket_was_torn_down(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping recovery-bucket teardown check because the user script failed."
+        )
+E       AssertionError: Skipping recovery-bucket teardown check because the user script failed.
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n').returncode
+
+tests/test_final_state.py:199: AssertionError
+_____________________ test_before_mutation_snapshot_exists _____________________
+
+script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n')
+
+    def test_before_mutation_snapshot_exists(script_run_result):
+>       assert script_run_result.returncode == 0, (
+            "Skipping snapshot check because the user script failed."
+        )
+E       AssertionError: Skipping snapshot check because the user script failed.
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout="Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n').returncode
+
+tests/test_final_state.py:225: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_final_state.py::test_user_script_runs_successfully - Assert...
+FAILED tests/test_final_state.py::test_recovery_json_exists_and_has_expected_bucket
+FAILED tests/test_final_state.py::test_source_bucket_v1_now_contains_version_two
+FAILED tests/test_final_state.py::test_recovery_bucket_was_torn_down - Assert...
+FAILED tests/test_final_state.py::test_before_mutation_snapshot_exists - Asse...
+============================== 5 failed in 5.71s ===============================

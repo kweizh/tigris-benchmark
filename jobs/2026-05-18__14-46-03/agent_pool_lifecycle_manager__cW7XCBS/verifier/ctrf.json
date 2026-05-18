@@ -1,0 +1,92 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 8,
+            "passed": 8,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779087251.6208174,
+            "stop": 1779087254.670748
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_manager_ts_exists",
+                "status": "passed",
+                "duration": 0.0009242547675967216,
+                "start": 1779087251.646003,
+                "stop": 1779087251.6471417,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cli_ts_exists",
+                "status": "passed",
+                "duration": 0.0004283702000975609,
+                "start": 1779087251.6474128,
+                "stop": 1779087251.6479764,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_manager_uses_promise_all_for_provisioning",
+                "status": "passed",
+                "duration": 0.0004658428952097893,
+                "start": 1779087251.648192,
+                "stop": 1779087251.6487873,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_manager_uses_promise_all_settled_for_teardown",
+                "status": "passed",
+                "duration": 0.00046553509309887886,
+                "start": 1779087251.6489718,
+                "stop": 1779087251.6495788,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_scenario_log_contains_pool_size_line",
+                "status": "passed",
+                "duration": 0.0004181899130344391,
+                "start": 1779087251.6498137,
+                "stop": 1779087251.6503708,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_scenario_log_has_three_bucket_lines",
+                "status": "passed",
+                "duration": 0.0003851465880870819,
+                "start": 1779087251.6505423,
+                "stop": 1779087251.65105,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_pool_state_json_removed_after_teardown",
+                "status": "passed",
+                "duration": 0.00039298413321375847,
+                "start": 1779087251.6512225,
+                "stop": 1779087251.6517363,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_all_pool_buckets_torn_down_via_cli",
+                "status": "passed",
+                "duration": 3.0184402712620795,
+                "start": 1779087251.6519027,
+                "stop": 1779087254.6705182,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

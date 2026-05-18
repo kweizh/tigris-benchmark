@@ -1,0 +1,56 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 4,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779087000.4855611,
+            "stop": 1779087005.9787743
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_bucket_exists_via_cli",
+                "status": "passed",
+                "duration": 1.322625124361366,
+                "start": 1779087000.4985118,
+                "stop": 1779087001.821478,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_user_metadata_owner_is_alice",
+                "status": "passed",
+                "duration": 1.3948583789169788,
+                "start": 1779087001.8217256,
+                "stop": 1779087003.2167728,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_user_metadata_team_is_research",
+                "status": "passed",
+                "duration": 0.0004249284975230694,
+                "start": 1779087003.2169893,
+                "stop": 1779087003.2175782,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_object_content_type_is_text_markdown",
+                "status": "passed",
+                "duration": 2.760662372689694,
+                "start": 1779087003.2177505,
+                "stop": 1779087005.9785283,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

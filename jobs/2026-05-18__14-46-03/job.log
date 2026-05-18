@@ -1,0 +1,1648 @@
+Skipping image OS validation for hb__boto3_object_roundtrip: docker inspect returned 1
+Skipping image OS validation for hb__bucket_snapshot_enabled_creation: docker inspect returned 1
+Skipping image OS validation for hb__bulk_concurrent_object_upload: docker inspect returned 1
+Skipping image OS validation for hb__bucket_ttl_policy_set: docker inspect returned 1
+Skipping image OS validation for hb__cli_object_prefix_listing: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Running command: apt-get update && apt-get install -y curl ripgrep
+Running command: apt-get update && apt-get install -y curl ripgrep
+Running command: apt-get update && apt-get install -y curl ripgrep
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo bucket_ttl_policy_set__Qk7RTBZ > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Tigris CLI: Apply a 7-Day Object Expiration TTL to a Bucket
+
+## Background
+Tigris buckets can be configured with an object expiration TTL so that objects are REDACTEDmatically deleted after a fixed number of days. This is a common requirement for ephemeral evaluation buckets that should not accumulate state indefinitely. The Tigris CLI (`@tigrisdata/cli`) exposes this as the `tigris buckets set-ttl` subcommand (documented at https://www.tigrisdata.com/docs/cli/buckets/set-ttl/), which configures bucket-level object expiration in days or to a specific date.
+
+## Requirements
+- Read the Harbor trial identifier from `/logs/artifacts/trial_id` and use it to derive a unique bucket name `harbor-ttl-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Create that bucket using the Tigris CLI.
+- Configure the bucket's object expiration TTL to 7 days using the documented Tigris CLI subcommand `tigris buckets set-ttl`.
+- The bucket configuration returned by `tigris buckets get <bucket> --format json` must reflect that the 7-day TTL is in effect.
+
+## Implementation Guide
+1. Open a terminal in the project directory `/home/user/ttl-task`.
+2. Read the trial id from `/logs/artifacts/trial_id` and trim any trailing whitespace.
+3. Derive the bucket name as `harbor-ttl-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+4. Create the bucket with:
+   ```bash
+   tigris buckets create harbor-ttl-${trial_id}
+   ```
+5. Apply the 7-day expiration TTL with the documented subcommand:
+   ```bash
+   tigris buckets set-ttl harbor-ttl-${trial_id} --days 7
+   ```
+6. The container's login shell is pre-wired to expose the Tigris credentials to the CLI: `/etc/profile.d/tigris-auth.sh` maps `TIGRIS_STORAGE_ACCESS_KEY_ID`/`TIGRIS_STORAGE_SECRET_ACCESS_KEY` to the AWS-compatible variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION=REDACTED`) consumed by the `tigris` CLI. If you invoke `tigris` from a non-login shell, source this file first or pass the AWS_* variables inline.
+
+## Constraints
+- Project path: `/home/user/ttl-task`
+- Bucket name MUST be exactly `harbor-ttl-${trial_id}` where `${trial_id}` is the contents of `/logs/artifacts/trial_id` (trimmed of trailing whitespace). Do NOT hardcode any other suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- TTL MUST be exactly 7 days. Use `--days 7`.
+- Use the Tigris CLI (`@tigrisdata/cli`) only — do not configure TTL via raw S3/HTTP, the AWS CLI, or any other tool.
+- The bucket must remain provisioned after the task completes so the verifier can inspect it. The verifier will delete the bucket after assertions.
+
+## Integrations
+- Tigris Object Storage (credentials provided as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).
+EOF
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo bucket_snapshot_enabled_creation__o7HouTv > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Create a Snapshot-Enabled Tigris Bucket via CLI
+
+## Background
+Tigris is a globally distributed, S3-compatible object storage service. Snapshots and forks are opt-in features that must be enabled at bucket creation time — they cannot be turned on later. The Tigris CLI exposes the `--enable-snapshots` flag on `tigris buckets create` for exactly this purpose. In this task you will use the Tigris CLI to create a brand-new bucket with snapshots enabled in a single command.
+
+## Requirements
+- Use the Tigris CLI (`tigris`) to create exactly one new bucket on the real Tigris service (`REDACTED`).
+- The bucket name MUST be `harbor-snap-${trial_id}`, where `${trial_id}` is the contents of `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Snapshots MUST be enabled on the bucket at creation time (in the same command — snapshots cannot be enabled later).
+- Do NOT upload any objects to the bucket. Just create it.
+
+## Implementation Guide
+1. Read the trial id:
+   ```bash
+   TRIAL_ID="$(cat /logs/artifacts/trial_id)"
+   BUCKET="harbor-snap-${TRIAL_ID}"
+   ```
+2. The Tigris CLI is already installed and the following environment variables are pre-populated for machine authentication (do NOT run `tigris login`, which would try to open a browser):
+   - `TIGRIS_STORAGE_ACCESS_KEY_ID`
+   - `TIGRIS_STORAGE_SECRET_ACCESS_KEY`
+   - `TIGRIS_STORAGE_ENDPOINT` (set to `REDACTED`)
+3. Create the snapshot-enabled bucket in a single CLI invocation:
+   ```bash
+   tigris buckets create "$BUCKET" --enable-snapshots
+   ```
+4. (Optional) Confirm it landed by running `tigris buckets list --format json` and looking for the new bucket name.
+
+## Constraints
+- Project path: `/home/user/tigris-task`
+- Do NOT hardcode credentials. Use only the env vars listed above.
+- Do NOT call `tigris login` — credentials are picked up from the environment REDACTEDmatically.
+- The bucket name MUST include the `trial_id` suffix derived from `/logs/artifacts/trial_id` so it is unique per run.
+- Snapshots MUST be enabled in the same `tigris buckets create` command (they cannot be enabled on an existing bucket).
+
+## Integrations
+- Tigris (`REDACTED`)
+EOF
+Running command: echo cli_object_prefix_listing__D9WvkEN > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo boto3_object_roundtrip__GobKLL2 > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# boto3 Object Roundtrip Against Tigris
+
+## Background
+Tigris is an S3-compatible, globally distributed object storage service exposed at the single endpoint `REDACTED`. Because Tigris is S3 compatible, you can use the AWS SDK for Python (boto3) without modification — you only need to point boto3 at the Tigris endpoint and use the standard virtual-hosted addressing style. The Harbor runtime injects the Tigris credentials and endpoint into the container as the AWS-flavored environment variables `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3`, and `AWS_REGION` so boto3 can pick them up REDACTEDmatically.
+
+## Requirements
+Write a single Python script at `/home/user/tigris-task/roundtrip.py` that uses **boto3** (no shelling out to other CLIs) to perform a full object roundtrip against Tigris:
+
+1. Read the trial identifier from `/logs/artifacts/trial_id` (strip surrounding whitespace) and derive the bucket name `harbor-boto3-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+2. Create a boto3 S3 client pointed at the Tigris endpoint. Use the value of the `AWS_ENDPOINT_URL_S3` environment variable as the endpoint URL (this is set to `REDACTED` by the runtime). Configure `Config(s3={"addressing_style": "virtual"})`.
+3. Create the bucket `harbor-boto3-${trial_id}` (idempotently — if it already exists and is owned by the caller, treat that as success).
+4. Upload the bytes of the JSON payload `{"hello":"tigris"}` (exactly that string, no extra whitespace, no trailing newline) under the object key `data/payload.json`.
+5. Download the object back **into memory** (e.g. with `get_object` and reading the `Body` stream) and write the downloaded bytes verbatim to `/home/user/tigris-task/downloaded.json`.
+6. Exit with status 0 on success.
+
+Then execute the script once from `/home/user/tigris-task` so that the bucket, the object, and `/home/user/tigris-task/downloaded.json` all exist before verification runs.
+
+## Implementation Guide
+1. `cd /home/user/tigris-task`.
+2. Create `roundtrip.py`. A minimal sketch:
+   ```python
+   import json, os, pathlib, boto3
+   from botocore.client import Config
+
+   trial_id = pathlib.Path("/logs/artifacts/trial_id").read_text().strip()
+   bucket = f"harbor-boto3-{trial_id}"
+   import re
+   bucket = re.sub(r"[^a-z0-9.-]", "-", bucket.lower())
+   key = "data/payload.json"
+   payload = b'{"hello":"tigris"}'
+
+   s3 = boto3.client(
+       "s3",
+       endpoint_url=os.environ["AWS_ENDPOINT_URL_S3"],
+       config=Config(s3={"addressing_style": "virtual"}),
+   )
+
+   try:
+       s3.create_bucket(Bucket=bucket)
+   except s3.exceptions.BucketAlreadyOwnedByYou:
+       pass
+
+   s3.put_object(Bucket=bucket, Key=key, Body=payload)
+   downloaded = s3.get_object(Bucket=bucket, Key=key)["Body"].read()
+   pathlib.Path("/home/user/tigris-task/downloaded.json").write_bytes(downloaded)
+   ```
+3. Run it: `python3 /home/user/tigris-task/roundtrip.py`.
+
+## Constraints
+- Project path: `/home/user/tigris-task`
+- Script path: `/home/user/tigris-task/roundtrip.py`
+- Downloaded artifact: `/home/user/tigris-task/downloaded.json`
+- Object key MUST be exactly `data/payload.json`.
+- Object body MUST be exactly the 18 bytes `{"hello":"tigris"}` (no extra whitespace, no newline).
+- Bucket name MUST be derived from `/logs/artifacts/trial_id` as `harbor-boto3-${trial_id}` — do NOT hardcode the trial id. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Use boto3 for ALL S3 operations. Do not shell out to AWS CLI, `tigris`, `curl`, etc.
+- Do NOT hardcode credentials or the endpoint URL inside the script — read them from the standard `AWS_*` environment variables that Harbor injects.
+
+## Integrations
+- Tigris Object Storage. Harbor injects `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` / `TIGRIS_STORAGE_ENDPOINT` and the task runtime maps them onto the boto3-friendly `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3` (= `REDACTED`), and `AWS_REGION=REDACTED`.
+EOF
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Tigris CLI: Upload Objects Under Two Prefixes and Capture a Prefix Listing
+
+## Background
+Tigris is an object storage service. The `tigris` CLI (`@tigrisdata/cli`) supports S3-style upload (`tigris cp`) and prefix-scoped listing (`tigris ls t3://<bucket>/<prefix>/`). A common agent workflow is to organize objects under prefixes (e.g., `logs/` for runtime traces, `data/` for inputs) and then inspect only one prefix at a time so the agent can focus on the relevant slice of the bucket.
+
+## Requirements
+Using the `tigris` CLI exclusively, do the following in order:
+
+1. Read the current `trial_id` from `/logs/artifacts/trial_id`. The bucket name MUST be exactly `harbor-prefix-${trial_id}` — do NOT hardcode any other suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+2. Create a new Tigris bucket named `harbor-prefix-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+3. Upload the three pre-existing files into the bucket as follows:
+   - `/home/user/tigris-task/a.txt` → `t3://harbor-prefix-${trial_id}/logs/a.txt`
+   - `/home/user/tigris-task/b.txt` → `t3://harbor-prefix-${trial_id}/logs/b.txt`
+   - `/home/user/tigris-task/c.txt` → `t3://harbor-prefix-${trial_id}/data/c.txt`
+4. Run `tigris ls t3://harbor-prefix-${trial_id}/logs/` and save the FULL stdout of that command to `/home/user/tigris-task/logs-listing.txt` (overwrite if it already exists).
+
+Do NOT delete the bucket — the verifier inspects the bucket state and tears it down itself.
+
+## Implementation Guide
+1. Open a terminal in the project directory `/home/user/tigris-task`.
+2. Determine the trial id, then create the bucket:
+   ```bash
+   TRIAL_ID="$(cat /logs/artifacts/trial_id)"
+   BUCKET="harbor-prefix-${TRIAL_ID}"
+   tigris buckets create "$BUCKET"
+   ```
+3. Upload the three files with `tigris cp` using the exact prefix paths shown above.
+4. Capture the prefix listing:
+   ```bash
+   tigris ls "t3://${BUCKET}/logs/" > /home/user/tigris-task/logs-listing.txt
+   ```
+5. The container is pre-wired to expose the Tigris credentials to the CLI: `/etc/profile.d/tigris-auth.sh` maps `TIGRIS_STORAGE_ACCESS_KEY_ID`/`TIGRIS_STORAGE_SECRET_ACCESS_KEY` to the AWS-compatible variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION=REDACTED`) that the `tigris` CLI consumes. If you invoke `tigris` from a non-login shell, source this file first or pass the AWS_* variables inline.
+
+## Constraints
+- Project path: `/home/user/tigris-task`
+- Bucket name MUST be exactly `harbor-prefix-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Do NOT hardcode the suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Use the Tigris CLI (`@tigrisdata/cli`) only — do not implement uploads via raw S3/HTTP calls or other SDKs.
+- Do NOT modify the contents of `/home/user/tigris-task/a.txt`, `b.txt`, or `c.txt` — upload them as-is.
+- Do NOT delete the bucket; the verifier asserts on the bucket state and cleans up afterwards.
+- Output file MUST be at exactly `/home/user/tigris-task/logs-listing.txt`.
+
+## Integrations
+- Tigris Object Storage (credentials provided as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).
+EOF
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Skipping image OS validation for hb__cli_sdk_interop_bucket_lifecycle: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Skipping image OS validation for hb__object_user_metadata_persistence: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo cli_sdk_interop_bucket_lifecycle__SQZSsTA > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo object_user_metadata_persistence__cwVrnK7 > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Tigris CLI ↔ SDK Interop: Provision a Bucket and Upload a Manifest
+
+## Background
+This task exercises the interoperability between the Tigris CLI (`@tigrisdata/cli`) and the Tigris Storage SDK (`@tigrisdata/storage`). A common real-world pattern is to use the CLI to provision and configure a bucket as part of infrastructure setup, then use the SDK from application code to read and write objects. Snapshots and TTLs are bucket-level features that must be configured at the CLI/control-plane layer; object upload is data-plane and ergonomic from the SDK.
+
+You will:
+1. Use the Tigris CLI to create a brand new bucket with snapshots enabled (snapshots MUST be enabled at creation time — they cannot be turned on later).
+2. Use the Tigris CLI again to set the bucket's object-expiration TTL to 7 days.
+3. Write a TypeScript program that uses the `@tigrisdata/storage` SDK to upload an object named `manifest.json` to that bucket.
+4. Use the Tigris CLI a final time to list the bucket contents and persist the listing to disk.
+
+## Requirements
+- Read the current `trial_id` from `/logs/artifacts/trial_id` and trim trailing whitespace.
+- Derive the bucket name as `harbor-interop-${trial_id}` and use that name verbatim everywhere. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Step 1 (CLI): create the bucket with snapshots enabled in a single `tigris buckets create` invocation that includes `--enable-snapshots`.
+- Step 2 (CLI): set the object expiration TTL on that bucket to exactly 7 days using `tigris buckets set-ttl <bucket> --days 7`.
+- Step 3 (SDK): create `/home/user/tigris-task/index.ts` that imports from `@tigrisdata/storage` and uses the `put` function to upload an object whose key is `manifest.json` and whose body is the literal JSON string `{"created_by":"cli","modified_by":"sdk","trial":"<trial_id>"}` (with `<trial_id>` substituted from `/logs/artifacts/trial_id`). The object's Content-Type should be `application/json`. The upload must target the new bucket via `config: { bucket: bucketName }`. Run the program with `tsx /home/user/tigris-task/index.ts`.
+- Step 4 (CLI): list the bucket contents with `tigris ls t3://harbor-interop-${trial_id}/` and write stdout into `/home/user/tigris-task/bucket-listing.txt`. The listing file MUST mention the `manifest.json` key.
+
+## Implementation Guide
+1. Open a terminal in `/home/user/tigris-task`.
+2. Read the trial id:
+   ```bash
+   TRIAL_ID="$(cat /logs/artifacts/trial_id)"
+   BUCKET="harbor-interop-${TRIAL_ID}"
+   ```
+3. Create the snapshot-enabled bucket:
+   ```bash
+   tigris buckets create "$BUCKET" --enable-snapshots
+   ```
+4. Apply a 7-day object expiration TTL:
+   ```bash
+   tigris buckets set-ttl "$BUCKET" --days 7
+   ```
+5. Create `/home/user/tigris-task/index.ts`. The project is already initialized — `package.json` declares `@tigrisdata/storage` and `tsx`, and `node_modules/` is pre-populated. Example outline:
+   ```typescript
+   import { readFile } from "node:fs/promises";
+   import { put } from "@tigrisdata/storage";
+
+   const trialId = (await readFile("/logs/artifacts/trial_id", "utf-8")).trim();
+   const bucket = `harbor-interop-${trialId}`;
+   const body = JSON.stringify({ created_by: "cli", modified_by: "sdk", trial: trialId });
+
+   const { data, error } = await put("manifest.json", body, {
+     contentType: "application/json",
+     config: { bucket },
+   });
+   if (error) {
+     console.error("upload failed:", error);
+     process.exit(1);
+   }
+   console.log("uploaded", data);
+   ```
+6. Run the SDK uploader:
+   ```bash
+   tsx /home/user/tigris-task/index.ts
+   ```
+7. List bucket contents with the CLI and save the listing:
+   ```bash
+   tigris ls "t3://${BUCKET}/" > /home/user/tigris-task/bucket-listing.txt
+   ```
+
+## Constraints
+- Project path: `/home/user/tigris-task`
+- Source file: `/home/user/tigris-task/index.ts`
+- Listing file: `/home/user/tigris-task/bucket-listing.txt`
+- Bucket name MUST be `harbor-interop-${trial_id}` (no other prefix or suffix), with `${trial_id}` taken verbatim from `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Snapshots MUST be enabled at creation (`--enable-snapshots` on `tigris buckets create`). They cannot be enabled on an existing bucket.
+- The bucket TTL MUST be exactly 7 days (`tigris buckets set-ttl <bucket> --days 7`).
+- The uploaded object body MUST be exactly `{"created_by":"cli","modified_by":"sdk","trial":"<trial_id>"}` (no extra whitespace, key ordering as written here), with `<trial_id>` substituted.
+- The CLI is pre-authenticated via the AWS-compatible environment bridge in `/etc/profile.d/tigris-auth.sh`. From a login shell the CLI works directly; from a non-login shell, source that file first or pass `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_REGION=REDACTED` inline.
+- Use the Tigris CLI (`tigris`) for bucket creation, TTL configuration, and final listing. Use the `@tigrisdata/storage` SDK from TypeScript for the manifest upload. Do not mix or substitute these (no AWS CLI, no raw HTTP, no `tigris cp`/`tigris put` for the manifest upload, no SDK for bucket creation/TTL).
+- Do not hardcode credentials.
+- Leave the bucket and `manifest.json` in place after completion — the verifier inspects them and then cleans up.
+
+## Integrations
+- Tigris Object Storage (real `REDACTED` endpoint via the Tigris CLI and `@tigrisdata/storage` SDK).
+
+EOF
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Persist Custom User Metadata on a Tigris Object
+
+## Background
+Tigris is an S3-compatible object storage service exposing a single global endpoint at `REDACTED`. Like Amazon S3, Tigris persists user-defined metadata (small key/value pairs) and standard HTTP headers (such as `Content-Type`) alongside each object. The AWS CLI exposes this via the `--metadata` and `--content-type` flags on `aws s3 cp`. In this task you will use the AWS CLI configured against Tigris to upload a pre-existing report file with two custom metadata fields and an explicit content type, in a way that the metadata can later be retrieved with `aws s3api head-object`.
+
+## Requirements
+- Use the standard `aws` CLI (already installed) configured to talk to Tigris.
+- Create a Tigris bucket whose name is derived from the trial id.
+- Upload the existing local file `/home/user/tigris-task/report.txt` (contents: literal text `quarterly report`) to that bucket under the key `reports/q1.txt`.
+- The uploaded object MUST carry the following two custom user-metadata fields:
+  - `owner=alice`
+  - `team=research`
+- The uploaded object MUST have its `Content-Type` set to `text/markdown`.
+
+## Implementation Guide
+1. Read the trial id from `/logs/artifacts/trial_id`.
+2. Construct the bucket name as `harbor-meta-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+3. Use the AWS CLI against the Tigris endpoint to create the bucket, for example:
+   ```bash
+   aws s3 mb s3://harbor-meta-${trial_id}
+   ```
+4. Upload the pre-existing report file with the required metadata and content type:
+   ```bash
+   aws s3 cp /home/user/tigris-task/report.txt \
+     s3://harbor-meta-${trial_id}/reports/q1.txt \
+     --metadata owner=alice,team=research \
+     --content-type text/markdown
+   ```
+5. Confirm the metadata persisted by running:
+   ```bash
+   aws s3api head-object --bucket harbor-meta-${trial_id} --key reports/q1.txt
+   ```
+   The returned JSON should include `"ContentType": "text/markdown"` and a `"Metadata"` object containing both `"owner": "alice"` and `"team": "research"`.
+
+## Constraints
+- Project path: /home/user/tigris-task
+- Pre-existing file: /home/user/tigris-task/report.txt (contains exactly the bytes `quarterly report`, no trailing newline). Do NOT modify its contents.
+- Bucket name format: `harbor-meta-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Object key: `reports/q1.txt` (note the `reports/` prefix).
+- Required user metadata keys: `owner`, `team`. Required values: `alice`, `research`. Use lowercase keys exactly as written.
+- Required object Content-Type: `text/markdown`.
+- The AWS CLI is pre-configured via the environment variables `AWS_ENDPOINT_URL_S3=REDACTED`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION=REDACTED`. Do NOT hardcode credentials in any file.
+- Use the real Tigris service. Do NOT mock or stub any of the calls.
+
+## Integrations
+- Tigris (object storage, accessed via the AWS S3 protocol on `REDACTED`)
+EOF
+Skipping image OS validation for hb__presigned_url_unauthenticated_download: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command failed
+Trial bulk_concurrent_object_upload__NqspTdr failed: Command failed (exit 127): set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+stdout: + return 0
++ install_dir=/root/.pochi
++ version_to_install=
++ '[' 1 -gt 0 ']'
++ case "$1" in
++ version_to_install=pochi-v0.6.8
++ '[' -z pochi-v0.6.8 ']'
++ version_to_install=cli@0.6.8
++ install_version cli@0.6.8 /root/.pochi
++ local version_to_install=cli@0.6.8
++ local install_dir=/root/.pochi
++ case "$version_to_install" in
++ info Installing 'Pochi version cli@0.6.8'
++ local action=Installing
++ local 'details=Pochi version cli@0.6.8'
++ command printf '\033[1;32m%12s\033[0m %s\n' Installing 'Pochi version cli@0.6.8'
+[1;32m  Installing[0m Pochi version cli@0.6.8
++ install_release cli@0.6.8 /root/.pochi
++ local version=cli@0.6.8
++ local install_dir=/root/.pochi
++ info Checking 'for existing Pochi installation'
++ local action=Checking
++ local 'details=for existing Pochi installation'
++ command printf '\033[1;32m%12s\033[0m %s\n' Checking 'for existing Pochi installation'
+[1;32m    Checking[0m for existing Pochi installation
++ upgrade_is_ok cli@0.6.8 /root/.pochi
++ return 0
+++ download ... [truncated]
+stderr: None
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo presigned_url_unauthenticated_do__ss5zQbu > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Tigris Presigned URL: Unauthenticated Download via curl
+
+## Background
+Tigris is a globally distributed, S3-compatible object storage service exposed at the single virtual-hosted-style endpoint `REDACTED`. Because Tigris is S3-compatible, you can mint **AWS SigV4 presigned URLs** for it with the standard AWS Python SDK (boto3) via `s3_client.generate_presigned_url("get_object", ...)`. The resulting URL embeds the signature in the query string (`X-Amz-Signature=...`) and can be fetched by *any* HTTP client without authentication headers — that is the entire point of a presigned URL.
+
+The Harbor runtime injects the Tigris credentials and endpoint into the container as the AWS-flavored environment variables `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3` (`REDACTED`), and `AWS_REGION` (`REDACTED`) so boto3 picks them up REDACTEDmatically.
+
+## Requirements
+From the project directory `/home/user/tigris-task`, perform the following steps **in order**:
+
+1. Read the per-trial id from `/logs/artifacts/trial_id` (strip surrounding whitespace) and derive the bucket name `harbor-presign-${trial_id}`. Do NOT hardcode the trial id. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+2. Using **boto3**, create the bucket `harbor-presign-${trial_id}` (treat `BucketAlreadyOwnedByYou` as success).
+3. Using **boto3**, upload an object under the key `share/secret.txt` whose body is exactly the bytes `shareable content` (17 bytes — no newline, no quotes, no extra whitespace).
+4. Using `s3_client.generate_presigned_url("get_object", Params={"Bucket": ..., "Key": "share/secret.txt"}, ExpiresIn=300)`, mint an S3 SigV4 presigned URL valid for **300 seconds** that grants read access to `share/secret.txt`.
+5. Write the presigned URL string (and nothing else — no trailing newline) to `/home/user/tigris-task/presigned.url`.
+6. Download the object **using only `curl`**, with **no Tigris credentials** present in the calling environment. You MUST temporarily unset `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `TIGRIS_STORAGE_ACCESS_KEY_ID`, and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` inside a subshell so that the presigned URL is the *only* thing authorizing the request. Save the response body verbatim to `/home/user/tigris-task/downloaded.txt`. Recommended idiom:
+   ```bash
+   ( unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY \
+            TIGRIS_STORAGE_ACCESS_KEY_ID TIGRIS_STORAGE_SECRET_ACCESS_KEY; \
+     curl -fsSL --output /home/user/tigris-task/downloaded.txt \
+          "$(cat /home/user/tigris-task/presigned.url)" )
+   ```
+
+Do NOT delete the bucket or object after you finish — the verifier will perform cleanup itself.
+
+## Implementation Guide
+1. `cd /home/user/tigris-task`.
+2. Write a small Python helper (e.g. `presign.py`) that:
+   * Reads `/logs/artifacts/trial_id` and builds the bucket name `harbor-presign-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+   * Builds a boto3 S3 client targeting `AWS_ENDPOINT_URL_S3` with `Config(s3={"addressing_style": "virtual"})`.
+   * Calls `create_bucket(Bucket=bucket)` (catching `BucketAlreadyOwnedByYou`).
+   * Calls `put_object(Bucket=bucket, Key="share/secret.txt", Body=b"shareable content")`.
+   * Calls `generate_presigned_url("get_object", Params={"Bucket": bucket, "Key": "share/secret.txt"}, ExpiresIn=300)`.
+   * Writes the URL to `/home/user/tigris-task/presigned.url` (no trailing newline).
+3. Run it with `python3 presign.py`.
+4. Run the unauthenticated curl in a subshell that has every Tigris/AWS credential variable unset, and save the body to `/home/user/tigris-task/downloaded.txt`.
+
+## Constraints
+- Project path: `/home/user/tigris-task`
+- Presigned URL file: `/home/user/tigris-task/presigned.url` (single line, no trailing newline).
+- Downloaded artifact: `/home/user/tigris-task/downloaded.txt` (bytes must equal exactly `shareable content`, 17 bytes, no newline).
+- Bucket name MUST be exactly `harbor-presign-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Do NOT hardcode the suffix. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Object key MUST be exactly `share/secret.txt`.
+- Object body MUST be exactly the 17 bytes `shareable content` (no newline, no quotes).
+- The presigned URL MUST:
+  - Be generated for the HTTP `GET` (`get_object`) operation.
+  - Expire in `300` seconds (i.e. pass `ExpiresIn=300` to `generate_presigned_url`).
+  - Point at the Tigris virtual-hosted-style hostname `t3.storage.dev`.
+  - Contain the SigV4 query parameter `X-Amz-Signature`.
+- The curl command MUST be invoked in a subshell where `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `TIGRIS_STORAGE_ACCESS_KEY_ID`, and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` are unset — the only authorization on the wire must be the presigned-URL query string.
+- Do NOT hardcode credentials or the endpoint URL in the helper script — read them from the standard `AWS_*` environment variables that Harbor injects.
+- Do NOT delete the bucket or object after finishing; the verifier handles cleanup.
+
+## Integrations
+- Tigris Object Storage. Harbor injects `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` / `TIGRIS_STORAGE_ENDPOINT` and the task runtime maps them onto the boto3-friendly `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3` (= `REDACTED`), and `AWS_REGION=REDACTED`.
+EOF
+Not retrying trial because the maximum number of retries has been reached
+Skipping image OS validation for hb__readonly_workspace_write_denial: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo readonly_workspace_write_denial__Xtqnuhv > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# ReadOnly Workspace Write Denial with Tigris Agent Kit
+
+## Background
+Tigris Agent Kit (`@tigrisdata/agent-kit`) provisions per-agent workspaces with TTL and **scoped IAM credentials**. A workspace's scoped credentials carry one of two roles: `Editor` (read+write) or `ReadOnly` (read only). To prove that scoped credentials actually enforce role boundaries, this task drives a real Tigris workspace through an editor-write, then mints a second set of `ReadOnly` credentials and demonstrates that those credentials can read existing objects but are denied when they try to write a new object.
+
+Because `createWorkspace` only mints a single scoped key per call and the documented Agent Kit way to produce additional scoped credentials for the same dataset is `createForks` (which performs a copy-on-write snapshot of the source bucket and provisions per-fork scoped credentials), you will:
+1. Create the editor workspace with snapshots enabled.
+2. Write `notes/welcome.txt` into the editor workspace using the editor credentials.
+3. Use `createForks(... , 1, { credentials: { role: "ReadOnly" } })` to mint a single `ReadOnly` fork of the same data — the fork's scoped credentials are the **second** set of credentials referenced in the requirements, scoped to a copy-on-write view of the workspace contents.
+4. Use those ReadOnly credentials to attempt a forbidden write **and** a successful read against the fork bucket.
+5. Persist the captured denial error and the readback content to local log files.
+
+## Requirements
+- Write a TypeScript program at `/home/user/tigris-task/run.ts` and run it with `tsx /home/user/tigris-task/run.ts`.
+- The program must use `@tigrisdata/agent-kit` (for `createWorkspace` + `createForks`) and `@tigrisdata/storage` (for `put` and `get`).
+- The program must:
+  1. Read the current `trial_id` from `/logs/artifacts/trial_id` and trim whitespace.
+  2. Build the editor workspace name as `harbor-ro-${trial_id}` (lowercase trial id).
+  3. Call `createWorkspace(workspaceName, { ttl: { days: 1 }, enableSnapshots: true, credentials: { role: "Editor" } })`. Abort with a non-zero exit if `error` is set or if `data.credentials` is missing. Treat the returned `data.credentials` as the **editor credentials**.
+  4. Using the editor credentials, call `put` from `@tigrisdata/storage` to upload object key `notes/welcome.txt` with the exact body string `hello readonly` (no trailing newline) into the editor workspace bucket. Pass the editor credentials via the per-call `config` argument so the SDK does not fall back to the environment keys.
+  5. Call `createForks(workspaceBucket, 1, { prefix: "harbor-ro-${trial_id}-readonly", credentials: { role: "ReadOnly" } })`. Abort with a non-zero exit if `error` is set, if `forkSet.forks[0]` is missing, or if `forkSet.forks[0].credentials` is missing. The single fork bucket name will be `harbor-ro-${trial_id}-readonly-0`. Treat `forkSet.forks[0].credentials` as the **readonly credentials**. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+  6. Using the readonly credentials, attempt to `put` a new object `notes/forbidden.txt` with body `should be rejected` into the fork bucket. This write MUST be expected to fail because the scoped key has only ReadOnly permission. Capture the returned `error` (the SDK returns `{ data, error }` — do not throw). Stringify the error (include any HTTP status code or AWS error code such as `AccessDenied`/`Forbidden`/`403` that appears in the error message or its underlying cause) and write the resulting non-empty string to `/home/user/tigris-task/write-denial.log`. If the write unexpectedly succeeds (no `error`), exit non-zero — that would be a verification failure.
+  7. Using the readonly credentials, call `get("notes/welcome.txt", "string", { config: { bucket: forkBucket, accessKeyId, secretAccessKey } })` from `@tigrisdata/storage`. The call must succeed and return the body `hello readonly`. Write the returned body verbatim to `/home/user/tigris-task/readback.txt` (no trailing newline, no extra whitespace).
+- The program must exit with code 0 only if all of the above steps completed as expected (editor write succeeded, readonly write was denied, readonly read succeeded).
+- Do not tear down the workspace or the fork — the verifier is responsible for cleanup.
+
+## Implementation Guide
+1. `cd /home/user/tigris-task`. The project is pre-initialized with a `package.json` and `tsconfig.json` and `node_modules` already populated with `@tigrisdata/agent-kit`, `@tigrisdata/storage`, and `tsx`.
+2. Create `run.ts` with the logic above. Use ES module imports, for example:
+   ```typescript
+   import { readFile, writeFile } from "node:fs/promises";
+   import { createWorkspace, createForks } from "@tigrisdata/agent-kit";
+   import { put, get } from "@tigrisdata/storage";
+   ```
+3. When uploading or reading with scoped credentials, pass `{ config: { bucket, accessKeyId, secretAccessKey } }` to each `put`/`get` call so the SDK uses the scoped key rather than the environment-provided admin key.
+4. For every SDK call, check the returned `{ data, error }` envelope and fail fast (exit non-zero with a descriptive `console.error`) if anything unexpected occurs.
+5. When the readonly write fails, capture the error like this (illustrative — adapt to the real error shape):
+   ```typescript
+   const denial = `${err.name ?? "Error"}: ${err.message ?? String(err)}`;
+   await writeFile("/home/user/tigris-task/write-denial.log", denial, "utf-8");
+   ```
+   The captured string MUST contain an access-denial indicator such as `AccessDenied`, `Forbidden`, `not allowed`, `permission`, or HTTP status `403`. If the underlying error has nested `cause`/`Code`/`$metadata.httpStatusCode` fields, include those in the log line so the verifier can detect the keyword.
+6. Run the program with `tsx run.ts`. It should exit 0 and leave both `/home/user/tigris-task/write-denial.log` and `/home/user/tigris-task/readback.txt` on disk.
+
+## Constraints
+- Project path: /home/user/tigris-task
+- Source file: /home/user/tigris-task/run.ts
+- Write-denial log: /home/user/tigris-task/write-denial.log (non-empty; must contain an access-denial keyword)
+- Read-back file: /home/user/tigris-task/readback.txt (must equal exactly `hello readonly`)
+- Editor workspace bucket: dynamically constructed as `harbor-ro-${trial_id}` (with TTL 1 day, snapshots enabled, Editor scoped credentials). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- ReadOnly fork bucket: `harbor-ro-${trial_id}-readonly-0` (created via `createForks` with `role: ReadOnly`, normalized)
+- Object key written by editor creds: `notes/welcome.txt` with body `hello readonly`
+- Object key whose write MUST be denied: `notes/forbidden.txt` (must NOT exist in the fork bucket after the run)
+- Do not hardcode credentials; admin credentials come from environment variables (`TIGRIS_STORAGE_ACCESS_KEY_ID`, `TIGRIS_STORAGE_SECRET_ACCESS_KEY`, `TIGRIS_STORAGE_ENDPOINT`). Scoped credentials are obtained from Agent Kit at runtime.
+- Real Tigris service only — no mocking.
+- Do NOT tear down the workspace or the fork; the verifier will tear them down.
+
+## Integrations
+- Tigris Data (real `REDACTED` endpoint via `@tigrisdata/agent-kit` and `@tigrisdata/storage`).
+
+EOF
+Skipping image OS validation for hb__typescript_sdk_putobject_workflow: docker inspect returned 1
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo typescript_sdk_putobject_workflo__vDnJZ2H > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Tigris Storage SDK PutObject Workflow
+
+## Background
+The Tigris Storage SDK (`@tigrisdata/storage`) is the native TypeScript SDK for Tigris object storage. It provides functions like `createBucket`, `put`, and `list` that map to the same primitives the plan refers to as `putObject` and `listObjects`. You will use this SDK to programmatically provision a bucket, upload a small inbox of JSON messages, and produce a local listing of the uploaded keys.
+
+## Requirements
+- Write a TypeScript program at `/home/user/tigris-task/index.ts` that uses `@tigrisdata/storage` to:
+  1. Read the current `trial_id` from `/logs/artifacts/trial_id`.
+  2. Build the bucket name as `harbor-tssdk-${trial_id}` (lowercase trial id). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+  3. Call `createBucket` to create that bucket. If the bucket already exists, treat that as success.
+  4. Call `put` three times to upload the following objects to the bucket, each with `Content-Type: application/json`:
+     - `inbox/msg-1.json` with body `{"id": 1}`
+     - `inbox/msg-2.json` with body `{"id": 2}`
+     - `inbox/msg-3.json` with body `{"id": 3}`
+  5. Call `list` with `{ prefix: "inbox/" }` and write the resulting object names (the `name` field of each item, one per line, in any order) to `/home/user/tigris-task/listing.txt`.
+- Run the program with `tsx /home/user/tigris-task/index.ts` (`tsx` is pre-installed globally and as a local dev dependency). Compiling with `tsc` first is also acceptable.
+- The bucket and objects must be created on the real Tigris service using the credentials provided via environment variables (`TIGRIS_STORAGE_ACCESS_KEY_ID`, `TIGRIS_STORAGE_SECRET_ACCESS_KEY`, `TIGRIS_STORAGE_ENDPOINT`). Do not mock the service.
+
+## Implementation Guide
+1. `cd /home/user/tigris-task`
+2. The project is already initialized with a `package.json` that depends on `@tigrisdata/storage` and `tsx`, and dependencies are pre-installed in `node_modules`. A `tsconfig.json` is also provided.
+3. Create `index.ts` with the logic described above. Use ES module imports:
+   ```typescript
+   import { readFile, writeFile } from "node:fs/promises";
+   import { createBucket, put, list } from "@tigrisdata/storage";
+   ```
+4. Read the trial id with `readFile("/logs/artifacts/trial_id", "utf-8")` and `.trim()` it.
+5. For every SDK call, check the returned `{ data, error }` envelope. If `error` is set, ignore it only for `createBucket` when the bucket already exists; otherwise exit non-zero.
+6. Pass `config: { bucket: bucketName }` to each `put` and `list` call so the operations target the new bucket.
+7. After the listing call, join the `name` values of `data.items` with `\n` and write them to `/home/user/tigris-task/listing.txt`.
+8. Run with `tsx index.ts` and confirm it exits successfully.
+
+## Constraints
+- Project path: /home/user/tigris-task
+- Source file: /home/user/tigris-task/index.ts
+- Listing output file: /home/user/tigris-task/listing.txt
+- Bucket name: `harbor-tssdk-${trial_id}` where `${trial_id}` comes from `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+- Use only `@tigrisdata/storage` for the bucket creation, upload, and listing steps. Do not shell out to other tools (no `tigris` CLI, no AWS CLI).
+- Do not hardcode credentials; read them from environment variables, which the SDK does REDACTEDmatically.
+
+## Integrations
+- Tigris Data (real `REDACTED` endpoint via `@tigrisdata/storage`).
+
+EOF
+Skipping image OS validation for hb__workspace_create_upload_teardown: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Skipping image OS validation for hb__agent_pool_lifecycle_manager: docker inspect returned 1
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo workspace_create_upload_teardown__kbtHnb9 > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Tigris Agent Kit: Workspace Lifecycle With Scoped Credentials
+
+## Background
+Tigris Agent Kit (`@tigrisdata/agent-kit`) provides a `createWorkspace` primitive that provisions an ephemeral bucket plus a scoped IAM access key. The scoped key is restricted to that single workspace bucket only — leaking the key cannot expose any other data. In this task you will write a TypeScript program that creates such a workspace, then uses the scoped credentials (not the root credentials in the environment) to upload a small state object into the workspace bucket. You will also surface the scoped access key id so the verifier can confirm it is different from the root key.
+
+## Requirements
+- Write a TypeScript program at `/home/user/tigris-task/run.ts` that:
+  1. Reads the current `trial_id` from `/logs/artifacts/trial_id` and `.trim()`s it.
+  2. Builds the workspace name as `harbor-ws-${trial_id}` (Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.).
+  3. Calls `createWorkspace(name, { ttl: { days: 1 }, credentials: { role: "Editor" } })` from `@tigrisdata/agent-kit`. If the call returns an error or returns a workspace without `credentials`, exit with a non-zero exit code.
+  4. Using ONLY the scoped credentials returned in `workspace.credentials` (NOT the root `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` env vars), upload a single object with `@tigrisdata/storage`'s `put`:
+     - Key: `state.json`
+     - Body: the exact string `{"status":"ok","run":"${trial_id}"}` (no extra whitespace, with `${trial_id}` substituted).
+     - Content-Type: `application/json`.
+     - Target bucket: `workspace.bucket`.
+     - Pass the scoped credentials explicitly via `config: { bucket, accessKeyId, secretAccessKey }`.
+  5. After a successful upload, print the scoped `workspace.credentials.accessKeyId` to stdout (a single line, no extra prefix) AND also write it to `/home/user/tigris-task/output.log` so it can be inspected after the run.
+- Run the program with `tsx /home/user/tigris-task/run.ts` (`tsx` is installed both globally and as a local dev dependency).
+- All Tigris API calls must hit the real Tigris service via `@tigrisdata/agent-kit` and `@tigrisdata/storage`. Do not mock anything.
+
+## Implementation Guide
+1. `cd /home/user/tigris-task`
+2. The project is already initialized with a `package.json` that depends on `@tigrisdata/agent-kit`, `@tigrisdata/storage`, and `tsx`, and the dependencies are pre-installed in `node_modules`. A `tsconfig.json` is also provided.
+3. Create `run.ts` with the logic described above. Suggested imports:
+   ```typescript
+   import { readFile, writeFile } from "node:fs/promises";
+   import { createWorkspace } from "@tigrisdata/agent-kit";
+   import { put } from "@tigrisdata/storage";
+   ```
+4. For every SDK call, check the returned `{ data, error }` envelope. On any unexpected error, log it and exit non-zero.
+5. Do NOT call `teardownWorkspace` from `run.ts` — the verifier is responsible for tearing down the workspace after it inspects the result.
+6. Run with `tsx run.ts` and confirm it exits with code 0 and prints exactly one line: the scoped access key id (it should start with `tid_`).
+
+## Constraints
+- Project path: /home/user/tigris-task
+- Source file: /home/user/tigris-task/run.ts
+- Log file: /home/user/tigris-task/output.log (must contain the scoped access key id printed by the script)
+- Workspace name: `harbor-ws-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`.
+- Object key: `state.json`
+- Object body: exact string `{"status":"ok","run":"${trial_id}"}` (UTF-8, no trailing newline).
+- The upload MUST be performed using the scoped credentials returned by `createWorkspace`. Do not fall back to the root env-var credentials for the upload step.
+- Do not hardcode credentials anywhere; the root credentials are exposed via environment variables and consumed REDACTEDmatically by `@tigrisdata/agent-kit`.
+
+## Integrations
+- Tigris Data (real `REDACTED` endpoint via `@tigrisdata/agent-kit` and `@tigrisdata/storage`).
+
+EOF
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo agent_pool_lifecycle_manager__cW7XCBS > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Tigris Agent Pool Lifecycle Manager
+
+## Background
+Production agent harnesses don't just spin up a single workspace — they manage an entire pool of agent workspaces over time: provisioning many at once, dispatching work to individual agents, surveying live state, and reliably tearing the pool down at the end. Tigris Agent Kit's `createWorkspace` / `teardownWorkspace` primitives, paired with each workspace's scoped Editor credentials and the Tigris S3 endpoint, are the building blocks for such a manager.
+
+You must implement a complete agent pool lifecycle manager as a TypeScript library plus a CLI entrypoint, then run a four-step scenario through the CLI and capture its output to a log file.
+
+## Requirements
+- Implement the manager at `/home/user/pool/manager.ts` using `@tigrisdata/agent-kit` and `@aws-sdk/client-s3`.
+- Implement the CLI entrypoint at `/home/user/pool/cli.ts`. It MUST be runnable via `npx tsx cli.ts <subcommand> [args...]` from `/home/user/pool` and dispatch to functions exported by `manager.ts`.
+- The CLI MUST support exactly four subcommands:
+
+  1. `provision <N>` — Provision exactly `<N>` Tigris workspaces **concurrently** (single `Promise.all` over `createWorkspace` calls; sequential awaits are NOT acceptable). The workspaces MUST be named `pool-<N>-1`, `pool-<N>-2`, ..., `pool-<N>-<N>` (1-based; the literal value of `<N>` appears in every workspace name). Each workspace MUST be created with `ttl: { days: 1 }` and `credentials: { role: "Editor" }`. After provisioning succeeds, write `/home/user/pool/pool-state.json` whose contents are a JSON object of the form:
+     ```json
+     {
+       "workspaces": [
+         { "name": "pool-3-1", "bucket": "<bucket-name>" },
+         { "name": "pool-3-2", "bucket": "<bucket-name>" },
+         { "name": "pool-3-3", "bucket": "<bucket-name>" }
+       ]
+     }
+     ```
+     The order in the `workspaces` array MUST match the agent index order (entry `i` corresponds to workspace `pool-<N>-<i+1>`). The persisted record MUST also include each workspace's scoped `credentials` (accessKeyId / secretAccessKey) so later subcommands can use them — store them under a `credentials` key on each entry. If any `createWorkspace` call fails, the CLI MUST exit non-zero and MUST NOT write `pool-state.json`.
+
+  2. `assign-task <agent-index> <text>` — Read `pool-state.json`, look up the entry whose 1-based agent index matches `<agent-index>` (so `1` refers to the first entry in the `workspaces` array), and upload a single object whose key is exactly `task.txt` and whose body is exactly `<text>` to that workspace's bucket. The upload MUST use the workspace's scoped credentials (NOT the global Tigris credentials) against the Tigris S3 endpoint `REDACTED`, region `REDACTED`, via `@aws-sdk/client-s3`'s `S3Client` and `PutObjectCommand`. The subcommand MUST exit 0 on success and non-zero if `pool-state.json` is missing, the agent index is out of range, or the upload fails.
+
+  3. `status` — Read `pool-state.json` and print to stdout, in this exact format and order:
+     - A first line of the form `pool size: <count>` where `<count>` is the integer number of workspaces in the pool.
+     - Then one bucket name per line, in the same order as the `workspaces` array.
+     Exit code MUST be 0 when `pool-state.json` exists, even if the pool is empty.
+
+  4. `teardown` — Read `pool-state.json` and tear down every recorded workspace via `teardownWorkspace` using `Promise.allSettled` so a single failure does not short-circuit the others. After all teardown attempts have settled (regardless of partial errors), remove `/home/user/pool/pool-state.json` from disk. Exit code 0 if every teardown succeeded; non-zero if any failed.
+
+- The four subcommands MUST be implemented in `manager.ts` as exported async functions (`provisionPool`, `assignTask`, `status`, `teardownPool`, or equivalent named exports) and invoked from `cli.ts` based on `process.argv`. Unknown subcommands MUST cause the CLI to exit non-zero with a usage message on stderr.
+
+## Scenario to Execute
+After implementing the manager and CLI, run the following four CLI invocations **in order** from `/home/user/pool` and append each invocation's combined stdout+stderr (in order) to `/home/user/pool/scenario.log`:
+
+1. `npx tsx cli.ts provision 3`
+2. `npx tsx cli.ts assign-task 1 "hello world"`
+3. `npx tsx cli.ts status`
+4. `npx tsx cli.ts teardown`
+
+After the scenario completes:
+- `/home/user/pool/scenario.log` MUST exist and MUST contain a line `pool size: 3` followed by exactly 3 bucket-name lines (produced by the `status` step).
+- All three workspace buckets MUST have been torn down (verifiable via `tigris buckets list`).
+- `/home/user/pool/pool-state.json` MUST be absent after the `teardown` step.
+
+## Implementation Guide
+1. The project directory `/home/user/pool` is pre-initialized with `package.json`, `tsconfig.json`, and `node_modules` containing `@tigrisdata/agent-kit`, `@aws-sdk/client-s3`, `tsx`, `typescript`, and `@types/node`. The Tigris CLI (`tigris`) is installed globally.
+2. Read Tigris Agent Kit credentials from the environment variables `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` — `@tigrisdata/agent-kit` picks them up REDACTEDmatically.
+3. Implement `manager.ts` with one exported async function per subcommand. Each function MUST throw or return non-zero so the CLI can surface failures properly.
+4. Implement `cli.ts` that parses `process.argv` (after the first two entries) and dispatches to the matching manager function. Use `process.exitCode = 1` on failure.
+5. To run the full scenario, you may use a shell one-liner; e.g. each command's combined output appended to `scenario.log`:
+   ```bash
+   cd /home/user/pool && \
+     npx tsx cli.ts provision 3                >> scenario.log 2>&1 && \
+     npx tsx cli.ts assign-task 1 "hello world" >> scenario.log 2>&1 && \
+     npx tsx cli.ts status                     >> scenario.log 2>&1 && \
+     npx tsx cli.ts teardown                   >> scenario.log 2>&1
+   ```
+
+## Constraints
+- Project path: `/home/user/pool`
+- Manager module: `/home/user/pool/manager.ts`
+- CLI entrypoint: `/home/user/pool/cli.ts`
+- State file: `/home/user/pool/pool-state.json` (created by `provision`, deleted by `teardown`)
+- Log file: `/home/user/pool/scenario.log` (must contain the four scenario steps' outputs)
+- Workspace naming: literal `pool-<N>-<i>` for 1-based `i` and the integer `N` passed to `provision`.
+- TTL: 1 day for every workspace; credentials role: `Editor` for every workspace.
+- Concurrency: provisioning MUST use a single `Promise.all` over `createWorkspace`; teardown MUST use `Promise.allSettled` over `teardownWorkspace`.
+- Upload endpoint: `REDACTED`; region: `REDACTED`; credentials: the workspace's scoped Editor key.
+- You MUST use the real Tigris API via `@tigrisdata/agent-kit`. Do NOT mock any Tigris or S3 function.
+
+## Integrations
+- Tigris Agent Kit (`@tigrisdata/agent-kit`)
+- Tigris CLI (`@tigrisdata/cli`)
+
+EOF
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Skipping image OS validation for hb__chained_checkpoint_restoration: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Skipping image OS validation for hb__isolated_fork_writer_audit: docker inspect returned 1
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo chained_checkpoint_restoration__Asoq6Wf > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Chained Checkpoint Restoration with Tigris Agent Kit
+
+## Background
+Production AI pipelines mutate shared buckets on every step. When a mutation needs to be audited or rolled back, the typical workflow is: snapshot the bucket before the risky write, perform the write, then restore the snapshot into an isolated fork for inspection. This is exactly what `checkpoint` and `restore` from `@tigrisdata/agent-kit` are designed for.
+
+A Tigris bucket already exists with snapshots enabled (created REDACTEDmatically before the task starts). Your job is to build the end-to-end checkpoint → mutate → restore → teardown flow as a single TypeScript script.
+
+## Requirements
+Write a TypeScript script at `/home/user/chained-ckpt/index.ts` that performs the following actions in order:
+
+1. **Upload v1**: Read the trial id from `/logs/artifacts/trial_id`. Construct the bucket name as `harbor-awscli-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens. Upload an object with key `v1.txt` and body `version=1` (UTF-8, no trailing newline) into this existing bucket. Use any S3-compatible client (e.g. `@aws-sdk/client-s3`) pointed at the Tigris endpoint `REDACTED`.
+2. **Checkpoint**: Take a named checkpoint of the bucket using
+   ```ts
+   import { checkpoint } from "@tigrisdata/agent-kit";
+   const { data: ckpt, error } = await checkpoint(bucketName, { name: "before-mutation" });
+   ```
+   Save the returned `snapshotId` because you will need it for the restore step.
+3. **Mutate**: Upload the same key `v1.txt` again, this time with body `version=2`. This overwrites the original content in the source bucket.
+4. **Restore**: Restore the captured checkpoint into a new fork using
+   ```ts
+   import { restore } from "@tigrisdata/agent-kit";
+   const { data: restored } = await restore(bucketName, ckpt.snapshotId, { forkName: "rollback-recovery" });
+   ```
+   Write the resulting recovery bucket name to `/home/user/chained-ckpt/recovery.json` as JSON in the exact shape `{"recoveryBucket": "<bucket-name>"}`.
+5. **Tear down the recovery fork**: After writing `recovery.json`, delete the recovery fork bucket so it does not leak. You may use `removeBucket` from `@tigrisdata/storage`, the AWS S3 SDK, or shell out to `tigris buckets delete <name>` — whichever is convenient. Do NOT delete the source bucket, the original `v1.txt` object in the source bucket, or the snapshot.
+
+The script must exit with status 0 on success. Read credentials from the environment variables `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` (already set in the environment).
+
+## Implementation Guide
+1. The project at `/home/user/chained-ckpt` is already initialized with a `package.json` that declares `@tigrisdata/agent-kit`, `@tigrisdata/storage`, `@aws-sdk/client-s3`, `tsx`, and `typescript` as dependencies. Run `npm install` once before authoring the script.
+2. After your script is ready, run it with `npx tsx index.ts` from inside `/home/user/chained-ckpt`.
+3. Check `result.error` on every Agent Kit call — Agent Kit returns `TigrisResponse<T>` discriminated unions and never throws.
+4. The Tigris S3 endpoint is `REDACTED`; the region for the AWS SDK should be set to `REDACTED`.
+
+## Constraints
+- Project path: `/home/user/chained-ckpt`
+- Source bucket name: dynamically constructed as `harbor-awscli-${trial_id}` (already exists with snapshots enabled)
+- Checkpoint name: `before-mutation`
+- Fork name passed to `restore`: `rollback-recovery` (the actual bucket name may include extra suffixes appended by the service — always read the real name from `restored.bucket`)
+- Output file: `/home/user/chained-ckpt/recovery.json` with shape `{"recoveryBucket": "<bucket>"}`
+- The recovery fork bucket MUST be deleted by the script before it exits.
+- The source bucket MUST remain in place, with `v1.txt` still containing `version=2` after the script finishes.
+- Do NOT delete the snapshot `before-mutation`.
+
+## Integrations
+- Tigris (cloud object storage). Credentials are pre-provisioned in the environment via `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`.
+EOF
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo isolated_fork_writer_audit__upN39d9 > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Parallel Fork Writers with an Isolation Audit Report
+
+## Background
+A core promise of Tigris Agent Kit (`@tigrisdata/agent-kit`) is *isolation*: when you fork a source bucket for multiple agents, each fork is a copy-on-write clone — writes into one fork are NEVER visible from another fork or from the source bucket. This task exercises that guarantee end-to-end.
+
+A setup script `/home/user/isolation/setup.sh` runs REDACTEDmatically at task start. It (re-)creates a source bucket named `harbor-isolation-${trial_id}` (where `${trial_id}` is read from `/logs/artifacts/trial_id`) with snapshots enabled and pre-seeds it with two objects: `seed1.txt` and `seed2.txt`.
+
+Your job is to fork that source bucket for three parallel writer agents, have each writer simultaneously upload its own uniquely-named output file into its own fork using the *fork's* scoped credentials, and then audit the resulting bucket state into a JSON report.
+
+## Requirements
+Write a TypeScript program at `/home/user/isolation/index.ts` that:
+
+1. Read the trial id from `/logs/artifacts/trial_id`. Construct the source bucket name as `harbor-isolation-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+2. Creates **3 forks** of the source bucket using `createForks` from `@tigrisdata/agent-kit`. All three forks must be requested in a single `createForks` invocation:
+   - `prefix: "audit-fork"`
+   - `credentials: { role: "Editor" }` — the scoped credentials must be `Editor` because each fork is going to be written to. Do NOT request `ReadOnly`.
+3. In parallel, each fork uploads exactly one uniquely-named object using the AWS SDK for JavaScript v3 (`@aws-sdk/client-s3`), where:
+   - The 1st fork (index 0 in `forkSet.forks`) uploads key `agent-1.out`.
+   - The 2nd fork (index 1) uploads key `agent-2.out`.
+   - The 3rd fork (index 2) uploads key `agent-3.out`.
+   - Each `S3Client` MUST be constructed with only that fork's own scoped credentials (`fork.credentials.accessKeyId` / `fork.credentials.secretAccessKey`), the Tigris endpoint `REDACTED`, and `region: "REDACTED"`.
+   - All three uploads must be issued concurrently (e.g. via `Promise.all`).
+4. After all uploads complete, audit the actual bucket state and assert isolation:
+   - List the objects in the source bucket using the **admin** Tigris credentials (`TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`) and capture the sorted set of keys.
+   - List the objects in EACH fork bucket using that fork's scoped credentials and capture the sorted set of keys per bucket.
+   - Throw a descriptive error if any of these conditions fail:
+     * The source bucket does not contain exactly `seed1.txt` and `seed2.txt`.
+     * Any fork bucket does not contain exactly its own `agent-N.out` plus the two seed files.
+     * Any fork bucket contains another fork's `agent-N.out`.
+5. Write the audit report to `/home/user/isolation/audit.json` (UTF-8) BEFORE teardown. Shape:
+   ```
+   {
+     "source_keys": ["seed1.txt", "seed2.txt"],
+     "fork_results": [
+       { "bucket": "audit-fork-0", "keys": ["agent-1.out", "seed1.txt", "seed2.txt"] },
+       { "bucket": "audit-fork-1", "keys": ["agent-2.out", "seed1.txt", "seed2.txt"] },
+       { "bucket": "audit-fork-2", "keys": ["agent-3.out", "seed1.txt", "seed2.txt"] }
+     ]
+   }
+   ```
+   - `source_keys` must be a sorted array of strings.
+   - `fork_results` must be an array of objects in fork index order (fork 0 first, then fork 1, then fork 2), each with the fork's real bucket name (whatever `createForks` returned) and the sorted list of keys in that bucket.
+6. Tear down all three forks by calling `teardownForks` so that the fork buckets and their scoped credentials are removed. Use a `try`/`finally` so teardown runs even on earlier failure.
+7. Exit with status `0` on full success.
+
+## Implementation Guide
+1. Change into the project directory `/home/user/isolation`. The project is pre-initialized with `package.json`, `tsconfig.json`, and a populated local `node_modules` containing `@tigrisdata/agent-kit`, `@tigrisdata/cli`, `@aws-sdk/client-s3`, `tsx`, and `typescript`. You only need to author `index.ts`.
+2. Import `createForks` and `teardownForks` from `@tigrisdata/agent-kit`. Import `S3Client`, `PutObjectCommand`, and `ListObjectsV2Command` from `@aws-sdk/client-s3`. Use `fs/promises` for writing the audit report.
+3. Read the trial id and construct the source bucket name. Call `createForks(sourceBucketName, 3, { prefix: "audit-fork", credentials: { role: "Editor" } })`. Check `error` first; if non-null, throw.
+4. For each `fork` in `forkSet.forks`, build a per-fork `S3Client` from its scoped credentials and issue a `PutObjectCommand` for the appropriate `agent-N.out` key. Run the three uploads concurrently via `Promise.all`.
+5. Build the audit report:
+   - Use a separate admin `S3Client` (built from `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`) to `ListObjectsV2` against the source bucket.
+   - Use each fork's scoped `S3Client` to `ListObjectsV2` against its own fork bucket.
+   - Validate the keys match the expected isolation invariants described above. Throw a descriptive error on any mismatch.
+6. Write `/home/user/isolation/audit.json` with the documented shape.
+7. Always call `teardownForks(forkSet)` in `finally`. The source bucket MUST remain intact.
+8. Run the script with `npx tsx index.ts` from `/home/user/isolation`. The exit code must be `0`.
+
+## Constraints
+- Project path: `/home/user/isolation`
+- Log file: `/home/user/isolation/output.log` (used by the verifier when re-running the script).
+- Setup script (REDACTED-runs at task start, idempotent): `/home/user/isolation/setup.sh` — creates the source bucket with snapshots enabled and uploads `seed1.txt`, `seed2.txt`. Do not modify it.
+- Source bucket: dynamically constructed as `harbor-isolation-${trial_id}` (must remain unmodified at the end of the run).
+- Fork prefix: `audit-fork` (so the three fork buckets are named `audit-fork-0`, `audit-fork-1`, `audit-fork-2`).
+- Fork count: exactly 3, requested in a single `createForks` call.
+- Fork credentials role: `Editor` (each fork must have its own scoped key — the uploads MUST use the per-fork scoped credentials, not the admin keys).
+- Concurrency: the three per-fork uploads MUST run in parallel (e.g. `Promise.all`).
+- Output report: `/home/user/isolation/audit.json` with the shape documented above.
+- The fork buckets MUST NOT remain after the script exits — `teardownForks` must run.
+- Do not modify `package.json`, `tsconfig.json`, or `node_modules`.
+
+## Integrations
+- Tigris (real `@tigrisdata/agent-kit` API, AWS S3-compatible API, and `@tigrisdata/cli`; admin credentials provided via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).
+EOF
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Skipping image OS validation for hb__snapshot_inventory_aggregator: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo snapshot_inventory_aggregator__AJrN9cj > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Aggregate Tigris Snapshot Inventory With the Tigris CLI
+
+## Background
+The Tigris Agent Kit provisions and manages many short-lived buckets on the Tigris control plane. Operators frequently need a quick "what do I currently own?" report — specifically, which evaluation buckets exist and how many point-in-time snapshots each one has. The Tigris CLI (`@tigrisdata/cli`) exposes both pieces via `tigris buckets list --format json` and `tigris snapshots list <bucket> --format json`. Each snapshot has a unique `version` string (a UNIX nanosecond-precision timestamp) that doubles as an ascending creation-time ordering key.
+
+For this task an operator has primed the Tigris account with six buckets. Three of them are evaluation buckets whose names begin with the prefix `harbor-inv-${trial_id}-` (and have snapshots enabled); the others have unrelated names and are owned by a separate workflow that must NOT be touched. You must write a Node.js program that walks the account, filters by the `harbor-inv-${trial_id}-` prefix, gathers every snapshot version per bucket, persists the result as JSON, and prints a one-line summary.
+
+## Requirements
+1. Implement a Node.js program at `/home/user/inv/index.js` that, **when invoked with `node index.js` from `/home/user/inv`**, performs the following steps:
+   1. Read the trial id from `/logs/artifacts/trial_id`. Construct the prefix as `harbor-inv-${trial_id}-` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the prefix by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+   2. Shells out to the Tigris CLI to obtain the list of buckets visible to the current credentials using `tigris buckets list --format json`.
+   3. Filters the bucket list down to exactly the buckets whose name **starts with** the normalized prefix. Buckets with any other name MUST be ignored.
+   4. For each filtered bucket, shells out to `tigris snapshots list <bucket> --format json` and collects every snapshot's `version` field.
+   5. Sorts the snapshot version IDs for each bucket in **ascending creation-time order** (i.e. oldest first). Because each `version` is a UNIX nanosecond timestamp, ascending lexicographic / numeric sort matches ascending creation time.
+   6. Aggregates the result into a JSON object whose keys are bucket names and whose values are the sorted array of snapshot version IDs (strings).
+   7. Writes the aggregated object to `/home/user/inv/inventory.json` as pretty-printed JSON (a trailing newline is allowed).
+   8. Writes exactly one summary line to stdout of the form `<bucketCount> buckets, <snapshotTotal> snapshots` where `<bucketCount>` is the number of `harbor-inv-${trial_id}-*` buckets included and `<snapshotTotal>` is the sum of every snapshot count.
+2. The program MUST exit with status 0 on success.
+
+## Implementation Guide
+1. Change into the project directory: `cd /home/user/inv`.
+2. Implement `/home/user/inv/index.js`. A reasonable structure (you do not have to match it verbatim):
+   ```js
+   import { execFileSync } from "node:child_process";
+   import { readFileSync, writeFileSync } from "node:fs";
+
+   function tigrisJSON(args) {
+     const stdout = execFileSync("tigris", args, { encoding: "utf8" });
+     return JSON.parse(stdout);
+   }
+
+   const trialId = readFileSync("/logs/artifacts/trial_id", "utf8").trim();
+   const PREFIX = `harbor-inv-${trialId}-`.toLowerCase().replace(/[^a-z0-9.-]/g, "-");
+
+   const bucketsPayload = tigrisJSON(["buckets", "list", "--format", "json"]);
+   const allBuckets = Array.isArray(bucketsPayload)
+     ? bucketsPayload
+     : (bucketsPayload.items ?? bucketsPayload.buckets ?? []);
+   const targetNames = allBuckets
+     .map((b) => b.name)
+     .filter((name) => typeof name === "string" && name.startsWith(PREFIX))
+     .sort();
+
+   const inventory = {};
+   let total = 0;
+   for (const name of targetNames) {
+     const snapsPayload = tigrisJSON(["snapshots", "list", name, "--format", "json"]);
+     const snaps = snapsPayload.snapshots ?? [];
+     const versions = snaps.map((s) => s.version).filter(Boolean).sort();
+     inventory[name] = versions;
+     total += versions.length;
+   }
+
+   writeFileSync("/home/user/inv/inventory.json", JSON.stringify(inventory, null, 2) + "\n");
+   console.log(`${targetNames.length} buckets, ${total} snapshots`);
+   ```
+3. Run your script:
+   ```bash
+   node /home/user/inv/index.js
+   ```
+   You should see a single line of stdout matching `3 buckets, 6 snapshots`, and `/home/user/inv/inventory.json` should exist on disk with three keys.
+
+## Constraints
+- Project path: `/home/user/inv`
+- Entrypoint script (the one you write): `/home/user/inv/index.js`
+- Output JSON (the one you write): `/home/user/inv/inventory.json`
+- Bucket prefix to include: dynamically constructed as `harbor-inv-${trial_id}-` (must be matched literally with `String.startsWith`).
+- Use the real Tigris CLI (`@tigrisdata/cli`) against the live Tigris control plane via Node's `child_process` APIs. Do not invent fake data and do not use the AWS S3 API directly.
+- The admin credentials are available as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` in the environment, but the environment already persists them into `~/.tigris/config.json` via `tigris configure`, so subsequent `tigris` invocations from inside Node work without any extra wiring.
+
+## Integrations
+- Tigris Object Storage (admin credentials `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` are injected into both the task and verifier environments).
+
+EOF
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured
+The verifier.env contains an API key (often the case for LLM-based verifiers). You will incur costs associated with the API calls.
+Exception AgentTimeoutError is in exclude_exceptions, not retrying
+Not retrying trial because the exception is not in include_exceptions or the maximum number of retries has been reached

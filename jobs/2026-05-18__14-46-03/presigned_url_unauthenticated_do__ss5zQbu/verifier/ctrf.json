@@ -1,0 +1,83 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 7,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779087054.4771557,
+            "stop": 1779087057.4485545
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_boto3_installed_in_verifier",
+                "status": "passed",
+                "duration": 0.533002648036927,
+                "start": 1779087054.4912732,
+                "stop": 1779087055.0245478,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_presigned_url_file_exists_and_nonempty",
+                "status": "passed",
+                "duration": 0.000531200785189867,
+                "start": 1779087055.024793,
+                "stop": 1779087055.0254743,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_presigned_url_targets_tigris_host",
+                "status": "passed",
+                "duration": 0.0005087247118353844,
+                "start": 1779087055.0256476,
+                "stop": 1779087055.026281,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_presigned_url_has_sigv4_signature_query_param",
+                "status": "passed",
+                "duration": 0.0006303028203547001,
+                "start": 1779087055.026449,
+                "stop": 1779087055.0272074,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_presigned_url_downloads_with_curl_unauthenticated",
+                "status": "passed",
+                "duration": 0.22169060772284865,
+                "start": 1779087055.0273798,
+                "stop": 1779087055.2493165,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_local_downloaded_file_matches",
+                "status": "passed",
+                "duration": 0.0004904731176793575,
+                "start": 1779087055.2495596,
+                "stop": 1779087055.2501915,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_object_body_matches_remote_via_boto3",
+                "status": "passed",
+                "duration": 2.1977391419932246,
+                "start": 1779087055.250384,
+                "stop": 1779087057.448318,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

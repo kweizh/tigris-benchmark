@@ -1,0 +1,56 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 4,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779088559.4664843,
+            "stop": 1779088562.4474857
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_bulk_script_exists",
+                "status": "passed",
+                "duration": 0.5409868066199124,
+                "start": 1779088559.479022,
+                "stop": 1779088560.0202491,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_timing_file_is_positive_integer_ms",
+                "status": "passed",
+                "duration": 0.00045109307393431664,
+                "start": 1779088560.0204797,
+                "stop": 1779088560.0210664,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_exactly_20_objects_under_events_prefix",
+                "status": "passed",
+                "duration": 0.25165933184325695,
+                "start": 1779088560.0212476,
+                "stop": 1779088560.2733903,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_each_object_body_matches_expected_json",
+                "status": "passed",
+                "duration": 2.169806162826717,
+                "start": 1779088560.274265,
+                "stop": 1779088562.4447381,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

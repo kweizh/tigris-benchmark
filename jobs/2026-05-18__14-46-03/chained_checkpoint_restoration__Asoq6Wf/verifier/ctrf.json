@@ -1,0 +1,80 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 0,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779087771.817594,
+            "stop": 1779087777.5266907
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_user_script_runs_successfully",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 3.6383200748823583,
+                "start": 1779087771.8377652,
+                "stop": 1779087775.4936235,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n')\n\n    def test_user_script_runs_successfully(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"User script 'npx tsx index.ts' did not exit 0. \"\n            f\"stdout={script_run_result.stdout!r} stderr={script_run_result.stderr!r}\"\n        )\nE       AssertionError: User script 'npx tsx index.ts' did not exit 0. stdout=\"Using bucket: harbor-awscli-chained-checkpoint-restoration--asoq6wf\\nUploading v1.txt with body version=1...\\nCreating checkpoint 'before-mutation'...\\nSnapshot created: 1779087773839203440\\nUploading v1.txt with body version=2 (mutation)...\\nRestoring checkpoint into fork 'rollback-recovery'...\\n\" stderr='Error: restore failed: Failed to restore from snapshot \"1779087773839203440\": Unable to create bucket Source bucket must be of snapshot type.\\n    at main (/home/user/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n').returncode\n\ntests/test_final_state.py:132: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_recovery_json_exists_and_has_expected_bucket",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005542756989598274,
+                "start": 1779087775.4938598,
+                "stop": 1779087775.4982855,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n')\n\n    def test_recovery_json_exists_and_has_expected_bucket(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping recovery.json check because the user script failed: \"\n            f\"{script_run_result.stderr!r}\"\n        )\nE       AssertionError: Skipping recovery.json check because the user script failed: 'Error: restore failed: Failed to restore from snapshot \"1779087773839203440\": Unable to create bucket Source bucket must be of snapshot type.\\n    at main (/home/user/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n').returncode\n\ntests/test_final_state.py:139: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_bucket_v1_now_contains_version_two",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.00047589000314474106,
+                "start": 1779087775.4984634,
+                "stop": 1779087775.5026493,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n')\n\n    def test_source_bucket_v1_now_contains_version_two(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping source bucket content check because the user script failed.\"\n        )\nE       AssertionError: Skipping source bucket content check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n').returncode\n\ntests/test_final_state.py:164: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_recovery_bucket_was_torn_down",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0004679933190345764,
+                "start": 1779087775.502823,
+                "stop": 1779087775.506984,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n')\n\n    def test_recovery_bucket_was_torn_down(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping recovery-bucket teardown check because the user script failed.\"\n        )\nE       AssertionError: Skipping recovery-bucket teardown check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n').returncode\n\ntests/test_final_state.py:199: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_before_mutation_snapshot_exists",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.015545434318483,
+                "start": 1779087775.5071683,
+                "stop": 1779087777.5264533,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n')\n\n    def test_before_mutation_snapshot_exists(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping snapshot check because the user script failed.\"\n        )\nE       AssertionError: Skipping snapshot check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout=\"Using bucket: harbor-awscli-chained-checkpoint...r/chained-ckpt/index.ts:106:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n').returncode\n\ntests/test_final_state.py:225: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

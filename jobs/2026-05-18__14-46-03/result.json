@@ -1,0 +1,61 @@
+{
+    "id": "2315ac13-975f-47ff-8be6-8ed8821dedf2",
+    "started_at": "2026-05-18T14:46:05.583059",
+    "updated_at": "2026-05-18T15:03:10.383431",
+    "finished_at": "2026-05-18T15:03:10.383431",
+    "n_total_trials": 15,
+    "stats": {
+        "n_completed_trials": 15,
+        "n_errored_trials": 2,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "pochi__claude-4-7-opus__tasks": {
+                "n_trials": 14,
+                "n_errors": 2,
+                "metrics": [
+                    {
+                        "mean": 0.5333333333333333
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "1.0": [
+                            "boto3_object_roundtrip__GobKLL2",
+                            "bucket_snapshot_enabled_creation__o7HouTv",
+                            "cli_object_prefix_listing__D9WvkEN",
+                            "object_user_metadata_persistence__cwVrnK7",
+                            "presigned_url_unauthenticated_do__ss5zQbu",
+                            "typescript_sdk_putobject_workflo__vDnJZ2H",
+                            "workspace_create_upload_teardown__kbtHnb9",
+                            "agent_pool_lifecycle_manager__cW7XCBS"
+                        ],
+                        "0.0": [
+                            "bucket_ttl_policy_set__Qk7RTBZ",
+                            "cli_sdk_interop_bucket_lifecycle__SQZSsTA",
+                            "readonly_workspace_write_denial__Xtqnuhv",
+                            "chained_checkpoint_restoration__Asoq6Wf",
+                            "isolated_fork_writer_audit__upN39d9",
+                            "snapshot_inventory_aggregator__AJrN9cj"
+                        ]
+                    }
+                },
+                "exception_stats": {
+                    "NonZeroAgentExitCodeError": [
+                        "bulk_concurrent_object_upload__NqspTdr"
+                    ],
+                    "AgentTimeoutError": [
+                        "chained_checkpoint_restoration__Asoq6Wf"
+                    ]
+                }
+            }
+        },
+        "n_input_tokens": 0,
+        "n_cache_tokens": 0,
+        "n_output_tokens": 417732,
+        "cost_usd": null
+    }
+}
