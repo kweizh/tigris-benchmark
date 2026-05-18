@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /bootstrap
+collected 10 items
+
+bootstrap/test_initial_state.py::test_node_binary_available PASSED
+bootstrap/test_initial_state.py::test_npm_binary_available PASSED
+bootstrap/test_initial_state.py::test_node_major_version_is_24 PASSED
+bootstrap/test_initial_state.py::test_global_tsx_available PASSED
+bootstrap/test_initial_state.py::test_project_directory_exists PASSED
+bootstrap/test_initial_state.py::test_package_json_exists_with_required_deps PASSED
+bootstrap/test_initial_state.py::test_node_modules_installed PASSED
+bootstrap/test_initial_state.py::test_tigris_credentials_present_in_env PASSED
+bootstrap/test_initial_state.py::test_trial_id_artifact_present PASSED
+bootstrap/test_initial_state.py::test_run_ts_and_artifacts_not_created_yet PASSED
+
+============================== 10 passed in 0.03s ==============================

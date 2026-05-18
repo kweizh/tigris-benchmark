@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-7.4.4, pluggy-1.4.0
+rootdir: /bootstrap
+collected 16 items
+
+bootstrap/test_initial_state.py::test_node_binary_available PASSED
+bootstrap/test_initial_state.py::test_node_major_version_is_24 PASSED
+bootstrap/test_initial_state.py::test_npx_binary_available PASSED
+bootstrap/test_initial_state.py::test_tigris_cli_available PASSED
+bootstrap/test_initial_state.py::test_project_directory_exists PASSED
+bootstrap/test_initial_state.py::test_package_json_exists PASSED
+bootstrap/test_initial_state.py::test_tsconfig_json_exists PASSED
+bootstrap/test_initial_state.py::test_node_modules_directory_exists PASSED
+bootstrap/test_initial_state.py::test_agent_kit_installed PASSED
+bootstrap/test_initial_state.py::test_tigris_cli_package_installed PASSED
+bootstrap/test_initial_state.py::test_aws_sdk_s3_installed PASSED
+bootstrap/test_initial_state.py::test_tsx_installed PASSED
+bootstrap/test_initial_state.py::test_package_json_declares_required_dependencies PASSED
+bootstrap/test_initial_state.py::test_pre_create_bucket PASSED
+bootstrap/test_initial_state.py::test_index_ts_does_not_exist_yet PASSED
+bootstrap/test_initial_state.py::test_audit_json_does_not_exist_yet PASSED
+
+============================== 16 passed in 0.26s ==============================

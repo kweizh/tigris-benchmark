@@ -1,0 +1,65 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779104992.4785519,
+            "stop": 1779104994.170346
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_required_sdks",
+                "status": "passed",
+                "duration": 0.0005509913899004459,
+                "start": 1779104992.4927063,
+                "stop": 1779104992.4934592,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_write_denial_log_contains_access_keyword",
+                "status": "passed",
+                "duration": 0.0004803524352610111,
+                "start": 1779104992.4936526,
+                "stop": 1779104992.4942653,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_readback_txt_matches_expected_body",
+                "status": "passed",
+                "duration": 0.00039395876228809357,
+                "start": 1779104992.4944339,
+                "stop": 1779104992.4949493,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_workspace_welcome_object_present_with_expected_body",
+                "status": "passed",
+                "duration": 1.674075380899012,
+                "start": 1779104992.4951127,
+                "stop": 1779104994.1694105,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_fork_forbidden_object_does_not_exist",
+                "status": "passed",
+                "duration": 0.00041571399196982384,
+                "start": 1779104994.1696358,
+                "stop": 1779104994.1701784,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

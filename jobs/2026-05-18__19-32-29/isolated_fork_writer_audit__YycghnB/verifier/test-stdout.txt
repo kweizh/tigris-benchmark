@@ -1,0 +1,118 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 14ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 7 items
+
+tests/test_final_state.py ..FFFF.                                        [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_script_exits_zero ____________________________
+
+run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Source bucket: harbor-isolation-isolated-fork-write...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/isolation/index.ts:45:24)\n')
+
+    def test_script_exits_zero(run_user_script):
+        result, log_contents = run_user_script
+>       assert result.returncode == 0, (
+            f"'npx tsx index.ts' exited with {result.returncode}. "
+            f"Output:\n{log_contents}"
+        )
+E       AssertionError: 'npx tsx index.ts' exited with 1. Output:
+E         Source bucket: harbor-isolation-isolated-fork-writer-audit--yycghnb
+E         Fork prefix: audit-fork-isolated-fork-writer-audit--yycghnb
+E         Run failed: Error: Failed to create any forks
+E             at b (file:///home/user/isolation/node_modules/@tigrisdata/agent-kit/dist/index.js:1:2251)
+E             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+E             at async main (/home/user/isolation/index.ts:45:24)
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1).returncode
+
+tests/test_final_state.py:118: AssertionError
+______________________ test_audit_json_shape_and_contents ______________________
+
+run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Source bucket: harbor-isolation-isolated-fork-write...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/isolation/index.ts:45:24)\n')
+
+    def test_audit_json_shape_and_contents(run_user_script):
+        run_user_script  # ensure script ran
+>       assert os.path.isfile(AUDIT_JSON), (
+            f"Expected audit report at {AUDIT_JSON} after running index.ts."
+        )
+E       AssertionError: Expected audit report at /home/user/isolation/audit.json after running index.ts.
+E       assert False
+E        +  where False = <function isfile at 0x7ee4bcd80220>('/home/user/isolation/audit.json')
+E        +    where <function isfile at 0x7ee4bcd80220> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+tests/test_final_state.py:126: AssertionError
+________________________ test_source_bucket_unmodified _________________________
+
+run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Source bucket: harbor-isolation-isolated-fork-write...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/isolation/index.ts:45:24)\n')
+
+    def test_source_bucket_unmodified(run_user_script):
+        """Priority 1: Use the Tigris CLI to confirm the source bucket still
+        holds only the two seed files and none of the agent outputs."""
+        run_user_script  # ensure script ran
+        source_bucket = bucket_name()
+        cmd = _tigris_cmd() + ["objects", "list", source_bucket]
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env=os.environ.copy(),
+        )
+        assert result.returncode == 0, (
+            f"'tigris objects list {source_bucket}' failed: "
+            f"stdout={result.stdout!r} stderr={result.stderr!r}"
+        )
+        combined = result.stdout + "\n" + result.stderr
+    
+        for seed in SEED_KEYS:
+>           assert seed in combined, (
+                f"Expected seed key '{seed}' to remain in '{source_bucket}'. "
+                f"CLI output:\n{combined}"
+            )
+E           AssertionError: Expected seed key 'seed1.txt' to remain in 'harbor-isolation-isolated-fork-writer-audit--yycghnb'. CLI output:
+E             
+E             
+E           assert 'seed1.txt' in '\n'
+
+tests/test_final_state.py:243: AssertionError
+_______________________ test_fork_buckets_were_torn_down _______________________
+
+run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Source bucket: harbor-isolation-isolated-fork-write...cksAndRejections (node:internal/process/task_queues:104:5)\n    at async main (/home/user/isolation/index.ts:45:24)\n')
+
+    def test_fork_buckets_were_torn_down(run_user_script):
+        """Priority 1: Use the Tigris CLI to confirm none of the three fork
+        buckets recorded in audit.json still exist."""
+        run_user_script  # ensure script ran
+>       with open(AUDIT_JSON) as f:
+             ^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/isolation/audit.json'
+
+tests/test_final_state.py:258: FileNotFoundError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_index_ts_created
+PASSED tests/test_final_state.py::test_index_ts_uses_required_apis
+PASSED tests/test_final_state.py::test_cleanup_source_bucket
+FAILED tests/test_final_state.py::test_script_exits_zero - AssertionError: 'n...
+FAILED tests/test_final_state.py::test_audit_json_shape_and_contents - Assert...
+FAILED tests/test_final_state.py::test_source_bucket_unmodified - AssertionEr...
+FAILED tests/test_final_state.py::test_fork_buckets_were_torn_down - FileNotF...
+========================= 4 failed, 3 passed in 3.13s ==========================

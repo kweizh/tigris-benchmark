@@ -1,0 +1,65 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779105191.779744,
+            "stop": 1779105193.5015945
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_required_sdks",
+                "status": "passed",
+                "duration": 0.0005358741618692875,
+                "start": 1779105191.794264,
+                "stop": 1779105191.7950072,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_write_denial_log_contains_access_keyword",
+                "status": "passed",
+                "duration": 0.000433232169598341,
+                "start": 1779105191.7952032,
+                "stop": 1779105191.7957695,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_readback_txt_matches_expected_body",
+                "status": "passed",
+                "duration": 0.00044546695426106453,
+                "start": 1779105191.795938,
+                "stop": 1779105191.7965064,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_workspace_welcome_object_present_with_expected_body",
+                "status": "passed",
+                "duration": 1.7036348935216665,
+                "start": 1779105191.7966707,
+                "stop": 1779105193.5005028,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_fork_forbidden_object_does_not_exist",
+                "status": "passed",
+                "duration": 0.0004914314486086369,
+                "start": 1779105193.5007503,
+                "stop": 1779105193.501395,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

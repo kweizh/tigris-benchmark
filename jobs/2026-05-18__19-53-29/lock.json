@@ -1,0 +1,117 @@
+{
+    "schema_version": 1,
+    "created_at": "2026-05-18T11:53:31.074781Z",
+    "harbor": {
+        "version": "0.7.0",
+        "is_editable": false
+    },
+    "invocation": [
+        "/home/kw/.local/bin/harbor",
+        "run",
+        "--yes",
+        "--job-name",
+        "2026-05-18__19-53-29",
+        "--agent-import-path",
+        "agents.pochi:Pochi",
+        "--artifact",
+        "/home/user",
+        "--mounts",
+        "[{\"type\": \"bind\",\"source\":\"bootstrap\",\"target\":\"/bootstrap\"}]",
+        "--model",
+        "openai/gpt-5.2-codex",
+        "-p",
+        "/home/kw/code/zealt/tigris-benchmark/tasks3",
+        "--n-attempts",
+        "1",
+        "--max-retries",
+        "0",
+        "-n",
+        "5"
+    ],
+    "n_concurrent_trials": 5,
+    "retry": {
+        "max_retries": 0,
+        "exclude_exceptions": [
+            "VerifierTimeoutError",
+            "AgentTimeoutError",
+            "VerifierOutputParseError",
+            "RewardFileNotFoundError",
+            "RewardFileEmptyError"
+        ],
+        "wait_multiplier": 1.0,
+        "min_wait_sec": 1.0,
+        "max_wait_sec": 60.0
+    },
+    "trials": [
+        {
+            "task": {
+                "name": "isolated_fork_writer_audit",
+                "type": "local",
+                "digest": "sha256:82d6cb5df876e13e1350a3caabb1dc666ad923e6b2922fc6f93394c2381ec076",
+                "source": "tasks3",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks3/isolated_fork_writer_audit"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "openai/gpt-5.2-codex",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        },
+        {
+            "task": {
+                "name": "readonly_workspace_write_denial",
+                "type": "local",
+                "digest": "sha256:9c121acdceb96700487b5b938e99b57c8b54394467abe6f189b33d1abf89ada8",
+                "source": "tasks3",
+                "path": "/home/kw/code/zealt/tigris-benchmark/tasks3/readonly_workspace_write_denial"
+            },
+            "timeout_multiplier": 1.0,
+            "agent": {
+                "import_path": "agents.pochi:Pochi",
+                "model_name": "openai/gpt-5.2-codex",
+                "kwargs": {},
+                "env": {}
+            },
+            "environment": {
+                "type": "docker",
+                "force_build": false,
+                "delete": true,
+                "suppress_override_warnings": false,
+                "mounts": [
+                    {
+                        "type": "bind",
+                        "source": "bootstrap",
+                        "target": "/bootstrap"
+                    }
+                ],
+                "env": {},
+                "kwargs": {}
+            },
+            "verifier": {
+                "env": {},
+                "disable": false
+            }
+        }
+    ]
+}

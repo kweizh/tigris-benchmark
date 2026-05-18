@@ -1,0 +1,132 @@
+Skipping image OS validation for hb__isolated_fork_writer_audit: docker inspect returned 1
+Running command: apt-get update && apt-get install -y curl ripgrep
+Command outputs captured
+Running command: set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version
+Command outputs captured
+Running command: ln -sf ~/.pochi/bin/pochi /usr/local/bin/pochi
+Command outputs captured
+Running command: echo isolated_fork_writer_audit__YycghnB > /logs/artifacts/trial_id
+Command outputs captured
+Running command: mkdir -p ~/.pochi && cat << 'EOF' | sed -e "s/OPENAI_API_KEY/${OPENAI_API_KEY}/g" -e "s/DEEPINFRA_API_KEY/${DEEPINFRA_API_KEY}/g" -e "s/ANTHROPIC_API_KEY/${ANTHROPIC_API_KEY}/g" > ~/.pochi/config.jsonc
+{
+  "providers": {
+    "deepinfra": {
+      "kind": "openai",
+      "baseURL": "https://api.deepinfra.com/v1/openai",
+      "apiKey": "DEEPINFRA_API_KEY",
+      "models": {
+        "zai-org/GLM-4.7-Flash": {
+          "name": "glm-4.7-flash"
+        },
+        "moonshotai/Kimi-K2.6": {
+          "name": "kimi-K2.6"
+        },
+        "deepseek-ai/DeepSeek-V4-Pro": {
+          "name": "DeepSeek-V4-Pro"
+        }
+      }
+    },
+    "anthropic": {
+      "kind": "openai",
+      "baseURL": "https://api.anthropic.com/v1",
+      "apiKey": "ANTHROPIC_API_KEY",
+      "models": {
+        "claude-opus-4-6": {
+          "name": "claude-opus-4-6"
+        }
+      }
+    },
+    "openai": {
+      "kind": "openai",
+      "baseURL": "https://api.openai.com/v1",
+      "apiKey": "OPENAI_API_KEY",
+      "models": {
+        "gpt-5.4": {
+          "name": "gpt-5.4"
+        }
+      }
+    }
+  }
+}
+EOF
+Command outputs captured
+Running command: if [ -f /bootstrap/test_initial_state.py ]; then pytest -s --log-cli-level=DEBUG /bootstrap/test_initial_state.py > >(tee /logs/agent/pochi/initial-test-stdout.txt) 2> >(tee /logs/agent/pochi/initial-test-stderr.txt >&2); fi
+Command outputs captured
+Running command: export PATH="$HOME/.pochi/bin:$PATH"; pochi --model anthropic/claude-4-7-opus --max-steps 200 --max-retries 10 --blobs-dir /logs/agent/pochi/blobs --experimental-stream-trajectory /logs/agent/pochi/trajectory.jsonl > >(tee /logs/agent/pochi/stdout.txt) 2> >(tee /logs/agent/pochi/stderr.txt >&2) <<'EOF'
+# Parallel Fork Writers with an Isolation Audit Report
+
+## Background
+A core promise of Tigris Agent Kit (`@tigrisdata/agent-kit`) is *isolation*: when you fork a source bucket for multiple agents, each fork is a copy-on-write clone — writes into one fork are NEVER visible from another fork or from the source bucket. This task exercises that guarantee end-to-end.
+
+A setup script `/home/user/isolation/setup.sh` runs REDACTEDmatically at task start. It (re-)creates a source bucket named `harbor-isolation-${trial_id}` (where `${trial_id}` is read from `/logs/artifacts/trial_id`) with snapshots enabled and pre-seeds it with two objects: `seed1.txt` and `seed2.txt`.
+
+Your job is to fork that source bucket for three parallel writer agents, have each writer simultaneously upload its own uniquely-named output file into its own fork using the *fork's* scoped credentials, and then audit the resulting bucket state into a JSON report.
+
+## Requirements
+Write a TypeScript program at `/home/user/isolation/index.ts` that:
+
+1. Read the trial id from `/logs/artifacts/trial_id`. Construct the source bucket name as `harbor-isolation-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
+2. Creates **3 forks** of the source bucket using `createForks` from `@tigrisdata/agent-kit`. All three forks must be requested in a single `createForks` invocation:
+   - `prefix: "audit-fork-${trial_id}"` (substitute the actual trial id, normalized as described above)
+   - `credentials: { role: "Editor" }` — the scoped credentials must be `Editor` because each fork is going to be written to. Do NOT request `ReadOnly`.
+3. In parallel, each fork uploads exactly one uniquely-named object using the AWS SDK for JavaScript v3 (`@aws-sdk/client-s3`), where:
+   - The 1st fork (index 0 in `forkSet.forks`) uploads key `agent-1.out`.
+   - The 2nd fork (index 1) uploads key `agent-2.out`.
+   - The 3rd fork (index 2) uploads key `agent-3.out`.
+   - Each `S3Client` MUST be constructed with only that fork's own scoped credentials (`fork.credentials.accessKeyId` / `fork.credentials.secretAccessKey`), the Tigris endpoint `REDACTED`, and `region: "REDACTED"`.
+   - All three uploads must be issued concurrently (e.g. via `Promise.all`).
+4. After all uploads complete, audit the actual bucket state and assert isolation:
+   - List the objects in the source bucket using the **admin** Tigris credentials (`TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`) and capture the sorted set of keys.
+   - List the objects in EACH fork bucket using that fork's scoped credentials and capture the sorted set of keys per bucket.
+   - Throw a descriptive error if any of these conditions fail:
+     * The source bucket does not contain exactly `seed1.txt` and `seed2.txt`.
+     * Any fork bucket does not contain exactly its own `agent-N.out` plus the two seed files.
+     * Any fork bucket contains another fork's `agent-N.out`.
+5. Write the audit report to `/home/user/isolation/audit.json` (UTF-8) BEFORE teardown. Shape:
+   ```
+   {
+     "source_keys": ["seed1.txt", "seed2.txt"],
+     "fork_results": [
+       { "bucket": "audit-fork-${trial_id}-0", "keys": ["agent-1.out", "seed1.txt", "seed2.txt"] },
+       { "bucket": "audit-fork-${trial_id}-1", "keys": ["agent-2.out", "seed1.txt", "seed2.txt"] },
+       { "bucket": "audit-fork-${trial_id}-2", "keys": ["agent-3.out", "seed1.txt", "seed2.txt"] }
+     ]
+   }
+   ```
+   - `source_keys` must be a sorted array of strings.
+   - `fork_results` must be an array of objects in fork index order (fork 0 first, then fork 1, then fork 2), each with the fork's real bucket name (whatever `createForks` returned) and the sorted list of keys in that bucket.
+6. Tear down all three forks by calling `teardownForks` so that the fork buckets and their scoped credentials are removed. Use a `try`/`finally` so teardown runs even on earlier failure.
+7. Exit with status `0` on full success.
+
+## Implementation Guide
+1. Change into the project directory `/home/user/isolation`. The project is pre-initialized with `package.json`, `tsconfig.json`, and a populated local `node_modules` containing `@tigrisdata/agent-kit`, `@tigrisdata/cli`, `@aws-sdk/client-s3`, `tsx`, and `typescript`. You only need to author `index.ts`.
+2. Import `createForks` and `teardownForks` from `@tigrisdata/agent-kit`. Import `S3Client`, `PutObjectCommand`, and `ListObjectsV2Command` from `@aws-sdk/client-s3`. Use `fs/promises` for writing the audit report.
+3. Read the trial id and construct the source bucket name. Call `createForks(sourceBucketName, 3, { prefix: "audit-fork-${trial_id}", credentials: { role: "Editor" } })`. Check `error` first; if non-null, throw.
+4. For each `fork` in `forkSet.forks`, build a per-fork `S3Client` from its scoped credentials and issue a `PutObjectCommand` for the appropriate `agent-N.out` key. Run the three uploads concurrently via `Promise.all`.
+5. Build the audit report:
+   - Use a separate admin `S3Client` (built from `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`) to `ListObjectsV2` against the source bucket.
+   - Use each fork's scoped `S3Client` to `ListObjectsV2` against its own fork bucket.
+   - Validate the keys match the expected isolation invariants described above. Throw a descriptive error on any mismatch.
+6. Write `/home/user/isolation/audit.json` with the documented shape.
+7. Always call `teardownForks(forkSet)` in `finally`. The source bucket MUST remain intact.
+8. Run the script with `npx tsx index.ts` from `/home/user/isolation`. The exit code must be `0`.
+
+## Constraints
+- Project path: `/home/user/isolation`
+- Log file: `/home/user/isolation/output.log` (used by the verifier when re-running the script).
+- Setup script (REDACTED-runs at task start, idempotent): `/home/user/isolation/setup.sh` — creates the source bucket with snapshots enabled and uploads `seed1.txt`, `seed2.txt`. Do not modify it.
+- Source bucket: dynamically constructed as `harbor-isolation-${trial_id}` (must remain unmodified at the end of the run).
+- Fork prefix: `audit-fork-${trial_id}` (so the three fork buckets are named `audit-fork-${trial_id}-0`, `audit-fork-${trial_id}-1`, `audit-fork-${trial_id}-2`).
+- Fork count: exactly 3, requested in a single `createForks` call.
+- Fork credentials role: `Editor` (each fork must have its own scoped key — the uploads MUST use the per-fork scoped credentials, not the admin keys).
+- Concurrency: the three per-fork uploads MUST run in parallel (e.g. `Promise.all`).
+- Output report: `/home/user/isolation/audit.json` with the shape documented above.
+- The fork buckets MUST NOT remain after the script exits — `teardownForks` must run.
+- Do not modify `package.json`, `tsconfig.json`, or `node_modules`.
+
+## Integrations
+- Tigris (real `@tigrisdata/agent-kit` API, AWS S3-compatible API, and `@tigrisdata/cli`; admin credentials provided via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).
+EOF
+Command outputs captured
+Running command: rm -f ~/.pochi/config.jsonc
+Command outputs captured

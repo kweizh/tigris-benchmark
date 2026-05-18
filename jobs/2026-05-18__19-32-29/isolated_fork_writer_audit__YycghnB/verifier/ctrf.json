@@ -1,0 +1,95 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 3,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779104264.419517,
+            "stop": 1779104267.5467536
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_created",
+                "status": "passed",
+                "duration": 0.0005152118392288685,
+                "start": 1779104264.4527473,
+                "stop": 1779104264.4534638,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_uses_required_apis",
+                "status": "passed",
+                "duration": 0.000601405743509531,
+                "start": 1779104264.453655,
+                "stop": 1779104264.4544053,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_script_exits_zero",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.9252829789184034,
+                "start": 1779104264.4545748,
+                "stop": 1779104267.3977072,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Source bucket: harbor-isolation-isolated-fork-write...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/isolation/index.ts:45:24)\\n')\n\n    def test_script_exits_zero(run_user_script):\n        result, log_contents = run_user_script\n>       assert result.returncode == 0, (\n            f\"'npx tsx index.ts' exited with {result.returncode}. \"\n            f\"Output:\\n{log_contents}\"\n        )\nE       AssertionError: 'npx tsx index.ts' exited with 1. Output:\nE         Source bucket: harbor-isolation-isolated-fork-writer-audit--yycghnb\nE         Fork prefix: audit-fork-isolated-fork-writer-audit--yycghnb\nE         Run failed: Error: Failed to create any forks\nE             at b (file:///home/user/isolation/node_modules/@tigrisdata/agent-kit/dist/index.js:1:2251)\nE             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nE             at async main (/home/user/isolation/index.ts:45:24)\nE         \nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1).returncode\n\ntests/test_final_state.py:118: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_audit_json_shape_and_contents",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.00053061218932271,
+                "start": 1779104267.397901,
+                "stop": 1779104267.4028566,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Source bucket: harbor-isolation-isolated-fork-write...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/isolation/index.ts:45:24)\\n')\n\n    def test_audit_json_shape_and_contents(run_user_script):\n        run_user_script  # ensure script ran\n>       assert os.path.isfile(AUDIT_JSON), (\n            f\"Expected audit report at {AUDIT_JSON} after running index.ts.\"\n        )\nE       AssertionError: Expected audit report at /home/user/isolation/audit.json after running index.ts.\nE       assert False\nE        +  where False = <function isfile at 0x7ee4bcd80220>('/home/user/isolation/audit.json')\nE        +    where <function isfile at 0x7ee4bcd80220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:126: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_bucket_unmodified",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.04034048831090331,
+                "start": 1779104267.4030418,
+                "stop": 1779104267.4486656,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Source bucket: harbor-isolation-isolated-fork-write...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/isolation/index.ts:45:24)\\n')\n\n    def test_source_bucket_unmodified(run_user_script):\n        \"\"\"Priority 1: Use the Tigris CLI to confirm the source bucket still\n        holds only the two seed files and none of the agent outputs.\"\"\"\n        run_user_script  # ensure script ran\n        source_bucket = bucket_name()\n        cmd = _tigris_cmd() + [\"objects\", \"list\", source_bucket]\n        result = subprocess.run(\n            cmd,\n            capture_output=True,\n            text=True,\n            timeout=120,\n            env=os.environ.copy(),\n        )\n        assert result.returncode == 0, (\n            f\"'tigris objects list {source_bucket}' failed: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\n        combined = result.stdout + \"\\n\" + result.stderr\n    \n        for seed in SEED_KEYS:\n>           assert seed in combined, (\n                f\"Expected seed key '{seed}' to remain in '{source_bucket}'. \"\n                f\"CLI output:\\n{combined}\"\n            )\nE           AssertionError: Expected seed key 'seed1.txt' to remain in 'harbor-isolation-isolated-fork-writer-audit--yycghnb'. CLI output:\nE             \nE             \nE           assert 'seed1.txt' in '\\n'\n\ntests/test_final_state.py:243: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_fork_buckets_were_torn_down",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005269395187497139,
+                "start": 1779104267.4488664,
+                "stop": 1779104267.4539268,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Source bucket: harbor-isolation-isolated-fork-write...cksAndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/isolation/index.ts:45:24)\\n')\n\n    def test_fork_buckets_were_torn_down(run_user_script):\n        \"\"\"Priority 1: Use the Tigris CLI to confirm none of the three fork\n        buckets recorded in audit.json still exist.\"\"\"\n        run_user_script  # ensure script ran\n>       with open(AUDIT_JSON) as f:\n             ^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/isolation/audit.json'\n\ntests/test_final_state.py:258: FileNotFoundError",
+                "message": "The test failed in the call phase"
+            },
+            {
+                "name": "test_final_state.py::test_cleanup_source_bucket",
+                "status": "passed",
+                "duration": 0.09228014526888728,
+                "start": 1779104267.4541106,
+                "stop": 1779104267.5465765,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

@@ -1,0 +1,74 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 2,
+            "failed": 3,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779105848.912018,
+            "stop": 1779105852.7244592
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_required_sdks",
+                "status": "passed",
+                "duration": 0.0005260962061583996,
+                "start": 1779105848.926511,
+                "stop": 1779105848.927239,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_write_denial_log_contains_access_keyword",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005350178107619286,
+                "start": 1779105848.9274316,
+                "stop": 1779105848.9422605,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_write_denial_log_contains_access_keyword():\n>       assert os.path.isfile(WRITE_DENIAL_LOG), (\n            f\"Expected {WRITE_DENIAL_LOG} to exist after the agent attempts the forbidden write.\"\n        )\nE       AssertionError: Expected /home/user/tigris-task/write-denial.log to exist after the agent attempts the forbidden write.\nE       assert False\nE        +  where False = <function isfile at 0x7b1c34720220>('/home/user/tigris-task/write-denial.log')\nE        +    where <function isfile at 0x7b1c34720220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:180: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_readback_txt_matches_expected_body",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.00048783328384160995,
+                "start": 1779105848.9424467,
+                "stop": 1779105848.945883,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_readback_txt_matches_expected_body():\n>       assert os.path.isfile(READBACK_TXT), f\"Expected {READBACK_TXT} to exist.\"\nE       AssertionError: Expected /home/user/tigris-task/readback.txt to exist.\nE       assert False\nE        +  where False = <function isfile at 0x7b1c34720220>('/home/user/tigris-task/readback.txt')\nE        +    where <function isfile at 0x7b1c34720220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:195: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_workspace_welcome_object_present_with_expected_body",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 3.7742513748817146,
+                "start": 1779105848.946059,
+                "stop": 1779105852.7235343,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'harbor-ro-readonly-workspace-write-denial--xttophh': {'error': 'Unable to remove bucket The specified bu...f the object', 'status': None}, 'workspace_welcome': {'code': 'Error', 'error': 'The specified bucket does not exist'}}\n\n    def test_workspace_welcome_object_present_with_expected_body(verify_payload):\n        entry = verify_payload.get(\"workspace_welcome\", {})\n>       assert \"error\" not in entry, (\n            f\"Failed to GET notes/welcome.txt from the editor workspace bucket \"\n            f\"{_workspace_bucket()}: {entry.get('error')}\"\n        )\nE       AssertionError: Failed to GET notes/welcome.txt from the editor workspace bucket harbor-ro-readonly-workspace-write-denial--xttophh: The specified bucket does not exist\nE       assert 'error' not in {'code': 'Error', 'error': 'The specified bucket does not exist'}\n\ntests/test_final_state.py:205: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_fork_forbidden_object_does_not_exist",
+                "status": "passed",
+                "duration": 0.0004265615716576576,
+                "start": 1779105852.7237418,
+                "stop": 1779105852.724302,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}

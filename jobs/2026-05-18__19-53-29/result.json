@@ -1,0 +1,44 @@
+{
+    "id": "e5beb27a-3aa7-46b0-bad6-1e5e0c6be470",
+    "started_at": "2026-05-18T19:53:31.066965",
+    "updated_at": "2026-05-18T20:04:25.704262",
+    "finished_at": "2026-05-18T20:04:25.704262",
+    "n_total_trials": 2,
+    "stats": {
+        "n_completed_trials": 2,
+        "n_errored_trials": 1,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "pochi__gpt-5.2-codex__tasks3": {
+                "n_trials": 2,
+                "n_errors": 1,
+                "metrics": [
+                    {
+                        "mean": 0.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "0.0": [
+                            "isolated_fork_writer_audit__3kV326g",
+                            "readonly_workspace_write_denial__XtTopHh"
+                        ]
+                    }
+                },
+                "exception_stats": {
+                    "AgentTimeoutError": [
+                        "readonly_workspace_write_denial__XtTopHh"
+                    ]
+                }
+            }
+        },
+        "n_input_tokens": 0,
+        "n_cache_tokens": 0,
+        "n_output_tokens": 46939,
+        "cost_usd": null
+    }
+}

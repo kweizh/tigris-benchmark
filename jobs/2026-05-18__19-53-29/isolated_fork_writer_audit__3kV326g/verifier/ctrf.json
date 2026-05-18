@@ -1,0 +1,95 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 3,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779105380.474663,
+            "stop": 1779105386.8254006
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_created",
+                "status": "passed",
+                "duration": 0.0007487423717975616,
+                "start": 1779105380.5134997,
+                "stop": 1779105380.514564,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_index_ts_uses_required_apis",
+                "status": "passed",
+                "duration": 0.0007076808251440525,
+                "start": 1779105380.5149088,
+                "stop": 1779105380.515789,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_script_exits_zero",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 6.13540902454406,
+                "start": 1779105380.515987,
+                "stop": 1779105386.6700838,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Error: Failed to create forks: Failed to snapshot b.../user/isolation/index.ts:62:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n')\n\n    def test_script_exits_zero(run_user_script):\n        result, log_contents = run_user_script\n>       assert result.returncode == 0, (\n            f\"'npx tsx index.ts' exited with {result.returncode}. \"\n            f\"Output:\\n{log_contents}\"\n        )\nE       AssertionError: 'npx tsx index.ts' exited with 1. Output:\nE         Error: Failed to create forks: Failed to snapshot bucket \"harbor-isolation-isolated-fork-writer-audit--3kv326g\": Unable to create bucket snapshot The specified bucket does not exist\nE             at main (/home/user/isolation/index.ts:62:11)\nE             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nE         \nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1).returncode\n\ntests/test_final_state.py:118: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_audit_json_shape_and_contents",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005260538309812546,
+                "start": 1779105386.6703234,
+                "stop": 1779105386.6753736,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Error: Failed to create forks: Failed to snapshot b.../user/isolation/index.ts:62:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n')\n\n    def test_audit_json_shape_and_contents(run_user_script):\n        run_user_script  # ensure script ran\n>       assert os.path.isfile(AUDIT_JSON), (\n            f\"Expected audit report at {AUDIT_JSON} after running index.ts.\"\n        )\nE       AssertionError: Expected audit report at /home/user/isolation/audit.json after running index.ts.\nE       assert False\nE        +  where False = <function isfile at 0x73571aca4220>('/home/user/isolation/audit.json')\nE        +    where <function isfile at 0x73571aca4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:126: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_bucket_unmodified",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.05119360610842705,
+                "start": 1779105386.6755543,
+                "stop": 1779105386.7328045,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Error: Failed to create forks: Failed to snapshot b.../user/isolation/index.ts:62:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n')\n\n    def test_source_bucket_unmodified(run_user_script):\n        \"\"\"Priority 1: Use the Tigris CLI to confirm the source bucket still\n        holds only the two seed files and none of the agent outputs.\"\"\"\n        run_user_script  # ensure script ran\n        source_bucket = bucket_name()\n        cmd = _tigris_cmd() + [\"objects\", \"list\", source_bucket]\n        result = subprocess.run(\n            cmd,\n            capture_output=True,\n            text=True,\n            timeout=120,\n            env=os.environ.copy(),\n        )\n        assert result.returncode == 0, (\n            f\"'tigris objects list {source_bucket}' failed: \"\n            f\"stdout={result.stdout!r} stderr={result.stderr!r}\"\n        )\n        combined = result.stdout + \"\\n\" + result.stderr\n    \n        for seed in SEED_KEYS:\n>           assert seed in combined, (\n                f\"Expected seed key '{seed}' to remain in '{source_bucket}'. \"\n                f\"CLI output:\\n{combined}\"\n            )\nE           AssertionError: Expected seed key 'seed1.txt' to remain in 'harbor-isolation-isolated-fork-writer-audit--3kv326g'. CLI output:\nE             \nE             \nE           assert 'seed1.txt' in '\\n'\n\ntests/test_final_state.py:243: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_fork_buckets_were_torn_down",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005244147032499313,
+                "start": 1779105386.7330146,
+                "stop": 1779105386.7381501,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Error: Failed to create forks: Failed to snapshot b.../user/isolation/index.ts:62:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n')\n\n    def test_fork_buckets_were_torn_down(run_user_script):\n        \"\"\"Priority 1: Use the Tigris CLI to confirm none of the three fork\n        buckets recorded in audit.json still exist.\"\"\"\n        run_user_script  # ensure script ran\n>       with open(AUDIT_JSON) as f:\n             ^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/isolation/audit.json'\n\ntests/test_final_state.py:258: FileNotFoundError",
+                "message": "The test failed in the call phase"
+            },
+            {
+                "name": "test_final_state.py::test_cleanup_source_bucket",
+                "status": "passed",
+                "duration": 0.08663627412170172,
+                "start": 1779105386.738378,
+                "stop": 1779105386.8251963,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            }
+        ]
+    }
+}
