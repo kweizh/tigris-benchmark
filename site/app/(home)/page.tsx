@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Github, Terminal, ClipboardList, ListTree } from "lucide-react";
 import Link from "next/link";
 import tasksData from "@/zealt/tasks.json";
@@ -36,6 +37,7 @@ export default function Home() {
     totalLatency: number;
     latencyCount: number;
     model: string;
+    rawModel: string;
     agent: string;
   }>();
 
@@ -62,6 +64,7 @@ export default function Home() {
           totalLatency: 0,
           latencyCount: 0,
           model: modelName,
+          rawModel: trial.model,
           agent: agentName
         });
       }
@@ -88,6 +91,7 @@ export default function Home() {
       return {
         id: String(index + 1),
         model: stats.model,
+        rawModel: stats.rawModel,
         agent: stats.agent,
         passedEvals: stats.passed,
         successRate: successRate,
@@ -162,7 +166,9 @@ export default function Home() {
           </div>
         ) : (
           // Client Component for Interactive Table
-          <LeaderboardTable data={data} />
+          <Suspense fallback={<div className="text-center py-12">Loading leaderboard...</div>}>
+            <LeaderboardTable data={data} />
+          </Suspense>
         )}
       </div>
     </div>

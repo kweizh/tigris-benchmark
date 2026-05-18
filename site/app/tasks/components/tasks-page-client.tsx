@@ -46,6 +46,7 @@ export type CompactTrial = {
   trial_name: string;
   trajectory_id?: string;
   model: string;
+  rawModel: string;
   agent: string;
   passed: boolean;
   reward: number | null;
@@ -122,6 +123,7 @@ export function TasksPageClient({ tasksData }: TasksPageClientProps) {
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [isInstructionOpen, setIsInstructionOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const [devMode, setDevMode] = useState(false);
 
   const hasActiveFilters =
     selectedStatuses.length > 0 ||
@@ -182,6 +184,7 @@ export function TasksPageClient({ tasksData }: TasksPageClientProps) {
     const initialAgents = (params.get("agent") || "").split(",").filter(Boolean);
     const initialSort = params.get("sort") || "default";
     const initialOrder = params.get("order") || "asc";
+    const initialDevMode = params.get("dev") === "true";
 
     setQueryQ(initialQ);
     setSearchQuery(initialQ);
@@ -190,6 +193,7 @@ export function TasksPageClient({ tasksData }: TasksPageClientProps) {
     setSelectedAgents(initialAgents);
     setQuerySort(initialSort);
     setQueryOrder(initialOrder);
+    setDevMode(initialDevMode);
   }, []);
 
   useEffect(() => {
@@ -207,11 +211,18 @@ export function TasksPageClient({ tasksData }: TasksPageClientProps) {
   const allTrialsFlat = useMemo(
     () =>
       tasksData.flatMap((task) =>
-        task.trials.map((trial) => ({
-          ...trial,
-        })),
+        task.trials
+          .filter((trial) => {
+            if (!devMode && zealtConfig.pending_models && zealtConfig.pending_models.length > 0) {
+              return !(zealtConfig.pending_models as string[]).includes(trial.rawModel);
+            }
+            return true;
+          })
+          .map((trial) => ({
+            ...trial,
+          }))
       ),
-    [tasksData],
+    [tasksData, devMode],
   );
 
   const allModels = useMemo(

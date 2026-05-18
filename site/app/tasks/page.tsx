@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import tasksDataRaw from "@/zealt/tasks.json";
 import pendingTasksData from "@/zealt/pending-tasks.json";
 import PendingReviewCard from "@/components/pending-review-card";
@@ -64,6 +65,7 @@ function toCompactTrial(taskName: string, trial: RawTaskTrial): CompactTrial | n
     trial_name: trial.trial_name,
     ...(trial.trajectory_id ? { trajectory_id: trial.trajectory_id } : {}),
     model,
+    rawModel: trial.model,
     agent,
     passed: Boolean(trial.passed),
     reward: trial.reward ?? null,
@@ -131,7 +133,9 @@ export default function TasksPage() {
           <PendingReviewCard pendingSampleCases={pendingSampleCases} />
         </div>
       ) : (
-        <TasksPageClient tasksData={compactTasksData} />
+        <Suspense fallback={<div className="container mx-auto py-8 text-center">Loading tasks...</div>}>
+          <TasksPageClient tasksData={compactTasksData} />
+        </Suspense>
       )}
     </div>
   );
