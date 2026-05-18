@@ -1,0 +1,95 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 7,
+            "passed": 3,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779047223.261829,
+            "stop": 1779047250.3610363
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_created",
+                "status": "passed",
+                "duration": 0.0005246312357485294,
+                "start": 1779047223.2781055,
+                "stop": 1779047223.2788675,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_orchestrator_exits_zero",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 13.502016784623265,
+                "start": 1779047223.2790627,
+                "stop": 1779047236.797554,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Error: Failed to snapshot bucket \"gold-eval-dataset...ndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/orchestrator/index.ts:166:54)\\n')\n\n    def test_orchestrator_exits_zero(run_user_script):\n        result, log_contents = run_user_script\n>       assert result.returncode == 0, (\n            f\"'npx tsx index.ts' exited with {result.returncode}. \"\n            f\"Output:\\n{log_contents}\"\n        )\nE       AssertionError: 'npx tsx index.ts' exited with 1. Output:\nE         Error: Failed to snapshot bucket \"gold-eval-dataset\": Unable to create bucket snapshot Invalid Request\nE             at b (file:///home/user/orchestrator/node_modules/@tigrisdata/agent-kit/dist/index.js:1:1779)\nE             at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nE             at async main (/home/user/orchestrator/index.ts:166:54)\nE         \nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1).returncode\n\ntests/test_final_state.py:107: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_aggregated_json_top_level_shape",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0005482952110469341,
+                "start": 1779047236.797769,
+                "stop": 1779047236.8031487,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Error: Failed to snapshot bucket \"gold-eval-dataset...ndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/orchestrator/index.ts:166:54)\\n')\n\n    def test_aggregated_json_top_level_shape(run_user_script):\n        run_user_script  # ensure script ran\n>       assert os.path.isfile(AGGREGATED_JSON), (\n            f\"Expected aggregate output at {AGGREGATED_JSON} after running \"\n            f\"index.ts.\"\n        )\nE       AssertionError: Expected aggregate output at /home/user/orchestrator/aggregated.json after running index.ts.\nE       assert False\nE        +  where False = <function isfile at 0x794f985e8220>('/home/user/orchestrator/aggregated.json')\nE        +    where <function isfile at 0x794f985e8220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:115: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_aggregated_inner_shape_and_answers",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.00045626191422343254,
+                "start": 1779047236.8033497,
+                "stop": 1779047236.8077755,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Error: Failed to snapshot bucket \"gold-eval-dataset...ndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/orchestrator/index.ts:166:54)\\n')\n\n    def test_aggregated_inner_shape_and_answers(run_user_script):\n        run_user_script  # ensure script ran\n>       with open(AGGREGATED_JSON) as f:\n             ^^^^^^^^^^^^^^^^^^^^^\nE       FileNotFoundError: [Errno 2] No such file or directory: '/home/user/orchestrator/aggregated.json'\n\ntests/test_final_state.py:135: FileNotFoundError",
+                "message": "The test failed in the call phase"
+            },
+            {
+                "name": "test_final_state.py::test_fork_and_writer_buckets_torn_down",
+                "status": "passed",
+                "duration": 1.7516023223288357,
+                "start": 1779047236.8079715,
+                "stop": 1779047238.5598154,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_gold_dataset_still_has_prompts",
+                "status": "passed",
+                "duration": 0.621453121304512,
+                "start": 1779047238.5600617,
+                "stop": 1779047239.181745,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_cleanup_residual_buckets",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 11.1671451642178,
+                "start": 1779047239.181976,
+                "stop": 1779047250.3607996,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "run_user_script = (CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1), 'Error: Failed to snapshot bucket \"gold-eval-dataset...ndRejections (node:internal/process/task_queues:104:5)\\n    at async main (/home/user/orchestrator/index.ts:166:54)\\n')\n\n    def test_cleanup_residual_buckets(run_user_script):\n        \"\"\"Verifier cleanup: best-effort remove every per-attempt bucket and the\n        source gold dataset so the task leaves no residue. Failures here do not\n        fail the test suite as long as the bucket either no longer exists or is\n        successfully deleted.\"\"\"\n        run_user_script  # ensure script ran first\n    \n        targets = EXPECTED_FORK_NAMES + EXPECTED_WRITER_NAMES + [SOURCE_BUCKET]\n        errors = []\n        for name in targets:\n            cmd = _tigris_cmd() + [\"buckets\", \"delete\", name, \"--force\"]\n            result = subprocess.run(\n                cmd,\n                capture_output=True,\n                text=True,\n                timeout=120,\n                env=os.environ.copy(),\n            )\n            if result.returncode != 0:\n                combined = (result.stdout + result.stderr).lower()\n                if \"not found\" in combined or \"no such bucket\" in combined:\n                    continue\n                fallback = subprocess.run(\n                    _tigris_cmd() + [\"buckets\", \"delete\", name],\n                    capture_output=True,\n                    text=True,\n                    timeout=120,\n                    env=os.environ.copy(),\n                )\n                if fallback.returncode != 0:\n                    fb_combined = (fallback.stdout + fallback.stderr).lower()\n                    if \"not found\" in fb_combined or \"no such bucket\" in fb_combined:\n                        continue\n                    errors.append(\n                        f\"failed to delete '{name}': \"\n                        f\"primary stdout={result.stdout!r} stderr={result.stderr!r}; \"\n                        f\"fallback stdout={fallback.stdout!r} stderr={fallback.stderr!r}\"\n                    )\n>       assert not errors, (\n            \"Verifier cleanup encountered errors:\\n  \" + \"\\n  \".join(errors)\n        )\nE       AssertionError: Verifier cleanup encountered errors:\nE           failed to delete 'eval-attempt-0': primary stdout='' stderr=\"\u2716 Failed to delete bucket 'eval-attempt-0'\\n  Unable to remove bucket The specified bucket does not exist\\n\"; fallback stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\\nHint: Use --yes to skip confirmation\\n'\nE           failed to delete 'eval-attempt-1': primary stdout='' stderr=\"\u2716 Failed to delete bucket 'eval-attempt-1'\\n  Unable to remove bucket The specified bucket does not exist\\n\"; fallback stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\\nHint: Use --yes to skip confirmation\\n'\nE           failed to delete 'eval-attempt-2': primary stdout='' stderr=\"\u2716 Failed to delete bucket 'eval-attempt-2'\\n  Unable to remove bucket The specified bucket does not exist\\n\"; fallback stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\\nHint: Use --yes to skip confirmation\\n'\nE           failed to delete 'eval-writer-0': primary stdout='' stderr=\"\u2716 Failed to delete bucket 'eval-writer-0'\\n  Unable to remove bucket The specified bucket does not exist\\n\"; fallback stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\\nHint: Use --yes to skip confirmation\\n'\nE           failed to delete 'eval-writer-1': primary stdout='' stderr=\"\u2716 Failed to delete bucket 'eval-writer-1'\\n  Unable to remove bucket The specified bucket does not exist\\n\"; fallback stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\\nHint: Use --yes to skip confirmation\\n'\nE           failed to delete 'eval-writer-2': primary stdout='' stderr=\"\u2716 Failed to delete bucket 'eval-writer-2'\\n  Unable to remove bucket The specified bucket does not exist\\n\"; fallback stdout='' stderr='Error: this command requires interactive input (not available in piped/scripted mode)\\nHint: Use --yes to skip confirmation\\n'\nE       assert not ['failed to delete \\'eval-attempt-0\\': primary stdout=\\'\\' stderr=\"\u2716 Failed to delete bucket \\'eval-attempt-0\\'\\\\n  Un...command requires interactive input (not available in piped/scripted mode)\\\\nHint: Use --yes to skip confirmation\\\\n\\'']\n\ntests/test_final_state.py:264: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

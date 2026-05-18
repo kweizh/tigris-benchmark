@@ -1,0 +1,62 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 4,
+            "passed": 2,
+            "failed": 2,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779047005.4654963,
+            "stop": 1779047009.7145073
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_run_ts_exists_and_uses_agent_kit_and_storage",
+                "status": "passed",
+                "duration": 0.0007077562622725964,
+                "start": 1779047005.4842494,
+                "stop": 1779047005.48522,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_output_log_contains_scoped_access_key",
+                "status": "passed",
+                "duration": 0.0006332285702228546,
+                "start": 1779047005.4855115,
+                "stop": 1779047005.4863102,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_state_json_listed_in_workspace_bucket",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 4.2060789512470365,
+                "start": 1779047005.4865634,
+                "stop": 1779047009.709289,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'removeBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'teardownWorksp...bucket does not exist', 'where': 'list'}], 'listing': None, 'object': {'error': 'The specified bucket does not exist'}}\n\n    def test_state_json_listed_in_workspace_bucket(verify_payload):\n        listing = verify_payload.get(\"listing\")\n>       assert listing is not None, (\n            f\"Verifier failed to list the workspace bucket. Errors: {verify_payload.get('errors')}\"\n        )\nE       AssertionError: Verifier failed to list the workspace bucket. Errors: [{'where': 'list', 'message': 'Unable to list objects The specified bucket does not exist'}]\nE       assert None is not None\n\ntests/test_final_state.py:173: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_state_json_body_matches_expected",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0007101977244019508,
+                "start": 1779047009.7095258,
+                "stop": 1779047009.7143345,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "verify_payload = {'cleanup': {'removeBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'teardownWorksp...bucket does not exist', 'where': 'list'}], 'listing': None, 'object': {'error': 'The specified bucket does not exist'}}\n\n    def test_state_json_body_matches_expected(verify_payload):\n        entry = verify_payload.get(\"object\")\n        assert entry is not None, \"Verifier did not attempt to GET state.json.\"\n>       assert \"error\" not in entry, (\n            f\"Failed to GET state.json from the workspace bucket: {entry.get('error')}\"\n        )\nE       AssertionError: Failed to GET state.json from the workspace bucket: The specified bucket does not exist\nE       assert 'error' not in {'error': 'The specified bucket does not exist'}\n\ntests/test_final_state.py:184: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

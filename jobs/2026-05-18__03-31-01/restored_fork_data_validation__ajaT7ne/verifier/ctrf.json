@@ -1,0 +1,69 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 1,
+            "failed": 4,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779047905.7014587,
+            "stop": 1779047914.0012305
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_index_ts_uses_required_apis",
+                "status": "passed",
+                "duration": 0.0005896482616662979,
+                "start": 1779047905.728513,
+                "stop": 1779047905.729353,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_result_json_reports_validation_fork_bucket",
+                "status": "failed",
+                "duration": 8.239317259285599,
+                "start": 1779047905.7295504,
+                "stop": 1779047913.9861352,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def restored_bucket():\n        \"\"\"Prepare the source bucket, run the user's script, then clean up.\n    \n        Yields the restored fork bucket name reported by result.json.\n        \"\"\"\n        assert os.path.isfile(INDEX_TS), (\n            f\"User must create the TypeScript script at {INDEX_TS}.\"\n        )\n        assert os.path.isfile(SETUP_SCRIPT), (\n            f\"setup.sh missing at {SETUP_SCRIPT}.\"\n        )\n    \n        # 1. Re-run setup.sh to deterministically prepare archive-bucket and\n        #    refresh snapshot_id.txt / expected_sha256.txt.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SCRIPT],\n            capture_output=True, text=True, timeout=300,\n            cwd=PROJECT_DIR, env=os.environ.copy(),\n        )\n>       assert setup_result.returncode == 0, (\n            f\"setup.sh failed: stdout={setup_result.stdout!r} \"\n            f\"stderr={setup_result.stderr!r}\"\n        )\nE       AssertionError: setup.sh failed: stdout='[setup] Configuring tigris CLI...\\n[setup] Removing pre-existing fork validation-fork (if present)...\\n[setup] Removing pre-existing source bucket archive-bucket (if present)...\\n[setup] Creating bucket archive-bucket with snapshots enabled...\\n' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['bash', '/home/user/restore-validate/setup.sh'], returncode=1, stdout='[setup] Configuring tigr...ket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n').returncode\n\ntests/test_final_state.py:78: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_result_json_reports_sha256_match",
+                "status": "failed",
+                "duration": 0.0002771303988993168,
+                "start": 1779047913.9863832,
+                "stop": 1779047913.9910638,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def restored_bucket():\n        \"\"\"Prepare the source bucket, run the user's script, then clean up.\n    \n        Yields the restored fork bucket name reported by result.json.\n        \"\"\"\n        assert os.path.isfile(INDEX_TS), (\n            f\"User must create the TypeScript script at {INDEX_TS}.\"\n        )\n        assert os.path.isfile(SETUP_SCRIPT), (\n            f\"setup.sh missing at {SETUP_SCRIPT}.\"\n        )\n    \n        # 1. Re-run setup.sh to deterministically prepare archive-bucket and\n        #    refresh snapshot_id.txt / expected_sha256.txt.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SCRIPT],\n            capture_output=True, text=True, timeout=300,\n            cwd=PROJECT_DIR, env=os.environ.copy(),\n        )\n>       assert setup_result.returncode == 0, (\n            f\"setup.sh failed: stdout={setup_result.stdout!r} \"\n            f\"stderr={setup_result.stderr!r}\"\n        )\nE       AssertionError: setup.sh failed: stdout='[setup] Configuring tigris CLI...\\n[setup] Removing pre-existing fork validation-fork (if present)...\\n[setup] Removing pre-existing source bucket archive-bucket (if present)...\\n[setup] Creating bucket archive-bucket with snapshots enabled...\\n' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['bash', '/home/user/restore-validate/setup.sh'], returncode=1, stdout='[setup] Configuring tigr...ket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n').returncode\n\ntests/test_final_state.py:78: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_restored_bucket_listed_via_tigris_cli",
+                "status": "failed",
+                "duration": 0.0002769101411104202,
+                "start": 1779047913.9912615,
+                "stop": 1779047913.9961033,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def restored_bucket():\n        \"\"\"Prepare the source bucket, run the user's script, then clean up.\n    \n        Yields the restored fork bucket name reported by result.json.\n        \"\"\"\n        assert os.path.isfile(INDEX_TS), (\n            f\"User must create the TypeScript script at {INDEX_TS}.\"\n        )\n        assert os.path.isfile(SETUP_SCRIPT), (\n            f\"setup.sh missing at {SETUP_SCRIPT}.\"\n        )\n    \n        # 1. Re-run setup.sh to deterministically prepare archive-bucket and\n        #    refresh snapshot_id.txt / expected_sha256.txt.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SCRIPT],\n            capture_output=True, text=True, timeout=300,\n            cwd=PROJECT_DIR, env=os.environ.copy(),\n        )\n>       assert setup_result.returncode == 0, (\n            f\"setup.sh failed: stdout={setup_result.stdout!r} \"\n            f\"stderr={setup_result.stderr!r}\"\n        )\nE       AssertionError: setup.sh failed: stdout='[setup] Configuring tigris CLI...\\n[setup] Removing pre-existing fork validation-fork (if present)...\\n[setup] Removing pre-existing source bucket archive-bucket (if present)...\\n[setup] Creating bucket archive-bucket with snapshots enabled...\\n' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['bash', '/home/user/restore-validate/setup.sh'], returncode=1, stdout='[setup] Configuring tigr...ket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n').returncode\n\ntests/test_final_state.py:78: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_independent_download_matches_expected_sha256",
+                "status": "failed",
+                "duration": 0.00036539603024721146,
+                "start": 1779047913.996305,
+                "stop": 1779047914.0010521,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def restored_bucket():\n        \"\"\"Prepare the source bucket, run the user's script, then clean up.\n    \n        Yields the restored fork bucket name reported by result.json.\n        \"\"\"\n        assert os.path.isfile(INDEX_TS), (\n            f\"User must create the TypeScript script at {INDEX_TS}.\"\n        )\n        assert os.path.isfile(SETUP_SCRIPT), (\n            f\"setup.sh missing at {SETUP_SCRIPT}.\"\n        )\n    \n        # 1. Re-run setup.sh to deterministically prepare archive-bucket and\n        #    refresh snapshot_id.txt / expected_sha256.txt.\n        setup_result = subprocess.run(\n            [\"bash\", SETUP_SCRIPT],\n            capture_output=True, text=True, timeout=300,\n            cwd=PROJECT_DIR, env=os.environ.copy(),\n        )\n>       assert setup_result.returncode == 0, (\n            f\"setup.sh failed: stdout={setup_result.stdout!r} \"\n            f\"stderr={setup_result.stderr!r}\"\n        )\nE       AssertionError: setup.sh failed: stdout='[setup] Configuring tigris CLI...\\n[setup] Removing pre-existing fork validation-fork (if present)...\\n[setup] Removing pre-existing source bucket archive-bucket (if present)...\\n[setup] Creating bucket archive-bucket with snapshots enabled...\\n' stderr='\u2716 Failed to create bucket\\n  Unable to create bucket The requested bucket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['bash', '/home/user/restore-validate/setup.sh'], returncode=1, stdout='[setup] Configuring tigr...ket maybe recently deleted and unavailable for creation yet. Please try after some time or select a different name.\\n').returncode\n\ntests/test_final_state.py:78: AssertionError"
+            }
+        ]
+    }
+}

@@ -1,0 +1,100 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 8,
+            "passed": 0,
+            "failed": 8,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779046992.9694705,
+            "stop": 1779046993.0370057
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_manager_ts_exists",
+                "status": "failed",
+                "duration": 0.0006171120330691338,
+                "start": 1779046992.9918766,
+                "stop": 1779046993.0085158,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def scenario_log_text():\n>       assert os.path.isfile(SCENARIO_LOG), (\n            f\"scenario.log was not created at {SCENARIO_LOG}; the four-step CLI scenario must produce it.\"\n        )\nE       AssertionError: scenario.log was not created at /home/user/pool/scenario.log; the four-step CLI scenario must produce it.\nE       assert False\nE        +  where False = <function isfile at 0x7241542a4220>('/home/user/pool/scenario.log')\nE        +    where <function isfile at 0x7241542a4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:35: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_cli_ts_exists",
+                "status": "failed",
+                "duration": 0.00032987678423523903,
+                "start": 1779046993.0087416,
+                "stop": 1779046993.012611,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def scenario_log_text():\n>       assert os.path.isfile(SCENARIO_LOG), (\n            f\"scenario.log was not created at {SCENARIO_LOG}; the four-step CLI scenario must produce it.\"\n        )\nE       AssertionError: scenario.log was not created at /home/user/pool/scenario.log; the four-step CLI scenario must produce it.\nE       assert False\nE        +  where False = <function isfile at 0x7241542a4220>('/home/user/pool/scenario.log')\nE        +    where <function isfile at 0x7241542a4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:35: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_manager_uses_promise_all_for_provisioning",
+                "status": "failed",
+                "duration": 0.00026310188695788383,
+                "start": 1779046993.0127926,
+                "stop": 1779046993.0165222,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def scenario_log_text():\n>       assert os.path.isfile(SCENARIO_LOG), (\n            f\"scenario.log was not created at {SCENARIO_LOG}; the four-step CLI scenario must produce it.\"\n        )\nE       AssertionError: scenario.log was not created at /home/user/pool/scenario.log; the four-step CLI scenario must produce it.\nE       assert False\nE        +  where False = <function isfile at 0x7241542a4220>('/home/user/pool/scenario.log')\nE        +    where <function isfile at 0x7241542a4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:35: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_manager_uses_promise_all_settled_for_teardown",
+                "status": "failed",
+                "duration": 0.0002582077868282795,
+                "start": 1779046993.0166962,
+                "stop": 1779046993.0202982,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def scenario_log_text():\n>       assert os.path.isfile(SCENARIO_LOG), (\n            f\"scenario.log was not created at {SCENARIO_LOG}; the four-step CLI scenario must produce it.\"\n        )\nE       AssertionError: scenario.log was not created at /home/user/pool/scenario.log; the four-step CLI scenario must produce it.\nE       assert False\nE        +  where False = <function isfile at 0x7241542a4220>('/home/user/pool/scenario.log')\nE        +    where <function isfile at 0x7241542a4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:35: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_scenario_log_contains_pool_size_line",
+                "status": "failed",
+                "duration": 0.0002572685480117798,
+                "start": 1779046993.0204718,
+                "stop": 1779046993.0240088,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def scenario_log_text():\n>       assert os.path.isfile(SCENARIO_LOG), (\n            f\"scenario.log was not created at {SCENARIO_LOG}; the four-step CLI scenario must produce it.\"\n        )\nE       AssertionError: scenario.log was not created at /home/user/pool/scenario.log; the four-step CLI scenario must produce it.\nE       assert False\nE        +  where False = <function isfile at 0x7241542a4220>('/home/user/pool/scenario.log')\nE        +    where <function isfile at 0x7241542a4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:35: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_scenario_log_has_three_bucket_lines",
+                "status": "failed",
+                "duration": 0.00025434093549847603,
+                "start": 1779046993.0241861,
+                "stop": 1779046993.0277216,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def scenario_log_text():\n>       assert os.path.isfile(SCENARIO_LOG), (\n            f\"scenario.log was not created at {SCENARIO_LOG}; the four-step CLI scenario must produce it.\"\n        )\nE       AssertionError: scenario.log was not created at /home/user/pool/scenario.log; the four-step CLI scenario must produce it.\nE       assert False\nE        +  where False = <function isfile at 0x7241542a4220>('/home/user/pool/scenario.log')\nE        +    where <function isfile at 0x7241542a4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:35: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_pool_state_json_removed_after_teardown",
+                "status": "failed",
+                "duration": 0.0002945130690932274,
+                "start": 1779046993.0278935,
+                "stop": 1779046993.031807,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def scenario_log_text():\n>       assert os.path.isfile(SCENARIO_LOG), (\n            f\"scenario.log was not created at {SCENARIO_LOG}; the four-step CLI scenario must produce it.\"\n        )\nE       AssertionError: scenario.log was not created at /home/user/pool/scenario.log; the four-step CLI scenario must produce it.\nE       assert False\nE        +  where False = <function isfile at 0x7241542a4220>('/home/user/pool/scenario.log')\nE        +    where <function isfile at 0x7241542a4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:35: AssertionError"
+            },
+            {
+                "name": "test_final_state.py::test_all_pool_buckets_torn_down_via_cli",
+                "status": "failed",
+                "duration": 0.00041992776095867157,
+                "start": 1779046993.032025,
+                "stop": 1779046993.0367897,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def scenario_log_text():\n>       assert os.path.isfile(SCENARIO_LOG), (\n            f\"scenario.log was not created at {SCENARIO_LOG}; the four-step CLI scenario must produce it.\"\n        )\nE       AssertionError: scenario.log was not created at /home/user/pool/scenario.log; the four-step CLI scenario must produce it.\nE       assert False\nE        +  where False = <function isfile at 0x7241542a4220>('/home/user/pool/scenario.log')\nE        +    where <function isfile at 0x7241542a4220> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntests/test_final_state.py:35: AssertionError"
+            }
+        ]
+    }
+}

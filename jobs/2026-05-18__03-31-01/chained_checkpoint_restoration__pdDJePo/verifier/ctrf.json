@@ -1,0 +1,80 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 0,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779047397.0543995,
+            "stop": 1779047401.5014665
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_user_script_runs_successfully",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 2.487032891716808,
+                "start": 1779047397.0825708,
+                "stop": 1779047399.5880437,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n')\n\n    def test_user_script_runs_successfully(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"User script 'npx tsx index.ts' did not exit 0. \"\n            f\"stdout={script_run_result.stdout!r} stderr={script_run_result.stderr!r}\"\n        )\nE       AssertionError: User script 'npx tsx index.ts' did not exit 0. stdout='' stderr='/home/user/chained-ckpt/index.ts:107\\n    throw new Error(`Checkpoint failed: ${ckptError?.message ?? \"Unknown error\"}`);\\n          ^\\n\\nError: Checkpoint failed: Failed to checkpoint bucket \"harbor-awscli-chained-checkpoint-restoration--pddjepo\": Unable to create bucket snapshot Invalid Request\\n    at main (/home/user/chained-ckpt/index.ts:107:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n').returncode\n\ntests/test_final_state.py:132: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_recovery_json_exists_and_has_expected_bucket",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0006894064135849476,
+                "start": 1779047399.5882766,
+                "stop": 1779047399.593677,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n')\n\n    def test_recovery_json_exists_and_has_expected_bucket(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping recovery.json check because the user script failed: \"\n            f\"{script_run_result.stderr!r}\"\n        )\nE       AssertionError: Skipping recovery.json check because the user script failed: '/home/user/chained-ckpt/index.ts:107\\n    throw new Error(`Checkpoint failed: ${ckptError?.message ?? \"Unknown error\"}`);\\n          ^\\n\\nError: Checkpoint failed: Failed to checkpoint bucket \"harbor-awscli-chained-checkpoint-restoration--pddjepo\": Unable to create bucket snapshot Invalid Request\\n    at main (/home/user/chained-ckpt/index.ts:107:11)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n'\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n').returncode\n\ntests/test_final_state.py:139: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_source_bucket_v1_now_contains_version_two",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0006831265054643154,
+                "start": 1779047399.593895,
+                "stop": 1779047399.5990841,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n')\n\n    def test_source_bucket_v1_now_contains_version_two(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping source bucket content check because the user script failed.\"\n        )\nE       AssertionError: Skipping source bucket content check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n').returncode\n\ntests/test_final_state.py:164: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_recovery_bucket_was_torn_down",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 0.0006995075382292271,
+                "start": 1779047399.599391,
+                "stop": 1779047399.6047041,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n')\n\n    def test_recovery_bucket_was_torn_down(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping recovery-bucket teardown check because the user script failed.\"\n        )\nE       AssertionError: Skipping recovery-bucket teardown check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n').returncode\n\ntests/test_final_state.py:199: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_final_state.py::test_before_mutation_snapshot_exists",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.8923073741607368,
+                "start": 1779047399.6049242,
+                "stop": 1779047401.5011306,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "script_run_result = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n')\n\n    def test_before_mutation_snapshot_exists(script_run_result):\n>       assert script_run_result.returncode == 0, (\n            \"Skipping snapshot check because the user script failed.\"\n        )\nE       AssertionError: Skipping snapshot check because the user script failed.\nE       assert 1 == 0\nE        +  where 1 = CompletedProcess(args=['npx', 'tsx', 'index.ts'], returncode=1, stdout='', stderr='/home/user/chained-ckpt/index.ts:10...l/process/task_queues:104:5)\\n    at async <anonymous> (/home/user/chained-ckpt/index.ts:132:1)\\n\\nNode.js v24.15.0\\n').returncode\n\ntests/test_final_state.py:225: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            }
+        ]
+    }
+}

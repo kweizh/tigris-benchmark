@@ -1,0 +1,99 @@
+{
+    "id": "90808889-a05d-4d44-8cd7-56fd975953d0",
+    "task_name": "seeded_corpus_fork_dispatch",
+    "trial_name": "seeded_corpus_fork_dispatch__LWGeGsS",
+    "trial_uri": "file:///home/kw/code/zealt/pochi-harbor/jobs/2026-05-18__03-31-01/seeded_corpus_fork_dispatch__LWGeGsS",
+    "task_id": {
+        "path": "/home/kw/code/zealt/tigris-benchmark/tasks/seeded_corpus_fork_dispatch"
+    },
+    "source": "tasks",
+    "task_checksum": "d5ed77844240f6d6c0308b2ca1a21d4e400bce086ec7026504fdacea40824b92",
+    "config": {
+        "task": {
+            "path": "/home/kw/code/zealt/tigris-benchmark/tasks/seeded_corpus_fork_dispatch",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": "tasks"
+        },
+        "trial_name": "seeded_corpus_fork_dispatch__LWGeGsS",
+        "trials_dir": "jobs/2026-05-18__03-31-01",
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": null,
+            "import_path": "agents.pochi:Pochi",
+            "model_name": "openai/gpt-5.2-codex",
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {},
+            "env": {}
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "suppress_override_warnings": false,
+            "mounts": [
+                {
+                    "type": "bind",
+                    "source": "bootstrap",
+                    "target": "/bootstrap"
+                }
+            ],
+            "env": {},
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "env": {},
+            "disable": false
+        },
+        "artifacts": [
+            "/home/user"
+        ],
+        "job_id": "4f04f24b-ebba-4108-bb8b-d284ccd5d9fc"
+    },
+    "agent_info": {
+        "name": "pochi",
+        "version": "unknown",
+        "model_info": {
+            "name": "gpt-5.2-codex",
+            "provider": "openai"
+        }
+    },
+    "agent_result": null,
+    "verifier_result": null,
+    "exception_info": {
+        "exception_type": "NonZeroAgentExitCodeError",
+        "exception_message": "Command failed (exit 127): set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version\nstdout: + return 0\n+ install_dir=/root/.pochi\n+ version_to_install=\n+ '[' 1 -gt 0 ']'\n+ case \"$1\" in\n+ version_to_install=pochi-v0.6.8\n+ '[' -z pochi-v0.6.8 ']'\n+ version_to_install=cli@0.6.8\n+ install_version cli@0.6.8 /root/.pochi\n+ local version_to_install=cli@0.6.8\n+ local install_dir=/root/.pochi\n+ case \"$version_to_install\" in\n+ info Installing 'Pochi version cli@0.6.8'\n+ local action=Installing\n+ local 'details=Pochi version cli@0.6.8'\n+ command printf '\\033[1;32m%12s\\033[0m %s\\n' Installing 'Pochi version cli@0.6.8'\n\u001b[1;32m  Installing\u001b[0m Pochi version cli@0.6.8\n+ install_release cli@0.6.8 /root/.pochi\n+ local version=cli@0.6.8\n+ local install_dir=/root/.pochi\n+ info Checking 'for existing Pochi installation'\n+ local action=Checking\n+ local 'details=for existing Pochi installation'\n+ command printf '\\033[1;32m%12s\\033[0m %s\\n' Checking 'for existing Pochi installation'\n\u001b[1;32m    Checking\u001b[0m for existing Pochi installation\n+ upgrade_is_ok cli@0.6.8 /root/.pochi\n+ return 0\n++ download ... [truncated]\nstderr: None",
+        "exception_traceback": "Traceback (most recent call last):\n  File \"/home/kw/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/trial/trial.py\", line 1255, in run\n    await self._setup_agent()\n  File \"/home/kw/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/trial/trial.py\", line 372, in _setup_agent\n    await asyncio.wait_for(\n  File \"/opt/miniconda3/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/home/kw/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/agents/installed/base.py\", line 392, in setup\n    await self.install(environment)\n  File \"/home/kw/code/zealt/pochi-harbor/agents/pochi.py\", line 67, in install\n    await self.exec_as_agent(\n  File \"/home/kw/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/agents/installed/base.py\", line 366, in exec_as_agent\n    return await self._exec(\n           ^^^^^^^^^^^^^^^^^\n  File \"/home/kw/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/agents/installed/base.py\", line 329, in _exec\n    raise NonZeroAgentExitCodeError(\nharbor.agents.installed.base.NonZeroAgentExitCodeError: Command failed (exit 127): set -euo pipefail; curl -fsSL https://getpochi.com/install.sh | bash -x -s -- pochi-v0.6.8 && mkdir -p /logs/agent/pochi && ~/.pochi/bin/pochi --version\nstdout: + return 0\n+ install_dir=/root/.pochi\n+ version_to_install=\n+ '[' 1 -gt 0 ']'\n+ case \"$1\" in\n+ version_to_install=pochi-v0.6.8\n+ '[' -z pochi-v0.6.8 ']'\n+ version_to_install=cli@0.6.8\n+ install_version cli@0.6.8 /root/.pochi\n+ local version_to_install=cli@0.6.8\n+ local install_dir=/root/.pochi\n+ case \"$version_to_install\" in\n+ info Installing 'Pochi version cli@0.6.8'\n+ local action=Installing\n+ local 'details=Pochi version cli@0.6.8'\n+ command printf '\\033[1;32m%12s\\033[0m %s\\n' Installing 'Pochi version cli@0.6.8'\n\u001b[1;32m  Installing\u001b[0m Pochi version cli@0.6.8\n+ install_release cli@0.6.8 /root/.pochi\n+ local version=cli@0.6.8\n+ local install_dir=/root/.pochi\n+ info Checking 'for existing Pochi installation'\n+ local action=Checking\n+ local 'details=for existing Pochi installation'\n+ command printf '\\033[1;32m%12s\\033[0m %s\\n' Checking 'for existing Pochi installation'\n\u001b[1;32m    Checking\u001b[0m for existing Pochi installation\n+ upgrade_is_ok cli@0.6.8 /root/.pochi\n+ return 0\n++ download ... [truncated]\nstderr: None\n",
+        "occurred_at": "2026-05-18T03:50:28.743513"
+    },
+    "started_at": "2026-05-17T19:50:15.158215Z",
+    "finished_at": "2026-05-17T19:50:44.442433Z",
+    "environment_setup": {
+        "started_at": "2026-05-17T19:50:15.161102Z",
+        "finished_at": "2026-05-17T19:50:21.436634Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-05-17T19:50:21.436646Z",
+        "finished_at": "2026-05-17T19:50:28.271893Z"
+    },
+    "agent_execution": null,
+    "verifier": null,
+    "step_results": null
+}

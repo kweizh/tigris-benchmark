@@ -1,0 +1,67 @@
+[37m2026-05-17 19:49:09.985[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37mnative:1[39m[0m[0m[1m[37m	Pochi[39m[22m[0m[0m	pochi v0.6.8
+[37m2026-05-17 19:49:10.162[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:519633[39m[0m[0m[1m[37m	loadAgents[39m[22m[0m[0m	Loaded 6 custom agents (6 valid, 0 invalid)
+[37m2026-05-17 19:49:10.164[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:519634[39m[0m[0m[1m[37m	loadSkills[39m[22m[0m[0m	Loaded 2 skills (2 valid, 0 invalid)
+[37m2026-05-17 19:49:10.261[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:444677[39m[0m[0m[1m[37m	PochiVendor[39m[22m[0m[0m	JWT is expiring or missing, fetching a new one
+[37m2026-05-17 19:49:13.289[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:416517[39m[0m[0m[1m[37m	MCPHub[39m[22m[0m[0m	MCP servers configuration changed via signal:
+[37m2026-05-17 19:49:13.290[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:416629[39m[0m[0m[1m[37m	MCPHub[39m[22m[0m[0m	Build MCPHub Status
+[37m2026-05-17 19:49:13.396[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37mnative:7[39m[0m[0m[1m[37m	Pochi[39m[22m[0m[0m	Starting task runner...
+[37m2026-05-17 19:49:13.484[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:507614[39m[0m[0m[1m[37m	generateTaskTitle[39m[22m[0m[0m	Generating task title, old: null, new: # Aggregate Tigris Snapshot Inventory With the Tigris CLI
+[37m2026-05-17 19:49:24.321[39m[0m[0m	[31m[1mERROR[22m[39m[0m[0m	[37m$bunfs/root/pochi:435003[39m[0m[0m[1m[37m	LiveChatKit[39m[22m[0m[0m	onError
+
+[97m[101m[1m Error [22m[49m[39m[0m[0m unknown certificate verification error, 431789, 49, 431789, 49, /$bunfs/root/pochi[0m[0m
+error stack:
+  • [33mpochi[39m[0m[0m	<anonymous>[0m[0m
+	[37m$bunfs/root/pochi:431789[39m[0m[0m
+  • [33mpochi[39m[0m[0m	<anonymous>[0m[0m
+	[37m$bunfs/root/pochi:431327[39m[0m[0m
+  • [33mpochi[39m[0m[0m	<anonymous>[0m[0m
+	[37m$bunfs/root/pochi:434466[39m[0m[0m
+  • [33mpochi[39m[0m[0m	<anonymous>[0m[0m
+	[37m$bunfs/root/pochi:434464[39m[0m[0m
+  • [33mpochi[39m[0m[0m	processQueue[0m[0m
+	[37m$bunfs/root/pochi:434457[39m[0m[0m
+  • [33mpochi[39m[0m[0m	processQueue[0m[0m
+	[37m$bunfs/root/pochi:434451[39m[0m[0m
+  • [33mpochi[39m[0m[0m	<anonymous>[0m[0m
+	[37m$bunfs/root/pochi:434472[39m[0m[0m
+  • [33mnative[39m[0m[0m	new Promise[0m[0m
+	[37mnative:1[39m[0m[0m
+  • [33mpochi[39m[0m[0m	run[0m[0m
+	[37m$bunfs/root/pochi:434463[39m[0m[0m
+  • [33mpochi[39m[0m[0m	run[0m[0m
+	[37m$bunfs/root/pochi:434462[39m[0m[0m
+  • [33mpochi[39m[0m[0m	transform[0m[0m
+	[37m$bunfs/root/pochi:431327[39m[0m[0m
+  • [33mpochi[39m[0m[0m	transform[0m[0m
+	[37m$bunfs/root/pochi:431326[39m[0m[0m
+  • [33mnative[39m[0m[0m	<anonymous>[0m[0m
+	[37mnative:1[39m[0m[0m
+  • [33mnative[39m[0m[0m	<anonymous>[0m[0m
+	[37mnative:1[39m[0m[0m
+  • [33mnative[39m[0m[0m	<anonymous>[0m[0m
+	[37mnative:1[39m[0m[0m
+  • [33mnative[39m[0m[0m	<anonymous>[0m[0m
+	[37mnative:1[39m[0m[0m
+  • [33mnative[39m[0m[0m	<anonymous>[0m[0m
+	[37mnative:1[39m[0m[0m
+  • [33mnative[39m[0m[0m	<anonymous>[0m[0m
+	[37mnative:1[39m[0m[0m
+  • [33mnative[39m[0m[0m	<anonymous>[0m[0m
+	[37mnative:1[39m[0m[0m
+  • [33mnative[39m[0m[0m	<anonymous>[0m[0m
+	[37mnative:7[39m[0m[0m
+  • [33mnative[39m[0m[0m	processTicksAndRejections[0m[0m
+	[37mnative:7[39m[0m[0m[0m[0m
+[37m2026-05-17 19:49:24.338[39m[0m[0m	[31m[1mERROR[22m[39m[0m[0m	[37m$bunfs/root/pochi:519190[39m[0m[0m[1m[37m	TaskRunner[39m[22m[0m[0m	Task is failed, trying to resend last message to resume it. {
+  kind: [32m'InternalError'[39m,
+  message: [32m'unknown certificate verification error'[39m
+}
+[37m2026-05-17 19:49:27.658[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:507614[39m[0m[0m[1m[37m	generateTaskTitle[39m[22m[0m[0m	Generating task title, old: # Aggregate Tigris Snapshot Inventory With the Tigris CLI, new: Aggregate Tigris snapshot inventory with Node.js script
+[37m2026-05-17 19:49:34.200[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:463047[39m[0m[0m[1m[37m	listFiles[39m[22m[0m[0m	handling listFile with dirPath /home/user/inv and recursive [33mfalse[39m
+[37m2026-05-17 19:50:25.361[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:474589[39m[0m[0m[1m[37m	FileStateCache[39m[22m[0m[0m	withReadFileCache: path="/logs/artifacts/trial_id" resolvedPath="/logs/artifacts/trial_id" isVirtual=false cacheExists=true shouldCache=true startLine=1 endLine=5
+[37m2026-05-17 19:50:25.362[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:474589[39m[0m[0m[1m[37m	FileStateCache[39m[22m[0m[0m	withReadFileCache: existingState=undefined
+[37m2026-05-17 19:50:25.371[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m$bunfs/root/pochi:518725[39m[0m[0m[1m[37m	FileStateCache[39m[22m[0m[0m	withReadFileCache: populating cache for "/logs/artifacts/trial_id" mtime=1779047299749 contentLen=39
+[37m2026-05-17 19:50:59.031[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37mnative:7[39m[0m[0m[1m[37m	Pochi[39m[22m[0m[0m	Task runner finished successfully.
+[37m2026-05-17 19:50:59.032[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37mnative:7[39m[0m[0m[1m[37m	Pochi[39m[22m[0m[0m	Shutting down...
+[37m2026-05-17 19:50:59.043[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37mnative:7[39m[0m[0m[1m[37m	Pochi[39m[22m[0m[0m	Shutdown completed. Process will exit.
+[37m2026-05-17 19:50:59.044[39m[0m[0m	[32m[1mDEBUG[22m[39m[0m[0m	[37m[39m[0m[0m[1m[37m	Pochi[39m[22m[0m[0m	Process exiting with code 0

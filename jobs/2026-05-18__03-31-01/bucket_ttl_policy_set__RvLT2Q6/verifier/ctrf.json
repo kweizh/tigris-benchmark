@@ -1,0 +1,41 @@
+{
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "8.4.1"
+        },
+        "summary": {
+            "tests": 2,
+            "passed": 1,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1779046505.045916,
+            "stop": 1779046508.5970087
+        },
+        "tests": [
+            {
+                "name": "test_final_state.py::test_bucket_appears_in_list",
+                "status": "passed",
+                "duration": 1.8957421286031604,
+                "start": 1779046505.0585558,
+                "stop": 1779046506.9545975,
+                "retries": 0,
+                "file_path": "test_final_state.py"
+            },
+            {
+                "name": "test_final_state.py::test_bucket_ttl_is_seven_days",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 1.621225201524794,
+                "start": 1779046506.9548635,
+                "stop": 1779046508.5967638,
+                "retries": 0,
+                "file_path": "test_final_state.py",
+                "trace": "def test_bucket_ttl_is_seven_days():\n        \"\"\"Priority 1: confirm via Tigris CLI that the bucket's TTL is 7 days.\n    \n        The Tigris CLI documents `tigris buckets set-ttl <name> --days 7` as the\n        canonical way to set a bucket's object-expiration TTL. The verifier\n        inspects the bucket configuration with `tigris buckets get --format json`\n        and asserts that a TTL/expiration-related property reflects a 7-day\n        window.\n        \"\"\"\n        bucket_name = _bucket_name()\n        result = _run_tigris([\"buckets\", \"get\", bucket_name, \"--format\", \"json\"])\n        assert result.returncode == 0, (\n            f\"'tigris buckets get {bucket_name} --format json' failed: returncode=\"\n            f\"{result.returncode}, stderr={result.stderr!r}\"\n        )\n        try:\n            payload = json.loads(result.stdout)\n        except json.JSONDecodeError as exc:\n            pytest.fail(\n                f\"'tigris buckets get {bucket_name} --format json' returned invalid \"\n                f\"JSON: {exc}. stdout={result.stdout!r}\"\n            )\n    \n        # The CLI may emit either:\n        #   - a list of {\"property\": <label>, \"value\": <value>} rows, or\n        #   - a structured object with fields like \"ttl\"/\"objectTtl\"/\"expiration\".\n        # Accept either shape: search for any TTL/Expiration-related entry whose\n        # value contains \"7\" and \"day\".\n        ttl_keywords = (\"ttl\", \"expir\")\n        seven_day_pattern = re.compile(r\"\\b7\\s*day\", re.IGNORECASE)\n    \n        # Shape 1: list of {property, value} rows.\n        if isinstance(payload, list):\n            matched_value = None\n            for row in payload:\n                if not isinstance(row, dict):\n                    continue\n                prop = str(row.get(\"property\", \"\")).lower()\n                if any(kw in prop for kw in ttl_keywords):\n                    matched_value = row.get(\"value\")\n                    if matched_value is not None and seven_day_pattern.search(str(matched_value)):\n                        return\n                    # Also accept value being the integer 7 with property naming \"days\"\n                    if \"day\" in prop and str(matched_value).strip() == \"7\":\n                        return\n>           pytest.fail(\n                \"Did not find a TTL/Expiration property reflecting a 7-day window \"\n                f\"in `tigris buckets get {bucket_name} --format json` output. \"\n                f\"Last TTL-related value seen: {matched_value!r}. Full payload: {payload!r}\"\n            )\nE           Failed: Did not find a TTL/Expiration property reflecting a 7-day window in `tigris buckets get harbor-ttl-bucket-ttl-policy-set--rvlt2q6 --format json` output. Last TTL-related value seen: None. Full payload: [{'property': 'Name', 'value': 'harbor-ttl-bucket-ttl-policy-set--rvlt2q6'}, {'property': 'Number of Objects', 'value': '0'}, {'property': 'Total Size', 'value': '0 B'}, {'property': 'All Versions Count', 'value': '0'}, {'property': 'Default Tier', 'value': 'STANDARD'}, {'property': 'Snapshots Enabled', 'value': 'No'}, {'property': 'Delete Protection', 'value': 'No'}, {'property': 'Allow Object ACL', 'value': 'No'}, {'property': 'Custom Domain', 'value': 'None'}, {'property': 'Has Forks', 'value': 'No'}, {'property': 'Lifecycle Rules', 'value': 'undefined'}]\n\ntests/test_final_state.py:153: Failed",
+                "message": "The test failed in the call phase"
+            }
+        ]
+    }
+}

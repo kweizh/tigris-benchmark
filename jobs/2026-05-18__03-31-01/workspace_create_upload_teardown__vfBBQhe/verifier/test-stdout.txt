@@ -1,0 +1,57 @@
+downloading uv 0.9.7 x86_64-unknown-linux-gnu
+no checksums to verify
+installing to /root/.local/bin
+  uv
+  uvx
+everything's installed!
+
+To add $HOME/.local/bin to your PATH, either restart your shell or run:
+
+    source $HOME/.local/bin/env (sh, bash, zsh)
+    source $HOME/.local/bin/env.fish (fish)
+Downloading pygments (1.2MiB)
+ Downloading pygments
+Installed 7 packages in 62ms
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 4 items
+
+tests/test_final_state.py ..FF                                           [100%]
+
+=================================== FAILURES ===================================
+__________________ test_state_json_listed_in_workspace_bucket __________________
+
+verify_payload = {'cleanup': {'removeBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'teardownWorksp...bucket does not exist', 'where': 'list'}], 'listing': None, 'object': {'error': 'The specified bucket does not exist'}}
+
+    def test_state_json_listed_in_workspace_bucket(verify_payload):
+        listing = verify_payload.get("listing")
+>       assert listing is not None, (
+            f"Verifier failed to list the workspace bucket. Errors: {verify_payload.get('errors')}"
+        )
+E       AssertionError: Verifier failed to list the workspace bucket. Errors: [{'where': 'list', 'message': 'Unable to list objects The specified bucket does not exist'}]
+E       assert None is not None
+
+tests/test_final_state.py:173: AssertionError
+____________________ test_state_json_body_matches_expected _____________________
+
+verify_payload = {'cleanup': {'removeBucket': {'error': 'Unable to remove bucket The specified bucket does not exist'}, 'teardownWorksp...bucket does not exist', 'where': 'list'}], 'listing': None, 'object': {'error': 'The specified bucket does not exist'}}
+
+    def test_state_json_body_matches_expected(verify_payload):
+        entry = verify_payload.get("object")
+        assert entry is not None, "Verifier did not attempt to GET state.json."
+>       assert "error" not in entry, (
+            f"Failed to GET state.json from the workspace bucket: {entry.get('error')}"
+        )
+E       AssertionError: Failed to GET state.json from the workspace bucket: The specified bucket does not exist
+E       assert 'error' not in {'error': 'The specified bucket does not exist'}
+
+tests/test_final_state.py:184: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/test_final_state.py::test_run_ts_exists_and_uses_agent_kit_and_storage
+PASSED tests/test_final_state.py::test_output_log_contains_scoped_access_key
+FAILED tests/test_final_state.py::test_state_json_listed_in_workspace_bucket
+FAILED tests/test_final_state.py::test_state_json_body_matches_expected - Ass...
+========================= 2 failed, 2 passed in 4.25s ==========================
