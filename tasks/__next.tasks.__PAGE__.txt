@@ -1,7 +1,7 @@
 1:"$Sreact.fragment"
 2:I[42654,["/tigris-benchmark/_next/static/chunks/babff0e7418ab052.js","/tigris-benchmark/_next/static/chunks/3ecbb78a8ff87549.js","/tigris-benchmark/_next/static/chunks/777f5ef34b6ca51a.js","/tigris-benchmark/_next/static/chunks/be08138953094657.js"],"TasksPageClient"]
-22:I[75049,["/tigris-benchmark/_next/static/chunks/d2c13bb33c4fcd54.js","/tigris-benchmark/_next/static/chunks/c21188132e0e0d48.js"],"OutletBoundary"]
-23:"$Sreact.suspense"
+15:I[75049,["/tigris-benchmark/_next/static/chunks/d2c13bb33c4fcd54.js","/tigris-benchmark/_next/static/chunks/c21188132e0e0d48.js"],"OutletBoundary"]
+16:"$Sreact.suspense"
 3:T1b6b,# Tigris Agent Pool Lifecycle Manager
 
 ## Background
@@ -79,38 +79,7 @@ After the scenario completes:
 ## Integrations
 - Tigris Agent Kit (`@tigrisdata/agent-kit`)
 - Tigris CLI (`@tigrisdata/cli`)
-4:Ta3f,# Upload an Object to Tigris using the AWS CLI
-
-## Background
-Tigris is an S3-compatible object storage service exposing a single global endpoint at `https://t3.storage.dev`. Because of its S3 compatibility, the standard `aws` CLI can be used against Tigris by pointing it at the Tigris endpoint and providing Tigris access credentials. In this task you will use the AWS CLI to create a bucket and upload a file to it on Tigris.
-
-## Requirements
-- Use the standard `aws` CLI (already installed) configured to talk to Tigris.
-- Create a Tigris bucket whose name is derived from the trial id.
-- Upload the existing local file `/home/user/tigris-task/hello.txt` (contents: literal text `hello tigris`) to that bucket under the key `hello.txt`.
-
-## Implementation Guide
-1. Read the trial id from `/logs/artifacts/trial_id`.
-2. Construct the bucket name as `harbor-awscli-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-3. Use the AWS CLI against the Tigris endpoint to create the bucket, for example:
-   ```bash
-   aws s3 mb s3://harbor-awscli-${trial_id}
-   ```
-4. Upload the pre-existing file `/home/user/tigris-task/hello.txt` to the bucket:
-   ```bash
-   aws s3 cp /home/user/tigris-task/hello.txt s3://harbor-awscli-${trial_id}/hello.txt
-   ```
-5. Confirm the object is listed by running `aws s3 ls s3://harbor-awscli-${trial_id}/`.
-
-## Constraints
-- Project path: /home/user/tigris-task
-- Pre-existing file: /home/user/tigris-task/hello.txt (contains exactly the bytes `hello tigris`, no trailing newline). Do NOT modify its contents.
-- Bucket name format: `harbor-awscli-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. You must normalize the bucket name to only contain lowercase letters, numbers, dots, and hyphens. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-- The AWS CLI is pre-configured via the environment variables `AWS_ENDPOINT_URL_S3=https://t3.storage.dev`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION=auto`. Do NOT hardcode credentials in any file.
-- Use the real Tigris service. Do NOT mock or stub any of the calls.
-
-## Integrations
-- Tigris (object storage, accessed via the AWS S3 protocol on `https://t3.storage.dev`)5:T110a,# boto3 Object Roundtrip Against Tigris
+4:T110a,# boto3 Object Roundtrip Against Tigris
 
 ## Background
 Tigris is an S3-compatible, globally distributed object storage service exposed at the single endpoint `https://t3.storage.dev`. Because Tigris is S3 compatible, you can use the AWS SDK for Python (boto3) without modification — you only need to point boto3 at the Tigris endpoint and use the standard virtual-hosted addressing style. The Harbor runtime injects the Tigris credentials and endpoint into the container as the AWS-flavored environment variables `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3`, and `AWS_REGION` so boto3 can pick them up automatically.
@@ -169,7 +138,7 @@ Then execute the script once from `/home/user/tigris-task` so that the bucket, t
 - Do NOT hardcode credentials or the endpoint URL inside the script — read them from the standard `AWS_*` environment variables that Harbor injects.
 
 ## Integrations
-- Tigris Object Storage. Harbor injects `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` / `TIGRIS_STORAGE_ENDPOINT` and the task runtime maps them onto the boto3-friendly `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3` (= `https://t3.storage.dev`), and `AWS_REGION=auto`.6:T946,# Create a Snapshot-Enabled Tigris Bucket via CLI
+- Tigris Object Storage. Harbor injects `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` / `TIGRIS_STORAGE_ENDPOINT` and the task runtime maps them onto the boto3-friendly `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3` (= `https://t3.storage.dev`), and `AWS_REGION=auto`.5:T946,# Create a Snapshot-Enabled Tigris Bucket via CLI
 
 ## Background
 Tigris is a globally distributed, S3-compatible object storage service. Snapshots and forks are opt-in features that must be enabled at bucket creation time — they cannot be turned on later. The Tigris CLI exposes the `--enable-snapshots` flag on `tigris buckets create` for exactly this purpose. In this task you will use the Tigris CLI to create a brand-new bucket with snapshots enabled in a single command.
@@ -204,64 +173,7 @@ Tigris is a globally distributed, S3-compatible object storage service. Snapshot
 - Snapshots MUST be enabled in the same `tigris buckets create` command (they cannot be enabled on an existing bucket).
 
 ## Integrations
-- Tigris (`https://t3.storage.dev`)7:T134f,# Tigris Storage SDK: Bucket-to-Bucket Object Copy
-
-## Background
-Tigris is a globally distributed, S3-compatible object storage service. The native TypeScript SDK `@tigrisdata/storage` exposes primitives (`createBucket`, `list`, `get`, `put`) that map to the same concepts the plan refers to as `listObjects`, `getObject`, and `putObject`. A common workflow for an AI agent is to copy a curated set of objects out of a source bucket into a brand-new destination bucket, preserving the keys and content exactly.
-
-The container's entrypoint has already pre-seeded a source bucket BEFORE the agent starts:
-
-- Source bucket: `harbor-src-${trial_id}` (where `${trial_id}` is the content of `/logs/artifacts/trial_id`).
-- Five JSON objects under the `data/` prefix, with keys `data/01.json` ... `data/05.json`.
-- Each object's body is the JSON document `{"index": N, "payload": "<N concatenated copies of the word foo>"}` for N = 1..5. No trailing whitespace, no trailing newline.
-  - `data/01.json` body: `{"index": 1, "payload": "foo"}`
-  - `data/02.json` body: `{"index": 2, "payload": "foofoo"}`
-  - `data/03.json` body: `{"index": 3, "payload": "foofoofoo"}`
-  - `data/04.json` body: `{"index": 4, "payload": "foofoofoofoo"}`
-  - `data/05.json` body: `{"index": 5, "payload": "foofoofoofoofoo"}`
-
-Your job is to write and run a TypeScript program that uses the Tigris Storage SDK to create a fresh destination bucket and copy every object under `data/` into it, preserving keys and bytes.
-
-## Requirements
-Using only the `@tigrisdata/storage` SDK from a TypeScript program at `/home/user/tigris-task/copy.ts`, do the following:
-
-1. Read the current `trial_id` from `/logs/artifacts/trial_id` (trim whitespace).
-2. Compute the bucket names exactly:
-   - `srcBucket = harbor-src-${trial_id}`
-   - `dstBucket = harbor-dst-${trial_id}`
-   Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-3. Call `createBucket(dstBucket)` to provision the destination bucket. If it already exists, treat that as success.
-4. Call `list({ prefix: "data/", config: { bucket: srcBucket } })` to enumerate the seeded objects.
-5. For every item returned, call `get(name, "string", { config: { bucket: srcBucket } })` to retrieve the body, then `put(name, body, { config: { bucket: dstBucket } })` to write the same key into the destination bucket. The destination object body must equal the source object body byte-for-byte.
-6. Do NOT modify, rename, or delete any object in the source bucket. The verifier asserts the source is unchanged.
-7. Run the program with `tsx /home/user/tigris-task/copy.ts`. Compiling first with `tsc` is also acceptable.
-
-## Implementation Guide
-1. `cd /home/user/tigris-task`
-2. The project is already initialized with a `package.json` that depends on `@tigrisdata/storage` and `tsx`, and dependencies are pre-installed in `node_modules`. A `tsconfig.json` is also provided.
-3. Create `copy.ts` with ES module imports:
-   ```typescript
-   import { readFile } from "node:fs/promises";
-   import { createBucket, list, get, put } from "@tigrisdata/storage";
-   ```
-4. Read the trial id with `await readFile("/logs/artifacts/trial_id", "utf-8")` and `.trim()` it.
-5. For every SDK call, check the returned `{ data, error }` envelope. If `error` is set on a call other than `createBucket(dstBucket)` (where an "already exists" error must be ignored), exit non-zero.
-6. Pass `config: { bucket: ... }` to every `list`, `get`, and `put` call so the operations target the correct bucket.
-7. Run with `tsx copy.ts` and confirm the program exits successfully.
-
-## Constraints
-- Project path: `/home/user/tigris-task`
-- Source file: `/home/user/tigris-task/copy.ts`
-- Source bucket: `harbor-src-${trial_id}` (must NOT be modified). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-- Destination bucket: `harbor-dst-${trial_id}` (must be created by the agent)
-- The destination bucket must contain EXACTLY the five keys `data/01.json` through `data/05.json` under the `data/` prefix, each with the exact JSON body listed above.
-- Use only `@tigrisdata/storage` for bucket creation, listing, downloading, and uploading. Do not shell out to other tools (no `tigris` CLI, no AWS CLI, no `s3cmd`, etc.).
-- Do not hardcode credentials; the SDK reads them from environment variables.
-- Do not delete the source or destination bucket; the verifier cleans both up after assertions.
-
-## Integrations
-- Tigris Object Storage (real `https://t3.storage.dev` endpoint via `@tigrisdata/storage`). Credentials are exposed via `TIGRIS_STORAGE_ACCESS_KEY_ID`, `TIGRIS_STORAGE_SECRET_ACCESS_KEY`, and `TIGRIS_STORAGE_ENDPOINT`.
-8:Tcbf,# Tigris CLI: Apply a 7-Day Object Expiration TTL to a Bucket
+- Tigris (`https://t3.storage.dev`)6:Tcbf,# Tigris CLI: Apply a 7-Day Object Expiration TTL to a Bucket
 
 ## Background
 Tigris buckets can be configured with an object expiration TTL so that objects are automatically deleted after a fixed number of days. This is a common requirement for ephemeral evaluation buckets that should not accumulate state indefinitely. The Tigris CLI (`@tigrisdata/cli`) exposes this as the `tigris buckets set-ttl` subcommand (documented at https://www.tigrisdata.com/docs/cli/buckets/set-ttl/), which configures bucket-level object expiration in days or to a specific date.
@@ -294,7 +206,7 @@ Tigris buckets can be configured with an object expiration TTL so that objects a
 - The bucket must remain provisioned after the task completes so the verifier can inspect it. The verifier will delete the bucket after assertions.
 
 ## Integrations
-- Tigris Object Storage (credentials provided as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).9:T1930,# Tigris (boto3): Bulk Concurrent Object Upload
+- Tigris Object Storage (credentials provided as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).7:T1930,# Tigris (boto3): Bulk Concurrent Object Upload
 
 ## Background
 Tigris is an S3-compatible object storage service reachable at the global endpoint `https://t3.storage.dev`. Because Tigris speaks S3 natively, you can use the standard AWS Python SDK ([boto3](https://www.tigrisdata.com/docs/sdks/s3/aws-python-sdk/)) against it by pointing the client at the Tigris endpoint with virtual-hosted addressing style.
@@ -377,7 +289,7 @@ Do NOT delete any object or the bucket -- the verifier will inspect them and the
 - Do NOT hardcode credentials -- read them from `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` at runtime.
 
 ## Integrations
-- Tigris Object Storage (credentials provided as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`; endpoint provided as `AWS_ENDPOINT_URL_S3=https://t3.storage.dev`).a:T111c,# Chained Checkpoint Restoration with Tigris Agent Kit
+- Tigris Object Storage (credentials provided as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`; endpoint provided as `AWS_ENDPOINT_URL_S3=https://t3.storage.dev`).8:T111c,# Chained Checkpoint Restoration with Tigris Agent Kit
 
 ## Background
 Production AI pipelines mutate shared buckets on every step. When a mutation needs to be audited or rolled back, the typical workflow is: snapshot the bucket before the risky write, perform the write, then restore the snapshot into an isolated fork for inspection. This is exactly what `checkpoint` and `restore` from `@tigrisdata/agent-kit` are designed for.
@@ -422,167 +334,7 @@ The script must exit with status 0 on success. Read credentials from the environ
 - Do NOT delete the snapshot `before-mutation`.
 
 ## Integrations
-- Tigris (cloud object storage). Credentials are pre-provisioned in the environment via `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`.b:T1306,# Tigris Agent Kit: Checkpoint, Mutate, then Restore Into a Fork
-
-## Background
-Tigris Agent Kit (`@tigrisdata/agent-kit`) exposes copy-on-write **checkpoints** and **restores** for object buckets. A checkpoint captures a bucket's state at a single point in time; `restore` materializes that captured state into a brand-new fork bucket without touching the source. This is how AI agents "roll back" a sandbox to a known-good state for re-evaluation while leaving the live data untouched.
-
-The container already has a base bucket `harbor-base-${trial_id}` provisioned with snapshots enabled, pre-seeded by the entrypoint with two objects:
-- `data/v1.txt` whose content is exactly `version1`
-- `data/v2.txt` whose content is exactly `version2`
-
-Your task is to (1) checkpoint that base bucket, (2) write a new object `data/v3.txt` (content `version3`) into the base bucket *after* the checkpoint, and (3) restore the checkpoint into a fresh fork bucket named `harbor-restore-${trial_id}`. The fork must reflect the state *before* `data/v3.txt` was added. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-
-## Requirements
-- Implement everything in a single TypeScript script at `/home/user/tigris-task/run.ts`.
-- Use `@tigrisdata/agent-kit` for `checkpoint` and `restore`.
-- Use `@tigrisdata/storage` (`put`) to upload `data/v3.txt`.
-- Execute the script with `tsx /home/user/tigris-task/run.ts`. The script must exit with code 0 on success.
-
-## Implementation Guide
-1. Read the trial id from `/logs/artifacts/trial_id` and `.trim()` it. Build:
-   - `baseBucket = harbor-base-${trial_id}`
-   - `forkBucket = harbor-restore-${trial_id}`
-2. Import the SDK symbols:
-   ```typescript
-   import { readFile } from "node:fs/promises";
-   import { checkpoint, restore } from "@tigrisdata/agent-kit";
-   import { put } from "@tigrisdata/storage";
-   ```
-3. **Step A — Take the checkpoint BEFORE writing `v3.txt`:**
-   ```typescript
-   const { data: ckpt, error: ckptErr } = await checkpoint(baseBucket, { name: "before-eval" });
-   if (ckptErr) throw ckptErr;
-   const snapshotId = ckpt.snapshotId;
-   ```
-4. **Step B — Write `data/v3.txt` to the base bucket after the checkpoint:**
-   ```typescript
-   const { error: putErr } = await put("data/v3.txt", "version3", {
-     config: { bucket: baseBucket },
-     contentType: "text/plain",
-   });
-   if (putErr) throw putErr;
-   ```
-5. **Step C — Restore the checkpoint into the fork bucket:**
-   ```typescript
-   const { data: restored, error: restoreErr } = await restore(baseBucket, snapshotId, {
-     forkName: forkBucket,
-   });
-   if (restoreErr) throw restoreErr;
-   if (restored.bucket !== forkBucket) {
-     throw new Error(`unexpected restored bucket: ${restored.bucket}`);
-   }
-   ```
-6. Optionally write `${snapshotId}` to `/home/user/tigris-task/snapshot-id.txt` for your own bookkeeping (not required for grading).
-7. Run the script:
-   ```bash
-   cd /home/user/tigris-task && tsx run.ts
-   ```
-   The order matters: **checkpoint → upload v3.txt → restore**. If you write `v3.txt` before the checkpoint, the fork will contain three objects and the task will fail.
-
-## Constraints
-- Project path: `/home/user/tigris-task`
-- Source file: `/home/user/tigris-task/run.ts`
-- Base bucket name: `harbor-base-${trial_id}` (pre-seeded by the entrypoint with snapshots enabled and the two `data/v*.txt` objects). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-- Fork bucket name: `harbor-restore-${trial_id}` (created by your `restore` call — must not pre-exist). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-- The fork bucket must contain EXACTLY the two pre-seeded objects (`data/v1.txt`, `data/v2.txt`). It MUST NOT contain `data/v3.txt`, because the checkpoint was taken before the upload.
-- The base bucket must still contain all three objects (`data/v1.txt`, `data/v2.txt`, `data/v3.txt`) at the end.
-- Use only `@tigrisdata/agent-kit` and `@tigrisdata/storage` for the checkpoint/restore/upload work. Do not shell out to the Tigris CLI for these operations.
-- Do not hardcode credentials — `TIGRIS_STORAGE_ACCESS_KEY_ID`, `TIGRIS_STORAGE_SECRET_ACCESS_KEY`, and `TIGRIS_STORAGE_ENDPOINT` are pre-populated in the environment and read automatically by the SDKs.
-
-## Integrations
-- Tigris Data (real `https://t3.storage.dev` endpoint via `@tigrisdata/agent-kit` and `@tigrisdata/storage`).
-c:T125c,# Tigris CLI: End-to-End Bucket Lifecycle Orchestrator
-
-## Background
-The Tigris CLI (`@tigrisdata/cli`) exposes every primitive needed to manage a snapshot-enabled bucket: provisioning the bucket with snapshots turned on, uploading objects, taking named snapshots, listing snapshot versions, and tearing the bucket down. This task asks you to chain those primitives together into a single bash script — exactly the kind of recipe that operators use to bootstrap, exercise, and clean up ephemeral storage for an agent run.
-
-Snapshots MUST be enabled at bucket-creation time (the `--enable-snapshots` flag); they cannot be added to an existing bucket. The flow below is sequential — each step depends on the previous one — and the script must clean up after itself by deleting the bucket at the end.
-
-## Requirements
-Write a single bash script at `/home/user/lifecycle/run.sh` that, **using ONLY the Tigris CLI (`tigris`)**, performs the following steps in order:
-
-1. Read the trial id from `/logs/artifacts/trial_id`. Construct a bucket name as `harbor-lifecycle-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens. Create this bucket with snapshots enabled at creation time.
-2. Upload the file `/home/user/lifecycle/local.txt` (already present in the project directory) into the bucket as the object key `seed.txt`.
-3. Takes a named snapshot of the bucket called `state-A`.
-4. Lists every snapshot of the bucket and writes the snapshot `version` IDs — one per line — to `/home/user/lifecycle/snapshots.txt`. The file must contain at least one snapshot version line.
-5. Deletes the bucket as a final cleanup step so subsequent runs are repeatable.
-
-The script must exit with status `0` on success. The verifier will invoke it as `bash run.sh` from `/home/user/lifecycle`.
-
-## Implementation Guide
-1. Change into `/home/user/lifecycle` and create `run.sh`.
-2. Start the script with `#!/usr/bin/env bash` and `set -euo pipefail` so any failed step aborts the whole pipeline.
-3. The container's login shell sources `/etc/profile.d/tigris-auth.sh`, which maps `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` onto `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` (and `AWS_REGION=auto`). When invoked via `bash run.sh` (a non-login shell) you should explicitly source it at the top of your script or export the AWS-compatible variables yourself before running `tigris` commands.
-4. Use the CLI commands listed below — they are the canonical surface for this workflow:
-   ```bash
-   tigris buckets create harbor-lifecycle-${trial_id} --enable-snapshots
-   tigris objects put harbor-lifecycle-${trial_id} seed.txt /home/user/lifecycle/local.txt
-   tigris snapshots take harbor-lifecycle-${trial_id} state-A
-   tigris snapshots list harbor-lifecycle-${trial_id} --format json   # parse versions
-   tigris buckets delete harbor-lifecycle-${trial_id} --yes
-   ```
-5. Parse the `tigris snapshots list ... --format json` output to extract every `version` value (one per line) and write them to `/home/user/lifecycle/snapshots.txt`. `jq` is preinstalled in the environment, e.g.
-   ```bash
-   tigris snapshots list harbor-lifecycle-${trial_id} --format json \
-     | jq -r '.snapshots[].version' >/home/user/lifecycle/snapshots.txt
-   ```
-6. Make `run.sh` executable (`chmod +x run.sh`) — although the verifier runs it as `bash run.sh`, leaving the execute bit on is good hygiene.
-
-## Constraints
-- Project path: `/home/user/lifecycle`
-- Script path (fixed): `/home/user/lifecycle/run.sh`
-- Snapshot file path (fixed): `/home/user/lifecycle/snapshots.txt`
-- Bucket name: dynamically constructed as `harbor-lifecycle-${trial_id}`
-- Object key (fixed): `seed.txt`
-- Snapshot name (fixed): `state-A`
-- Source file to upload (fixed, already present on disk): `/home/user/lifecycle/local.txt`
-- The script MUST use only the Tigris CLI (`tigris`) for all bucket / object / snapshot operations — do NOT call raw S3 / HTTP APIs or other SDKs.
-- The script MUST delete the bucket at the end (cleanup). After the script exits, `tigris buckets list` must no longer show the bucket.
-- The script MUST exit with status `0` on success.
-- Snapshots MUST be enabled at creation time using `--enable-snapshots`; enabling snapshots on an existing bucket is not supported.
-
-## Integrations
-- Tigris Object Storage (admin credentials are provided to the environment as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).d:T10d1,# List Bucket Snapshots with the Tigris CLI
-
-## Background
-The Tigris CLI (`@tigrisdata/cli`) gives you a `tigris snapshots list <bucket>` command that prints every point-in-time snapshot of a snapshot-enabled bucket. Each snapshot has a unique numeric `version` (a UNIX nanosecond-precision timestamp) that identifies it across the Tigris control plane.
-
-For this task an operator has pre-populated a snapshot-enabled bucket named `harbor-history-${trial_id}` (where `${trial_id}` is the content of `/logs/artifacts/trial_id`) with several snapshots, but the bucket has to be prepared at task start (the Docker build did not have credentials). A helper script `/home/user/snapshot-list/setup.sh` is already on disk — it reads the admin Tigris credentials from the environment, creates the bucket with snapshots enabled, and takes a fixed sequence of named snapshots. You must run that script first, then list the snapshots with the CLI and persist their IDs (versions) to a text file in chronological order.
-
-## Requirements
-1. Run the helper `bash /home/user/snapshot-list/setup.sh` to create the bucket and pre-populate it with snapshots. The script is idempotent and must complete successfully (exit status 0).
-2. Use the Tigris CLI to list every snapshot of the bucket. Derive the bucket name as `harbor-history-${trial_id}` (substitute the actual trial id from `/logs/artifacts/trial_id`). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens. Use `tigris snapshots list <bucket_name> --format json` so you can parse the output reliably.
-3. Extract the `version` field of every snapshot and write the values to `/home/user/snapshot-list/snapshots.txt`, one snapshot version per line, in **chronological order (oldest first)**. The Tigris API returns snapshots in reverse-chronological order by default — you must reverse them.
-4. The file `/home/user/snapshot-list/snapshots.txt` must end with a trailing newline, must not contain blank lines, must not contain any header, JSON, or whitespace around the IDs.
-5. Capture all stdout and stderr from your commands to `/home/user/snapshot-list/output.log` for debugging.
-
-## Implementation Guide
-1. Change into the project directory: `cd /home/user/snapshot-list`.
-2. Execute the setup script and capture its output: `bash setup.sh >>output.log 2>&1`.
-3. Configure the Tigris CLI to use the admin credentials provided by the environment if it has not been configured yet (the helper script already does this):
-   ```bash
-   tigris configure --access-key "$TIGRIS_STORAGE_ACCESS_KEY_ID" --access-secret "$TIGRIS_STORAGE_SECRET_ACCESS_KEY" >>output.log 2>&1
-   ```
-4. List the snapshots and produce the file. Example using `jq` (already installed):
-   ```bash
-   tigris snapshots list <bucket_name> --format json \
-     | jq -r '.snapshots | reverse | .[].version' >snapshots.txt
-   ```
-   Other approaches are fine as long as the resulting `snapshots.txt` has the IDs one per line in chronological order.
-5. Verify your output with `cat snapshots.txt` — every line must be a numeric snapshot version, with the oldest snapshot at the top and the most recent at the bottom.
-
-## Constraints
-- Project path: `/home/user/snapshot-list`
-- Log file: `/home/user/snapshot-list/output.log`
-- Bucket name MUST be derived from `/logs/artifacts/trial_id` as `harbor-history-${trial_id}`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-- Output file (fixed): `/home/user/snapshot-list/snapshots.txt`
-- Do not edit `/home/user/snapshot-list/setup.sh` — you may only execute it.
-- Use the real Tigris CLI (`tigris snapshots list`) against the live Tigris service — do not mock or stub the output.
-- The admin credentials are available as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` environment variables.
-
-## Integrations
-- Tigris (real `@tigrisdata/cli` and the live Tigris control plane; admin credentials supplied via `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).e:Te6b,# Tigris CLI: Upload Objects Under Two Prefixes and Capture a Prefix Listing
+- Tigris (cloud object storage). Credentials are pre-provisioned in the environment via `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`.9:Te6b,# Tigris CLI: Upload Objects Under Two Prefixes and Capture a Prefix Listing
 
 ## Background
 Tigris is an object storage service. The `tigris` CLI (`@tigrisdata/cli`) supports S3-style upload (`tigris cp`) and prefix-scoped listing (`tigris ls t3://<bucket>/<prefix>/`). A common agent workflow is to organize objects under prefixes (e.g., `logs/` for runtime traces, `data/` for inputs) and then inspect only one prefix at a time so the agent can focus on the relevant slice of the bucket.
@@ -624,7 +376,7 @@ Do NOT delete the bucket — the verifier inspects the bucket state and tears it
 - Output file MUST be at exactly `/home/user/tigris-task/logs-listing.txt`.
 
 ## Integrations
-- Tigris Object Storage (credentials provided as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).f:T1660,# Tigris CLI ↔ SDK Interop: Provision a Bucket and Upload a Manifest
+- Tigris Object Storage (credentials provided as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).a:T1660,# Tigris CLI ↔ SDK Interop: Provision a Bucket and Upload a Manifest
 
 ## Background
 This task exercises the interoperability between the Tigris CLI (`@tigrisdata/cli`) and the Tigris Storage SDK (`@tigrisdata/storage`). A common real-world pattern is to use the CLI to provision and configure a bucket as part of infrastructure setup, then use the SDK from application code to read and write objects. Snapshots and TTLs are bucket-level features that must be configured at the CLI/control-plane layer; object upload is data-plane and ergonomic from the SDK.
@@ -701,107 +453,7 @@ You will:
 
 ## Integrations
 - Tigris Object Storage (real `https://t3.storage.dev` endpoint via the Tigris CLI and `@tigrisdata/storage` SDK).
-10:T12f8,# Concurrent Tigris Workspace Pool Provisioning
-
-## Background
-Large-scale agent evaluation harnesses typically pre-warm a pool of isolated Tigris workspaces in parallel — one per agent — before kicking off evaluation runs. Provisioning workspaces sequentially is too slow when the pool size grows. Tigris Agent Kit's `createWorkspace` / `teardownWorkspace` primitives are designed to be invoked concurrently from a single Node.js process via `Promise.all`, and teardown should aggregate partial failures via `Promise.allSettled` so the failure of one workspace does not leak the others.
-
-You must implement a TypeScript script that provisions a pool of four Tigris workspaces in parallel, writes an initialization marker into each, captures a summary of the pool, and tears the entire pool down resiliently.
-
-## Requirements
-- Implement `/home/user/ws-pool/index.ts` that uses `@tigrisdata/agent-kit` and `@aws-sdk/client-s3`.
-- Provision exactly four workspaces **concurrently** using a single `Promise.all` call. Sequential `await` calls on the four creations are NOT acceptable.
-- Read the trial id from `/logs/artifacts/trial_id`. Workspace names MUST be exactly (in this order): `pool-agent-${trial_id}-1`, `pool-agent-${trial_id}-2`, `pool-agent-${trial_id}-3`, `pool-agent-${trial_id}-4` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the workspace name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-- Each workspace MUST be created with `ttl: { days: 1 }` and `credentials: { role: "Editor" }`.
-- For each created workspace, upload a single object whose key is `init.txt` and whose body is the workspace's agent name (e.g. the workspace `pool-agent-${trial_id}-1` must contain an `init.txt` whose contents are exactly the string `pool-agent-${trial_id}-1` normalized). The upload MUST use the workspace's scoped credentials against the Tigris S3 endpoint `https://t3.storage.dev`.
-- After all uploads succeed, write a summary file to `/home/user/ws-pool/pool.json`. Its contents MUST be a JSON array of exactly four objects with the keys `name` and `bucket`:
-  ```json
-  [
-    { "name": "<normalized pool-agent-trial_id-1>", "bucket": "<workspace bucket name>" },
-    { "name": "<normalized pool-agent-trial_id-2>", "bucket": "<workspace bucket name>" },
-    { "name": "<normalized pool-agent-trial_id-3>", "bucket": "<workspace bucket name>" },
-    { "name": "<normalized pool-agent-trial_id-4>", "bucket": "<workspace bucket name>" }
-  ]
-  ```
-- After writing `pool.json`, tear down every workspace using `Promise.allSettled` over `teardownWorkspace` calls. One failure MUST NOT short-circuit teardown of the others.
-- The script MUST exit with status code 0 on success.
-
-## Implementation Guide
-1. The project directory `/home/user/ws-pool` is already initialized with `package.json` and `node_modules` containing `@tigrisdata/agent-kit`, `@aws-sdk/client-s3`, `tsx`, and `typescript`.
-2. Create `/home/user/ws-pool/index.ts` that performs the following in order:
-   - Reads the trial id and defines the normalized names list `["pool-agent-${trial_id}-1", ...]`.
-   - Calls `createWorkspace(name, { ttl: { days: 1 }, credentials: { role: "Editor" } })` for every name **in parallel** with `Promise.all`.
-   - Errors during creation MUST cause the script to exit non-zero.
-   - For each workspace, uses `@aws-sdk/client-s3`'s `S3Client` (with endpoint `https://t3.storage.dev`, region `auto`, and the workspace's scoped credentials) plus `PutObjectCommand` to upload `init.txt` containing the agent name. The uploads SHOULD also run in parallel via `Promise.all`.
-   - Writes `/home/user/ws-pool/pool.json` with the JSON array described above.
-   - Tears down every workspace via `Promise.allSettled([teardownWorkspace(w1), teardownWorkspace(w2), ...])`.
-3. Run with `npx tsx index.ts` from `/home/user/ws-pool`.
-4. Credentials are read automatically from the environment variables `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`.
-
-## Constraints
-- Project path: `/home/user/ws-pool`
-- Script path: `/home/user/ws-pool/index.ts`
-- Summary file: `/home/user/ws-pool/pool.json`
-- Start command: `npx tsx index.ts`
-- Workspace names: exactly `pool-agent-${trial_id}-1` through `pool-agent-${trial_id}-4` (normalized)
-- TTL: 1 day for every workspace
-- Credentials role: `Editor` for every workspace
-- Concurrency: workspace creation MUST be issued via a single `Promise.all` call (no sequential awaits).
-- Teardown: MUST use `Promise.allSettled`.
-- You MUST use the real Tigris API via `@tigrisdata/agent-kit`. Do NOT mock any function.
-
-## Integrations
-- Tigris Agent Kit (`@tigrisdata/agent-kit`)
-- Tigris CLI (`@tigrisdata/cli`)11:T121a,# Dual-Role Workspaces: Editor Writer + ReadOnly Reader
-
-## Background
-Tigris Agent Kit (`@tigrisdata/agent-kit`) provisions per-agent buckets ("workspaces") with scoped IAM access keys. Each scoped key carries one of two roles: `Editor` (read/write) or `ReadOnly` (read-only). When two agents collaborate on a pipeline — one producing artifacts, another only inspecting them — they should be provisioned with distinct, role-appropriate workspaces so a leaked reader key cannot mutate state.
-
-Your job is to provision two workspaces **in parallel**, exercise both keys against the AWS S3 SDK to prove the role-based boundary is real (Editor writes succeed, ReadOnly writes are rejected), and then tear both workspaces down.
-
-## Requirements
-Write a single TypeScript script at `/home/user/dual-role/index.ts` that:
-
-1. Uses `Promise.all` (or equivalent) to call `createWorkspace` from `@tigrisdata/agent-kit` **concurrently** for two workspaces:
-   - Workspace name `writer-ws` with `credentials: { role: "Editor" }`.
-   - Workspace name `reader-ws` with `credentials: { role: "ReadOnly" }`.
-2. After both calls return, validates each response: the `bucket` field and the `credentials` field (with `accessKeyId` and `secretAccessKey`) must both be present. Throw a descriptive error otherwise.
-3. Builds two distinct `S3Client` instances from `@aws-sdk/client-s3`, each configured with `region: "auto"`, `endpoint: "https://t3.storage.dev"`, and ONLY the scoped credentials returned by the matching workspace (do NOT pass the admin `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` env vars to either client).
-4. Performs the role checks:
-   - Using the **Editor** client, `PutObject` with `Bucket: writerWorkspace.bucket`, `Key: "note.txt"`, `Body: "hello dual role"`. Record `writer_put_ok: true` if the call resolves successfully, otherwise `writer_put_ok: false`.
-   - Using the **ReadOnly** client, attempt `PutObject` with `Bucket: readerWorkspace.bucket`, `Key: "note.txt"`, `Body: "should be blocked"`. The script MUST `try`/`catch` this call. If the SDK throws an error whose `name` or `Code` is one of `AccessDenied`, `NotImplemented`, or whose HTTP status code is `403`, record `readonly_put_blocked: true`. If the call unexpectedly succeeds, record `readonly_put_blocked: false`.
-5. Writes a JSON summary to `/home/user/dual-role/result.json` with this exact shape (string keys, boolean values for the flags):
-   ```json
-   {
-     "writer_bucket": "writer-ws",
-     "reader_bucket": "reader-ws",
-     "writer_put_ok": true,
-     "readonly_put_blocked": true
-   }
-   ```
-6. **Always** tears down BOTH workspaces at the end (use a `try`/`finally` so teardown still runs if an upload assertion fails). Call `teardownWorkspace` for each workspace; the two teardown calls may run in parallel via `Promise.all`.
-7. On success the script must exit with status `0`.
-
-## Implementation Guide
-1. The project directory `/home/user/dual-role` already contains `package.json`, `tsconfig.json`, and a local `node_modules` with `@tigrisdata/agent-kit`, `@tigrisdata/cli`, `@aws-sdk/client-s3`, `tsx`, and `typescript`. You only need to author `index.ts`.
-2. Import `createWorkspace`, `teardownWorkspace` from `@tigrisdata/agent-kit`; import `S3Client`, `PutObjectCommand` from `@aws-sdk/client-s3`; import `writeFile` from `node:fs/promises`.
-3. Use `Promise.all([createWorkspace("writer-ws", { credentials: { role: "Editor" } }), createWorkspace("reader-ws", { credentials: { role: "ReadOnly" } })])` to provision both in parallel.
-4. Remember that Agent Kit returns a `TigrisResponse<T>` discriminated union — check `.error` before reading `.data` for each workspace.
-5. Run the script using `npx tsx index.ts` from `/home/user/dual-role`.
-
-## Constraints
-- Project path: `/home/user/dual-role`
-- Result file: `/home/user/dual-role/result.json`
-- Workspace names must be exactly `writer-ws` and `reader-ws`.
-- Object key for both PUT attempts must be `note.txt`.
-- Editor PUT body must be exactly `hello dual role`.
-- The two `createWorkspace` calls MUST be issued concurrently (e.g. via `Promise.all`), not sequentially.
-- Use ONLY the scoped workspace credentials with each S3 client. The admin Tigris env vars must NOT be passed to the `S3Client` constructor.
-- Do not modify `package.json`, `tsconfig.json`, or `node_modules`.
-- Both workspaces MUST be torn down by the end of the script run (success path or failure path).
-
-## Integrations
-- Tigris (real `@tigrisdata/agent-kit` API and `@tigrisdata/cli`; admin credentials provided via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).12:T1b7e,# Parallel Fork Writers with an Isolation Audit Report
+b:T1b7e,# Parallel Fork Writers with an Isolation Audit Report
 
 ## Background
 A core promise of Tigris Agent Kit (`@tigrisdata/agent-kit`) is *isolation*: when you fork a source bucket for multiple agents, each fork is a copy-on-write clone — writes into one fork are NEVER visible from another fork or from the source bucket. This task exercises that guarantee end-to-end.
@@ -873,75 +525,7 @@ Write a TypeScript program at `/home/user/isolation/index.ts` that:
 - Do not modify `package.json`, `tsconfig.json`, or `node_modules`.
 
 ## Integrations
-- Tigris (real `@tigrisdata/agent-kit` API, AWS S3-compatible API, and `@tigrisdata/cli`; admin credentials provided via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).13:Ta07,# Multi-Agent Eval Orchestrator
-
-Build a TypeScript orchestrator at `/home/user/orchestrator/index.ts` using `@tigrisdata/agent-kit`. A pre-task setup step has already provisioned the gold dataset bucket `gold-eval-dataset` (snapshots enabled) and seeded it with three prompt objects under the `prompts/` prefix: `prompts/p1.json`, `prompts/p2.json`, and `prompts/p3.json`.
-
-Your orchestrator must:
-
-1. Fork `gold-eval-dataset` into exactly 3 isolated environments in a single `createForks` call using the prefix `eval-attempt` and `ReadOnly` scoped credentials.
-2. For each fork, in parallel, provision a separate **write** workspace via `createWorkspace` named `eval-writer-<i>` (where `<i>` is the fork's index `0`, `1`, `2`) with `Editor` credentials. Inside each writer workspace, fetch every prompt object from the matching read-only fork bucket, then write an answer object at key `answers/p<N>.txt` whose body is the UTF-8 text content of the prompt file reversed character-by-character (i.e., `prompt_content.split("").reverse().join("")` in JS). The fork must be read using its own scoped credentials, the writer with its own scoped credentials. The Tigris endpoint is `https://t3.storage.dev` and the region is `auto`.
-3. After all three attempts finish, fetch every answer back from the three writer workspaces and aggregate them into `/home/user/orchestrator/aggregated.json` keyed exactly as `{ "<fork-bucket-name>": { "p1": "<reversed p1.json content>", "p2": "<reversed p2.json content>", "p3": "<reversed p3.json content>" }, ... }`. The top-level keys MUST be the fork bucket names returned by `createForks` (which will be `eval-attempt-0`, `eval-attempt-1`, `eval-attempt-2`).
-4. Tear down every fork via `teardownForks` and every writer workspace via `teardownWorkspace` before the process exits, even on failure (use `try`/`finally`).
-5. Be invokable with `npx tsx index.ts` from `/home/user/orchestrator` and exit with status `0` on success.
-
-## Constraints
-- Project path: `/home/user/orchestrator`
-- Use the real Tigris API (no mocks).
-- Do not modify `package.json`, `tsconfig.json`, `node_modules`, or anything outside the project directory.
-- All fork and writer workspace buckets MUST be deleted before the process exits.
-- The bucket `gold-eval-dataset` and its prompt objects MUST be left untouched.
-
-## Integrations
-- Tigris (real `@tigrisdata/agent-kit` API plus AWS S3-compatible API via `@aws-sdk/client-s3`; admin credentials are provided in the environment as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).14:Tef9,# Multipart Upload of a Large Object to Tigris with the AWS CLI
-
-## Background
-Tigris is an S3-compatible object storage service exposing a single global endpoint at `https://t3.storage.dev`. The standard `aws` CLI can be used against Tigris by configuring the S3 endpoint URL. For objects larger than the `multipart_threshold`, the AWS CLI automatically uses the S3 multipart upload protocol (`CreateMultipartUpload` / `UploadPart` / `CompleteMultipartUpload`). In this task you will force the AWS CLI to upload a 16 MiB file to Tigris using multipart upload with a small chunk size, then record the local file's MD5 fingerprint so the verifier can confirm end-to-end integrity.
-
-## Requirements
-- Create a Tigris bucket named `harbor-mpu-${trial_id}` (where `${trial_id}` is the content of `/logs/artifacts/trial_id`). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-- Configure the AWS CLI so the multipart threshold and chunk size are both 5 MB, ensuring a 16 MiB upload is performed as a multipart upload (≥4 parts).
-- Upload the pre-existing local file `/home/user/tigris-task/large.bin` (16 MiB, deterministic content) to the bucket under the object key `archives/large.bin` using `aws s3 cp` with `--cli-write-timeout 0`.
-- Compute the MD5 (hex digest) of the local file and write it (exactly 32 lowercase hex characters, no trailing newline allowed beyond a single optional `\n`) to `/home/user/tigris-task/local.md5`.
-
-## Implementation Guide
-1. Read the trial id:
-   ```bash
-   TRIAL_ID="$(cat /logs/artifacts/trial_id)"
-   BUCKET="harbor-mpu-${TRIAL_ID}"
-   ```
-2. Create the Tigris bucket via the AWS CLI:
-   ```bash
-   aws s3 mb "s3://${BUCKET}"
-   ```
-3. Force a small multipart threshold/chunk size so the 16 MiB upload is performed as a multipart upload:
-   ```bash
-   aws configure set default.s3.multipart_threshold 5MB
-   aws configure set default.s3.multipart_chunksize 5MB
-   ```
-4. Upload the file using multipart upload:
-   ```bash
-   aws s3 cp --cli-write-timeout 0 \
-       /home/user/tigris-task/large.bin \
-       "s3://${BUCKET}/archives/large.bin"
-   ```
-5. Compute the local file's MD5 and write it to `/home/user/tigris-task/local.md5`:
-   ```bash
-   md5sum /home/user/tigris-task/large.bin | awk '{print $1}' > /home/user/tigris-task/local.md5
-   ```
-6. (Optional) Confirm the upload worked: `aws s3api head-object --bucket "${BUCKET}" --key archives/large.bin`. The returned `ETag` should contain a `-` followed by the part count (multipart ETag format).
-
-## Constraints
-- Project path: /home/user/tigris-task
-- Pre-existing file: /home/user/tigris-task/large.bin (exactly 16 MiB = 16777216 bytes of NUL bytes, generated deterministically with `dd if=/dev/zero bs=1048576 count=16`). Do NOT modify or regenerate this file.
-- Bucket name format: `harbor-mpu-${trial_id}` where `${trial_id}` is read from `/logs/artifacts/trial_id`. Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-- Object key: `archives/large.bin` (note the `archives/` prefix).
-- Output file: /home/user/tigris-task/local.md5 (32 lowercase hex characters representing the MD5 of `large.bin`).
-- The AWS CLI is pre-configured via the environment variables `AWS_ENDPOINT_URL_S3=https://t3.storage.dev`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION=auto`. Do NOT hardcode credentials in any file.
-- Use the real Tigris service. Do NOT mock or stub any of the calls.
-
-## Integrations
-- Tigris (object storage, accessed via the AWS S3 protocol on `https://t3.storage.dev`)15:Tdab,# Persist Custom User Metadata on a Tigris Object
+- Tigris (real `@tigrisdata/agent-kit` API, AWS S3-compatible API, and `@tigrisdata/cli`; admin credentials provided via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).c:Tdab,# Persist Custom User Metadata on a Tigris Object
 
 ## Background
 Tigris is an S3-compatible object storage service exposing a single global endpoint at `https://t3.storage.dev`. Like Amazon S3, Tigris persists user-defined metadata (small key/value pairs) and standard HTTP headers (such as `Content-Type`) alongside each object. The AWS CLI exposes this via the `--metadata` and `--content-type` flags on `aws s3 cp`. In this task you will use the AWS CLI configured against Tigris to upload a pre-existing report file with two custom metadata fields and an explicit content type, in a way that the metadata can later be retrieved with `aws s3api head-object`.
@@ -986,7 +570,7 @@ Tigris is an S3-compatible object storage service exposing a single global endpo
 - Use the real Tigris service. Do NOT mock or stub any of the calls.
 
 ## Integrations
-- Tigris (object storage, accessed via the AWS S3 protocol on `https://t3.storage.dev`)16:T1706,# Tigris Presigned URL: Unauthenticated Download via curl
+- Tigris (object storage, accessed via the AWS S3 protocol on `https://t3.storage.dev`)d:T1706,# Tigris Presigned URL: Unauthenticated Download via curl
 
 ## Background
 Tigris is a globally distributed, S3-compatible object storage service exposed at the single virtual-hosted-style endpoint `https://t3.storage.dev`. Because Tigris is S3-compatible, you can mint **AWS SigV4 presigned URLs** for it with the standard AWS Python SDK (boto3) via `s3_client.generate_presigned_url("get_object", ...)`. The resulting URL embeds the signature in the query string (`X-Amz-Signature=...`) and can be fetched by *any* HTTP client without authentication headers — that is the entire point of a presigned URL.
@@ -1040,7 +624,7 @@ Do NOT delete the bucket or object after you finish — the verifier will perfor
 - Do NOT delete the bucket or object after finishing; the verifier handles cleanup.
 
 ## Integrations
-- Tigris Object Storage. Harbor injects `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` / `TIGRIS_STORAGE_ENDPOINT` and the task runtime maps them onto the boto3-friendly `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3` (= `https://t3.storage.dev`), and `AWS_REGION=auto`.17:T1db4,# ReadOnly Workspace Write Denial with Tigris Agent Kit
+- Tigris Object Storage. Harbor injects `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY` / `TIGRIS_STORAGE_ENDPOINT` and the task runtime maps them onto the boto3-friendly `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3` (= `https://t3.storage.dev`), and `AWS_REGION=auto`.e:T1db4,# ReadOnly Workspace Write Denial with Tigris Agent Kit
 
 ## Background
 Tigris Agent Kit (`@tigrisdata/agent-kit`) provisions per-agent workspaces with TTL and **scoped IAM credentials**. A workspace's scoped credentials carry one of two roles: `Editor` (read+write) or `ReadOnly` (read only). To prove that scoped credentials actually enforce role boundaries, this task drives a real Tigris workspace through an editor-write, then mints a second set of `ReadOnly` credentials and demonstrates that those credentials can read existing objects but are denied when they try to write a new object.
@@ -1099,166 +683,7 @@ Because `createWorkspace` only mints a single scoped key per call and the docume
 
 ## Integrations
 - Tigris Data (real `https://t3.storage.dev` endpoint via `@tigrisdata/agent-kit` and `@tigrisdata/storage`).
-18:T173c,# Restored Fork Data Validation with Tigris Agent Kit
-
-## Background
-`@tigrisdata/agent-kit` exposes a `restore(sourceBucket, snapshotId, { forkName })` primitive that materializes a copy-on-write fork of a previously captured snapshot into a brand-new bucket. The restored bucket carries the exact object versions that were present when the snapshot was taken, so it can be inspected without touching the live source. In this task, you will combine `restore` with the AWS S3 SDK to validate that a snapshot really does preserve a known artifact byte-for-byte.
-
-An operator has prepared a helper script `setup.sh` in the project directory. The script:
-
-1. Configures the Tigris CLI with the admin credentials supplied via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`.
-2. Recreates a snapshot-enabled bucket named `archive-bucket`.
-3. Uploads a JSON document `manifest.json` to that bucket using the AWS S3 SDK against the Tigris endpoint.
-4. Takes a checkpoint of `archive-bucket` (via `checkpoint` from `@tigrisdata/agent-kit`) and writes the resulting `snapshotId` to `snapshot_id.txt`.
-5. Computes the SHA256 of the on-disk `manifest.json` and writes the hex digest to `expected_sha256.txt`.
-
-You must run `setup.sh` first, then write a TypeScript program that restores the snapshot into a NEW fork bucket named `validation-fork`, downloads `manifest.json` from that fork using the AWS S3 SDK, and verifies that the downloaded content's SHA256 matches `expected_sha256.txt`. The result must be persisted as `result.json`.
-
-## Requirements
-Write a TypeScript script at `/home/user/restore-validate/index.ts` that:
-
-1. Reads the snapshot id from `/home/user/restore-validate/snapshot_id.txt` (trimmed of whitespace).
-2. Reads the expected SHA256 hex digest from `/home/user/restore-validate/expected_sha256.txt` (trimmed of whitespace, lowercase hex).
-3. Calls `restore` from `@tigrisdata/agent-kit` with the source bucket `archive-bucket`, the snapshot id, and `forkName: "validation-fork"`. The restored bucket name returned by Tigris MUST start with `validation-fork`.
-4. Downloads the object with key `manifest.json` from the restored bucket using `@aws-sdk/client-s3` (`S3Client` + `GetObjectCommand`) configured against the Tigris endpoint (`https://t3.storage.dev`, region `auto`) using the admin Tigris credentials available in the environment.
-5. Computes the SHA256 hex digest of the downloaded body (use Node's `node:crypto` `createHash("sha256")`).
-6. Writes `/home/user/restore-validate/result.json` containing at least the keys:
-   - `bucket`: the restored bucket name returned by `restore` (must start with `validation-fork`).
-   - `sha256`: the lowercase hex digest computed from the downloaded `manifest.json`.
-   - `expected_sha256`: the digest read from `expected_sha256.txt`.
-   - `sha256_match`: a boolean — `true` if the digests are equal, `false` otherwise.
-7. Exits with status 0 on success. On any error from `restore` or the download, throw a descriptive error so the process exits non-zero.
-
-## Implementation Guide
-1. Change into the project directory: `cd /home/user/restore-validate`.
-2. Execute the helper that prepares the source bucket and writes the metadata files:
-   ```bash
-   bash setup.sh
-   ```
-   The script is idempotent — it deletes `archive-bucket` and `validation-fork` first if they exist, then recreates `archive-bucket` and produces fresh `snapshot_id.txt` and `expected_sha256.txt` files.
-3. Create `/home/user/restore-validate/index.ts`. A sketch:
-   ```typescript
-   import { readFileSync, writeFileSync } from "node:fs";
-   import { createHash } from "node:crypto";
-   import { restore } from "@tigrisdata/agent-kit";
-   import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
-
-   const snapshotId = readFileSync("snapshot_id.txt", "utf8").trim();
-   const expected = readFileSync("expected_sha256.txt", "utf8").trim().toLowerCase();
-
-   const { data, error } = await restore("archive-bucket", snapshotId, {
-     forkName: "validation-fork",
-   });
-   if (error || !data) throw error ?? new Error("restore returned no data");
-   const bucket = data.bucket;
-
-   const s3 = new S3Client({
-     region: "auto",
-     endpoint: "https://t3.storage.dev",
-     credentials: {
-       accessKeyId: process.env.TIGRIS_STORAGE_ACCESS_KEY_ID!,
-       secretAccessKey: process.env.TIGRIS_STORAGE_SECRET_ACCESS_KEY!,
-     },
-   });
-   const obj = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: "manifest.json" }));
-   const bytes = Buffer.from(await obj.Body!.transformToByteArray());
-   const sha256 = createHash("sha256").update(bytes).digest("hex");
-
-   const result = {
-     bucket,
-     sha256,
-     expected_sha256: expected,
-     sha256_match: sha256 === expected,
-   };
-   writeFileSync("result.json", JSON.stringify(result, null, 2));
-   console.log("RESTORE_VALIDATE_OK", JSON.stringify(result));
-   ```
-4. Run the script and capture output:
-   ```bash
-   npx tsx index.ts >output.log 2>&1
-   ```
-   The command must exit with status 0 and produce `/home/user/restore-validate/result.json`.
-
-## Constraints
-- Project path: `/home/user/restore-validate`
-- Log file: `/home/user/restore-validate/output.log`
-- Source bucket name (fixed): `archive-bucket`
-- Restored fork name passed to `restore`: `validation-fork` (the resulting `bucket` must start with `validation-fork`).
-- Do not modify `package.json`, `tsconfig.json`, `setup.sh`, or `node_modules`.
-- Do not mock Tigris — use the real Tigris service via `@tigrisdata/agent-kit`, `@aws-sdk/client-s3`, and the `@tigrisdata/cli` already installed in the container.
-- Use ONLY the admin Tigris credentials from the environment (`TIGRIS_STORAGE_ACCESS_KEY_ID`, `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).
-
-## Integrations
-- Tigris (real `@tigrisdata/agent-kit`, `@tigrisdata/cli`, and `@aws-sdk/client-s3`; admin credentials provided via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).19:Tdce,# Upload an Object Using Scoped Workspace Credentials
-
-## Background
-Tigris Agent Kit (`@tigrisdata/agent-kit`) provisions per-agent buckets ("workspaces") with their own scoped IAM credentials. The safest way for an agent to write into its workspace is to use those scoped credentials (`Editor` role) with an S3-compatible client — never the long-lived admin keys. Because IAM key creation can silently fail after the bucket is created, the script must explicitly verify that `workspace.credentials` is present before using it.
-
-## Requirements
-- Write a TypeScript script at `/home/user/scoped-upload/index.ts` that:
-  1. Read the trial id from `/logs/artifacts/trial_id`. Construct a workspace name as `harbor-scoped-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the workspace name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-  2. Calls `createWorkspace` from `@tigrisdata/agent-kit` to provision the workspace with `credentials: { role: "Editor" }`.
-  3. Validates that both the bucket and scoped credentials are present in the response (throw a descriptive error otherwise).
-  4. Uses the AWS SDK for JavaScript v3 (`@aws-sdk/client-s3`) — configured with ONLY the scoped credentials from the workspace (NOT the admin `TIGRIS_STORAGE_ACCESS_KEY_ID`/`TIGRIS_STORAGE_SECRET_ACCESS_KEY` env vars) and the Tigris endpoint (`https://t3.storage.dev`, region `auto`) — to `PutObject` a file with key `greeting.txt` and body `hello scoped` into the workspace bucket.
-  5. Tears down the workspace at the end with `teardownWorkspace` so the bucket and scoped key are cleaned up.
-  6. On success, prints a final line `SCOPED_UPLOAD_OK <bucket-name>` to stdout (where `<bucket-name>` is the workspace bucket name).
-
-## Implementation Guide
-1. Change into the project directory at `/home/user/scoped-upload`. The project already has `package.json`, `tsconfig.json`, and an installed local `node_modules` containing `@tigrisdata/agent-kit`, `@tigrisdata/cli`, `@aws-sdk/client-s3`, and `tsx`. You only need to create `index.ts`.
-2. Import `createWorkspace`, `teardownWorkspace` from `@tigrisdata/agent-kit` and `S3Client`, `PutObjectCommand` from `@aws-sdk/client-s3`.
-3. Create the workspace, then construct an `S3Client` with the scoped `accessKeyId`/`secretAccessKey`, `region: "auto"`, and `endpoint: "https://t3.storage.dev"`.
-4. `PutObject` with `Bucket: workspace.bucket`, `Key: "greeting.txt"`, `Body: "hello scoped"`.
-5. Always call `teardownWorkspace(workspace)` (even on failure) using a `try`/`finally` block so the bucket and scoped key are removed.
-6. Run the script using `npx tsx index.ts`, capturing stdout and stderr to `/home/user/scoped-upload/output.log`. The script must exit with status 0 on success.
-
-## Constraints
-- Project path: `/home/user/scoped-upload`
-- Log file: `/home/user/scoped-upload/output.log`
-- Use ONLY the scoped workspace credentials with the AWS SDK upload — do not pass the admin Tigris env vars to the `S3Client` constructor.
-- Do not modify `package.json`, `tsconfig.json`, or `node_modules`.
-- Do not invent another workspace name — it must be exactly `harbor-scoped-${trial_id}` (normalized).
-
-## Integrations
-- Tigris (real `@tigrisdata/agent-kit` API and `@tigrisdata/cli`; admin credentials provided via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).1a:T1419,# Seed a Corpus and Dispatch Read-Only Forks for Parallel Agents
-
-## Background
-Multi-agent eval pipelines often need to dispatch the *same* starting corpus to several agents at once. Tigris Agent Kit (`@tigrisdata/agent-kit`) makes this efficient: you seed a source bucket once, then use `createForks` to mint N copy-on-write clones (each optionally scoped to its own IAM access key). This task wires the seeding step (S3 upload via the AWS SDK) together with `createForks`/`teardownForks` and persists the names of the resulting forks for downstream tooling.
-
-A setup script `/home/user/seeded-fork/setup.sh` runs at task start and creates the source bucket `seed-corpus` with snapshots enabled. The bucket is empty — you must seed it from the three local files `data/a.txt`, `data/b.txt`, and `data/c.txt`.
-
-## Requirements
-Write a TypeScript program at `/home/user/seeded-fork/index.ts` that:
-
-1. Reads the trial id from `/logs/artifacts/trial_id`. Constructs the source bucket name as `harbor-seeded-${trial_id}` (substitute the actual id; do NOT keep the `${trial_id}` placeholder literal). Note: S3 bucket names can only contain lowercase letters, numbers, dots, and hyphens. You must normalize the bucket name by converting it to lowercase and replacing any invalid characters (like underscores) with hyphens.
-2. Reads the three local files `data/a.txt`, `data/b.txt`, and `data/c.txt` (relative to `/home/user/seeded-fork`) and uploads them to the source bucket using the AWS SDK for JavaScript v3 (`@aws-sdk/client-s3`). Use the admin Tigris credentials from the environment (`TIGRIS_STORAGE_ACCESS_KEY_ID`, `TIGRIS_STORAGE_SECRET_ACCESS_KEY`), the Tigris endpoint `https://t3.storage.dev`, and `region: "auto"`. The uploaded object keys must be exactly `a.txt`, `b.txt`, and `c.txt`.
-3. Calls `createForks(sourceBucketName, 2, { prefix: "eval-dispatch", credentials: { role: "ReadOnly" } })` from `@tigrisdata/agent-kit`. Both forks must be requested in a single call.
-4. Writes the resulting fork bucket names to `/home/user/seeded-fork/forks.json` as `{ "forks": [name1, name2] }` (a top-level object with a `forks` array of strings) BEFORE tearing the forks down.
-5. Calls `teardownForks` at the end to delete both fork buckets and revoke their scoped credentials. Use a `try`/`finally` so teardown runs even if an earlier step fails.
-6. Exits with status `0` on success.
-
-## Implementation Guide
-1. Change into the project directory at `/home/user/seeded-fork`. The project already has `package.json`, `tsconfig.json`, and a populated local `node_modules` containing `@tigrisdata/agent-kit`, `@tigrisdata/cli`, `@aws-sdk/client-s3`, `tsx`, and `typescript`. The `data/` subdirectory containing `a.txt`, `b.txt`, and `c.txt` is also pre-created. You only need to create `index.ts`.
-2. Import `createForks`, `teardownForks` from `@tigrisdata/agent-kit` and `S3Client`, `PutObjectCommand` from `@aws-sdk/client-s3`. Use the Node `fs/promises` module for reading the local files and writing `forks.json`.
-3. Read the trial id and construct the source bucket name. Construct one `S3Client` for the seeding step using the admin Tigris credentials, `region: "auto"`, and `endpoint: "https://t3.storage.dev"`. Upload each of `a.txt`, `b.txt`, `c.txt` with the same key as filename.
-4. Call `createForks(sourceBucketName, 2, { prefix: "eval-dispatch", credentials: { role: "ReadOnly" } })`. Check `error` first; if non-null, throw it.
-5. Build the `forks.json` payload from `forkSet.forks.map(f => f.bucket)` and write it to `/home/user/seeded-fork/forks.json` (UTF-8). The JSON must be a top-level object with a single `forks` field holding the array of bucket names.
-6. After `forks.json` is written, call `teardownForks(forkSet)` so the fork buckets and their scoped keys are removed. The source bucket and its objects must remain untouched.
-7. Run the script with `npx tsx index.ts` from `/home/user/seeded-fork`. It must exit with status 0.
-
-## Constraints
-- Project path: `/home/user/seeded-fork`
-- Setup script (runs automatically at task start, creating the source bucket): `/home/user/seeded-fork/setup.sh`
-- Bucket name: dynamically constructed as `harbor-seeded-${trial_id}` (where `${trial_id}` is read from `/logs/artifacts/trial_id`, normalized to lowercase with invalid characters replaced by hyphens)
-- Fork prefix: `eval-dispatch` (each fork bucket name must begin with this prefix)
-- Fork count: exactly 2 (single `createForks` call)
-- Fork credentials role: `ReadOnly`
-- Output manifest: `/home/user/seeded-fork/forks.json` with shape `{ "forks": [<bucket-name-1>, <bucket-name-2>] }`
-- Use ONLY the AWS SDK for JavaScript v3 (`@aws-sdk/client-s3`) for the seed uploads — do not shell out to the Tigris CLI for the upload step.
-- Do not modify `package.json`, `tsconfig.json`, `node_modules`, or the contents of `data/`.
-- The fork buckets must NOT remain after the script exits — `teardownForks` must run.
-
-## Integrations
-- Tigris (real `@tigrisdata/agent-kit` API, AWS S3-compatible API, and `@tigrisdata/cli`; admin credentials provided via `TIGRIS_STORAGE_ACCESS_KEY_ID` / `TIGRIS_STORAGE_SECRET_ACCESS_KEY`).1b:T1639,# Aggregate Tigris Snapshot Inventory With the Tigris CLI
+f:T1639,# Aggregate Tigris Snapshot Inventory With the Tigris CLI
 
 ## Background
 The Tigris Agent Kit provisions and manages many short-lived buckets on the Tigris control plane. Operators frequently need a quick "what do I currently own?" report — specifically, which evaluation buckets exist and how many point-in-time snapshots each one has. The Tigris CLI (`@tigrisdata/cli`) exposes both pieces via `tigris buckets list --format json` and `tigris snapshots list <bucket> --format json`. Each snapshot has a unique `version` string (a UNIX nanosecond-precision timestamp) that doubles as an ascending creation-time ordering key.
@@ -1330,53 +755,7 @@ For this task an operator has primed the Tigris account with six buckets. Three 
 
 ## Integrations
 - Tigris Object Storage (admin credentials `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` are injected into both the task and verifier environments).
-1c:Te22,# Timestamped Checkpoint Tagging with Tigris Agent Kit
-
-## Background
-Release pipelines often need to capture a snapshot of an AI agent's data bucket at the exact moment a build is cut, then tag that snapshot with both the build identifier and a wall-clock timestamp. The Tigris Agent Kit `checkpoint` primitive accepts an optional `name` that maps directly onto the underlying snapshot label, which makes it the right tool for this job.
-
-A Tigris bucket named `harbor-pipeline-${trial_id}` (where `${trial_id}` is read from `/logs/artifacts/trial_id`) already exists with snapshots enabled. A file `build_id.txt` at the root of the project contains the build identifier `v42`. Your job is to write a TypeScript program that reads the build id, takes a named checkpoint of the bucket, and records the result on disk.
-
-## Requirements
-Write a TypeScript program at `/home/user/ckpt-tag/index.ts` that performs the following steps in order:
-
-1. **Read the build id**. Read the file `/home/user/ckpt-tag/build_id.txt` synchronously. The file contains a single line like `v42` (trim trailing whitespace/newlines before using the value).
-2. **Compute a unix timestamp**. Use `Math.floor(Date.now() / 1000)` to get the current unix timestamp in seconds.
-3. **Take a named checkpoint** of the bucket `harbor-pipeline-${trial_id}` (normalized to lowercase, invalid characters replaced with hyphens) using `@tigrisdata/agent-kit`:
-   ```ts
-   import { checkpoint } from "@tigrisdata/agent-kit";
-   const name = `release-${buildId}-${unixTimestamp}`;
-   const { data: ckpt, error } = await checkpoint(bucketName, { name });
-   if (error) throw error;
-   ```
-   The name MUST be exactly `release-<buildId>-<unixTimestamp>` with no extra prefix/suffix. With the pre-provisioned `build_id.txt` containing `v42`, the name will match the regex `^release-v42-\d{10,}$`.
-4. **Persist the result**. Write a JSON file to `/home/user/ckpt-tag/snapshot.json` whose contents are exactly:
-   ```json
-   {
-     "snapshotId": "<ckpt.snapshotId>",
-     "name": "<the same name you passed to checkpoint>"
-   }
-   ```
-   Both fields must be non-empty strings. Do not include any other fields.
-
-The script must exit with status 0 on success. Credentials are pre-provisioned in the environment as `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY` — Agent Kit reads them automatically.
-
-## Implementation Guide
-1. The project at `/home/user/ckpt-tag` is initialized with a `package.json` declaring `@tigrisdata/agent-kit`, `tsx`, and `typescript`. Run `npm install` once before authoring the script.
-2. Run your script with `npx tsx index.ts` from inside `/home/user/ckpt-tag`.
-3. Agent Kit returns a discriminated union `TigrisResponse<T>` — always check `result.error` before reading `result.data`.
-4. Make sure to write `snapshot.json` AFTER the checkpoint call succeeds, using the same `name` string you passed to `checkpoint`.
-
-## Constraints
-- Project path: `/home/user/ckpt-tag`
-- Source bucket name: dynamically constructed as `harbor-pipeline-${trial_id}`
-- Build id source: `/home/user/ckpt-tag/build_id.txt` (contains `v42`)
-- Checkpoint name format: `release-<buildId>-<unixTimestamp>` (must match regex `^release-v42-\d{10,}$`)
-- Output file: `/home/user/ckpt-tag/snapshot.json` with shape `{"snapshotId": "...", "name": "release-v42-<timestamp>"}`
-- Do NOT delete the source bucket or the snapshot — the verifier will handle cleanup.
-
-## Integrations
-- Tigris (cloud object storage). Credentials are pre-provisioned in the environment via `TIGRIS_STORAGE_ACCESS_KEY_ID` and `TIGRIS_STORAGE_SECRET_ACCESS_KEY`.1d:Ted5,# Tigris Storage SDK PutObject Workflow
+10:Ted5,# Tigris Storage SDK PutObject Workflow
 
 ## Background
 The Tigris Storage SDK (`@tigrisdata/storage`) is the native TypeScript SDK for Tigris object storage. It provides functions like `createBucket`, `put`, and `list` that map to the same primitives the plan refers to as `putObject` and `listObjects`. You will use this SDK to programmatically provision a bucket, upload a small inbox of JSON messages, and produce a local listing of the uploaded keys.
@@ -1418,7 +797,7 @@ The Tigris Storage SDK (`@tigrisdata/storage`) is the native TypeScript SDK for 
 
 ## Integrations
 - Tigris Data (real `https://t3.storage.dev` endpoint via `@tigrisdata/storage`).
-1e:T107a,# Tigris Agent Kit: Workspace Lifecycle With Scoped Credentials
+11:T107a,# Tigris Agent Kit: Workspace Lifecycle With Scoped Credentials
 
 ## Background
 Tigris Agent Kit (`@tigrisdata/agent-kit`) provides a `createWorkspace` primitive that provisions an ephemeral bucket plus a scoped IAM access key. The scoped key is restricted to that single workspace bucket only — leaking the key cannot expose any other data. In this task you will write a TypeScript program that creates such a workspace, then uses the scoped credentials (not the root credentials in the environment) to upload a small state object into the workspace bucket. You will also surface the scoped access key id so the verifier can confirm it is different from the root key.
@@ -1463,8 +842,8 @@ Tigris Agent Kit (`@tigrisdata/agent-kit`) provides a `createWorkspace` primitiv
 
 ## Integrations
 - Tigris Data (real `https://t3.storage.dev` endpoint via `@tigrisdata/agent-kit` and `@tigrisdata/storage`).
-0:{"buildId":"tmtjHKLv7tOM_C2qOT_so","rsc":["$","$1","c",{"children":[["$","div",null,{"className":"min-h-screen bg-background text-foreground font-sans selection:bg-primary/20","children":[["$","div",null,{"className":"fixed inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(#2a2a2a_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20 dark:opacity-40"}],["$","$L2",null,{"tasksData":[{"taskName":"agent_pool_lifecycle_manager","instruction":"$3","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"agent_pool_lifecycle_manager__CzmEZtB","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":159.036,"latency_breakdown":{"env_setup":8.711,"agent_setup":12.412,"agent_exec":102.646,"verifier":9.771},"taskName":"agent_pool_lifecycle_manager","jobId":"CzmEZtB","exec_duration":102.646},{"job_name":"2026-05-18__02-53-44","trial_name":"agent_pool_lifecycle_manager__DRYH5wJ","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":190.222,"latency_breakdown":{"env_setup":3.948,"agent_setup":10.511,"agent_exec":152.312,"verifier":9.072},"taskName":"agent_pool_lifecycle_manager","jobId":"DRYH5wJ","exec_duration":152.312},{"job_name":"2026-05-16__01-53-22","trial_name":"agent_pool_lifecycle_manager__tQfjJY3","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":464.535,"latency_breakdown":{"env_setup":11.359,"agent_setup":33.719,"agent_exec":393.258,"verifier":12.585},"taskName":"agent_pool_lifecycle_manager","jobId":"tQfjJY3","exec_duration":393.258},{"job_name":"2026-05-18__03-31-01","trial_name":"agent_pool_lifecycle_manager__57JVMuY","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":63.593,"latency_breakdown":{"env_setup":4.109,"agent_setup":10.974,"agent_exec":27.501,"verifier":6.232},"taskName":"agent_pool_lifecycle_manager","jobId":"57JVMuY","exec_duration":27.501}]},{"taskName":"aws_cli_s3_putobject_basic","instruction":"$4","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"aws_cli_s3_putobject_basic__gXS4deq","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":109.216,"latency_breakdown":{"env_setup":11.828,"agent_setup":14.314,"agent_exec":58.172,"verifier":10.022},"taskName":"aws_cli_s3_putobject_basic","jobId":"gXS4deq","exec_duration":58.172},{"job_name":"2026-05-18__02-53-44","trial_name":"aws_cli_s3_putobject_basic__bGEunDL","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":100.618,"latency_breakdown":{"env_setup":12.286,"agent_setup":16.414,"agent_exec":47.647,"verifier":11.639},"taskName":"aws_cli_s3_putobject_basic","jobId":"bGEunDL","exec_duration":47.647},{"job_name":"2026-05-16__01-53-22","trial_name":"aws_cli_s3_putobject_basic__NU3P2MF","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":139.457,"latency_breakdown":{"env_setup":11.243,"agent_setup":31.173,"agent_exec":62.183,"verifier":22.785},"taskName":"aws_cli_s3_putobject_basic","jobId":"NU3P2MF","exec_duration":62.183},{"job_name":"2026-05-18__03-31-01","trial_name":"aws_cli_s3_putobject_basic__rNHS2je","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":116.496,"latency_breakdown":{"env_setup":11.835,"agent_setup":17.092,"agent_exec":62.821,"verifier":10.296},"taskName":"aws_cli_s3_putobject_basic","jobId":"rNHS2je","exec_duration":62.821}]},{"taskName":"boto3_object_roundtrip","instruction":"$5","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"boto3_object_roundtrip__nhYigKX","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":100.706,"latency_breakdown":{"env_setup":11.804,"agent_setup":15.253,"agent_exec":48.189,"verifier":11.131},"taskName":"boto3_object_roundtrip","jobId":"nhYigKX","exec_duration":48.189},{"job_name":"2026-05-18__02-53-44","trial_name":"boto3_object_roundtrip__XHvSus4","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":115.158,"latency_breakdown":{"env_setup":12.24,"agent_setup":16.763,"agent_exec":55.384,"verifier":12.454},"taskName":"boto3_object_roundtrip","jobId":"XHvSus4","exec_duration":55.384},{"job_name":"2026-05-16__01-53-22","trial_name":"boto3_object_roundtrip__unddazf","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":122.775,"latency_breakdown":{"env_setup":4.838,"agent_setup":25.598,"agent_exec":68.782,"verifier":11.181},"taskName":"boto3_object_roundtrip","jobId":"unddazf","exec_duration":68.782},{"job_name":"2026-05-18__03-31-01","trial_name":"boto3_object_roundtrip__N9Te6je","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":111.634,"latency_breakdown":{"env_setup":11.566,"agent_setup":15.7,"agent_exec":56.296,"verifier":11.889},"taskName":"boto3_object_roundtrip","jobId":"N9Te6je","exec_duration":56.296}]},{"taskName":"bucket_snapshot_enabled_creation","instruction":"$6","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"bucket_snapshot_enabled_creation__csuxMoe","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":95.548,"latency_breakdown":{"env_setup":11.799,"agent_setup":17.418,"agent_exec":42.909,"verifier":9.377},"taskName":"bucket_snapshot_enabled_creation","jobId":"csuxMoe","exec_duration":42.909},{"job_name":"2026-05-18__02-53-44","trial_name":"bucket_snapshot_enabled_creation__tYAYW2Y","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":97.816,"latency_breakdown":{"env_setup":12.164,"agent_setup":16.937,"agent_exec":45.752,"verifier":9.792},"taskName":"bucket_snapshot_enabled_creation","jobId":"tYAYW2Y","exec_duration":45.752},{"job_name":"2026-05-16__01-53-22","trial_name":"bucket_snapshot_enabled_creation__FKrUNag","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":131.146,"latency_breakdown":{"env_setup":11.326,"agent_setup":29.255,"agent_exec":59.778,"verifier":19.106},"taskName":"bucket_snapshot_enabled_creation","jobId":"FKrUNag","exec_duration":59.778},{"job_name":"2026-05-18__03-31-01","trial_name":"bucket_snapshot_enabled_creation__fy4663Z","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":92.178,"latency_breakdown":{"env_setup":11.498,"agent_setup":16.359,"agent_exec":33.689,"verifier":10.602},"taskName":"bucket_snapshot_enabled_creation","jobId":"fy4663Z","exec_duration":33.689}]},{"taskName":"bucket_to_bucket_copy_via_sdk","instruction":"$7","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"bucket_to_bucket_copy_via_sdk__XbyKaPF","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":676.795,"latency_breakdown":{"env_setup":11.688,"agent_setup":15.483,"agent_exec":600.001,"verifier":30.142},"taskName":"bucket_to_bucket_copy_via_sdk","jobId":"XbyKaPF","exec_duration":600.001},{"job_name":"2026-05-18__02-53-44","trial_name":"bucket_to_bucket_copy_via_sdk__njpfJfr","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":679.561,"latency_breakdown":{"env_setup":12.128,"agent_setup":16.001,"agent_exec":600.006,"verifier":30.654},"taskName":"bucket_to_bucket_copy_via_sdk","jobId":"njpfJfr","exec_duration":600.006},{"job_name":"2026-05-18__03-31-01","trial_name":"bucket_to_bucket_copy_via_sdk__xXt4TGv","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":677.608,"latency_breakdown":{"env_setup":11.535,"agent_setup":16.72,"agent_exec":600.002,"verifier":29.729},"taskName":"bucket_to_bucket_copy_via_sdk","jobId":"xXt4TGv","exec_duration":600.002},{"job_name":"2026-05-18__01-40-46","trial_name":"bucket_to_bucket_copy_via_sdk__tucBgHF","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":693.257,"latency_breakdown":{"env_setup":11.483,"agent_setup":16.587,"agent_exec":600.001,"verifier":32.098},"taskName":"bucket_to_bucket_copy_via_sdk","jobId":"tucBgHF","exec_duration":600.001}]},{"taskName":"bucket_ttl_policy_set","instruction":"$8","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"bucket_ttl_policy_set__iKxgR34","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":372.019,"latency_breakdown":{"env_setup":11.536,"agent_setup":13.829,"agent_exec":324.156,"verifier":9.498},"taskName":"bucket_ttl_policy_set","jobId":"iKxgR34","exec_duration":324.156},{"job_name":"2026-05-18__02-53-44","trial_name":"bucket_ttl_policy_set__axrCNWb","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":167.07,"latency_breakdown":{"env_setup":12.028,"agent_setup":17.376,"agent_exec":111.3,"verifier":10.1},"taskName":"bucket_ttl_policy_set","jobId":"axrCNWb","exec_duration":111.3},{"job_name":"2026-05-16__01-53-22","trial_name":"bucket_ttl_policy_set__Vs9RwqP","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":459.118,"latency_breakdown":{"env_setup":11.352,"agent_setup":28.042,"agent_exec":390.728,"verifier":16.398},"taskName":"bucket_ttl_policy_set","jobId":"Vs9RwqP","exec_duration":390.728},{"job_name":"2026-05-18__03-31-01","trial_name":"bucket_ttl_policy_set__RvLT2Q6","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":255.09,"latency_breakdown":{"env_setup":11.329,"agent_setup":15.583,"agent_exec":205.567,"verifier":9.353},"taskName":"bucket_ttl_policy_set","jobId":"RvLT2Q6","exec_duration":205.567}]},{"taskName":"bulk_concurrent_object_upload","instruction":"$9","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"bulk_concurrent_object_upload__pGGBRjV","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":111.041,"latency_breakdown":{"env_setup":10.63,"agent_setup":15.229,"agent_exec":61.215,"verifier":11.62},"taskName":"bulk_concurrent_object_upload","jobId":"pGGBRjV","exec_duration":61.215},{"job_name":"2026-05-18__02-53-44","trial_name":"bulk_concurrent_object_upload__mjeMhBw","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":136.36,"latency_breakdown":{"env_setup":4.111,"agent_setup":17.192,"agent_exec":88.3,"verifier":12.383},"taskName":"bulk_concurrent_object_upload","jobId":"mjeMhBw","exec_duration":88.3},{"job_name":"2026-05-16__01-53-22","trial_name":"bulk_concurrent_object_upload__PtLHa4W","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":153.433,"latency_breakdown":{"env_setup":3.657,"agent_setup":28.657,"agent_exec":92.421,"verifier":16.588},"taskName":"bulk_concurrent_object_upload","jobId":"PtLHa4W","exec_duration":92.421},{"job_name":"2026-05-18__03-31-01","trial_name":"bulk_concurrent_object_upload__wwPf7JF","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":101.815,"latency_breakdown":{"env_setup":4.741,"agent_setup":10.85,"agent_exec":60.222,"verifier":12.175},"taskName":"bulk_concurrent_object_upload","jobId":"wwPf7JF","exec_duration":60.222}]},{"taskName":"chained_checkpoint_restoration","instruction":"$a","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"chained_checkpoint_restoration__aqMMGss","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":936.631,"latency_breakdown":{"env_setup":3.993,"agent_setup":11.039,"agent_exec":600.111,"verifier":307.271},"taskName":"chained_checkpoint_restoration","jobId":"aqMMGss","exec_duration":600.111},{"job_name":"2026-05-18__02-53-44","trial_name":"chained_checkpoint_restoration__XSMuspe","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":714.937,"latency_breakdown":{"env_setup":9.795,"agent_setup":12.574,"agent_exec":580.196,"verifier":96.552},"taskName":"chained_checkpoint_restoration","jobId":"XSMuspe","exec_duration":580.196},{"job_name":"2026-05-18__03-31-01","trial_name":"chained_checkpoint_restoration__pdDJePo","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":411.792,"latency_breakdown":{"env_setup":4.185,"agent_setup":13.356,"agent_exec":369.736,"verifier":10.499},"taskName":"chained_checkpoint_restoration","jobId":"pdDJePo","exec_duration":369.736},{"job_name":"2026-05-18__01-40-46","trial_name":"chained_checkpoint_restoration__wCGXyjk","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":652.348,"latency_breakdown":{"env_setup":11.409,"agent_setup":15.867,"agent_exec":600.118,"verifier":10.193},"taskName":"chained_checkpoint_restoration","jobId":"wCGXyjk","exec_duration":600.118}]},{"taskName":"checkpoint_create_then_restore_fork","instruction":"$b","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"checkpoint_create_then_restore_f__qQqXvkm","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":676.197,"latency_breakdown":{"env_setup":17.292,"agent_setup":33.442,"agent_exec":600.001,"verifier":11.309},"taskName":"checkpoint_create_then_restore_f","jobId":"qQqXvkm","exec_duration":600.001},{"job_name":"2026-05-18__02-53-44","trial_name":"checkpoint_create_then_restore_f__DaB9pC4","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":659.543,"latency_breakdown":{"env_setup":5.102,"agent_setup":14.297,"agent_exec":600.001,"verifier":12.569},"taskName":"checkpoint_create_then_restore_f","jobId":"DaB9pC4","exec_duration":600.001},{"job_name":"2026-05-18__03-31-01","trial_name":"checkpoint_create_then_restore_f__MC5W2n2","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":692.097,"latency_breakdown":{"env_setup":10.629,"agent_setup":27.747,"agent_exec":600.001,"verifier":11.4},"taskName":"checkpoint_create_then_restore_f","jobId":"MC5W2n2","exec_duration":600.001},{"job_name":"2026-05-18__01-40-46","trial_name":"checkpoint_create_then_restore_f__5JSuExr","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":658.718,"latency_breakdown":{"env_setup":11.263,"agent_setup":17.373,"agent_exec":600.001,"verifier":11.608},"taskName":"checkpoint_create_then_restore_f","jobId":"5JSuExr","exec_duration":600.001}]},{"taskName":"cli_full_lifecycle_orchestrator","instruction":"$c","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"cli_full_lifecycle_orchestrator__6RCMrzr","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":649.503,"latency_breakdown":{"env_setup":12.567,"agent_setup":12.456,"agent_exec":600.126,"verifier":11.478},"taskName":"cli_full_lifecycle_orchestrator","jobId":"6RCMrzr","exec_duration":600.126},{"job_name":"2026-05-18__02-53-44","trial_name":"cli_full_lifecycle_orchestrator__z4c5468","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":643.39,"latency_breakdown":{"env_setup":4.68,"agent_setup":14.084,"agent_exec":600.128,"verifier":11.474},"taskName":"cli_full_lifecycle_orchestrator","jobId":"z4c5468","exec_duration":600.128},{"job_name":"2026-05-18__03-31-01","trial_name":"cli_full_lifecycle_orchestrator__ZiXBzdb","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":117.034,"latency_breakdown":{"env_setup":35.252,"agent_setup":13.673,"agent_exec":41.216,"verifier":14.121},"taskName":"cli_full_lifecycle_orchestrator","jobId":"ZiXBzdb","exec_duration":41.216},{"job_name":"2026-05-18__01-40-46","trial_name":"cli_full_lifecycle_orchestrator__ZHG2ETd","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":122.49,"latency_breakdown":{"env_setup":11.175,"agent_setup":16.659,"agent_exec":67.678,"verifier":13.915},"taskName":"cli_full_lifecycle_orchestrator","jobId":"ZHG2ETd","exec_duration":67.678}]},{"taskName":"cli_list_bucket_snapshots","instruction":"$d","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"cli_list_bucket_snapshots__e2NgP9z","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":716.428,"latency_breakdown":{"env_setup":51.07,"agent_setup":12.394,"agent_exec":600.167,"verifier":14.448},"taskName":"cli_list_bucket_snapshots","jobId":"e2NgP9z","exec_duration":600.167},{"job_name":"2026-05-18__02-53-44","trial_name":"cli_list_bucket_snapshots__TZCX8Lw","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":706.312,"latency_breakdown":{"env_setup":43.136,"agent_setup":14.999,"agent_exec":600.126,"verifier":9.088},"taskName":"cli_list_bucket_snapshots","jobId":"TZCX8Lw","exec_duration":600.126},{"job_name":"2026-05-18__03-31-01","trial_name":"cli_list_bucket_snapshots__TDofiUt","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":685.782,"latency_breakdown":{"env_setup":43.962,"agent_setup":11.687,"agent_exec":600.188,"verifier":8.572},"taskName":"cli_list_bucket_snapshots","jobId":"TDofiUt","exec_duration":600.188},{"job_name":"2026-05-18__01-40-46","trial_name":"cli_list_bucket_snapshots__L7yd3uJ","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":653.547,"latency_breakdown":{"env_setup":15.013,"agent_setup":14.164,"agent_exec":600.118,"verifier":8.44},"taskName":"cli_list_bucket_snapshots","jobId":"L7yd3uJ","exec_duration":600.118}]},{"taskName":"cli_object_prefix_listing","instruction":"$e","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"cli_object_prefix_listing__dNGZqVP","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":86.83,"latency_breakdown":{"env_setup":10.416,"agent_setup":10.838,"agent_exec":43.835,"verifier":8.459},"taskName":"cli_object_prefix_listing","jobId":"dNGZqVP","exec_duration":43.835},{"job_name":"2026-05-18__02-53-44","trial_name":"cli_object_prefix_listing__SwZ7kn8","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":139.12,"latency_breakdown":{"env_setup":31.823,"agent_setup":11.454,"agent_exec":74.564,"verifier":8.349},"taskName":"cli_object_prefix_listing","jobId":"SwZ7kn8","exec_duration":74.564},{"job_name":"2026-05-18__03-31-01","trial_name":"cli_object_prefix_listing__W8ibVab","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":101.664,"latency_breakdown":{"env_setup":13.057,"agent_setup":10.771,"agent_exec":54.044,"verifier":8.078},"taskName":"cli_object_prefix_listing","jobId":"W8ibVab","exec_duration":54.044},{"job_name":"2026-05-18__01-40-46","trial_name":"cli_object_prefix_listing__5sJZbCy","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":188.253,"latency_breakdown":{"env_setup":75.098,"agent_setup":10.932,"agent_exec":80.519,"verifier":8.53},"taskName":"cli_object_prefix_listing","jobId":"5sJZbCy","exec_duration":80.519}]},{"taskName":"cli_sdk_interop_bucket_lifecycle","instruction":"$f","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"cli_sdk_interop_bucket_lifecycle__hyaNAae","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":96.54,"latency_breakdown":{"env_setup":4.041,"agent_setup":11.109,"agent_exec":55.365,"verifier":11.693},"taskName":"cli_sdk_interop_bucket_lifecycle","jobId":"hyaNAae","exec_duration":55.365},{"job_name":"2026-05-18__02-53-44","trial_name":"cli_sdk_interop_bucket_lifecycle__SakppH5","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":167.977,"latency_breakdown":{"env_setup":8.119,"agent_setup":12.024,"agent_exec":120.139,"verifier":13.89},"taskName":"cli_sdk_interop_bucket_lifecycle","jobId":"SakppH5","exec_duration":120.139},{"job_name":"2026-05-16__01-53-22","trial_name":"cli_sdk_interop_bucket_lifecycle__qbj5dyx","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":169.623,"latency_breakdown":{"env_setup":4.55,"agent_setup":26.86,"agent_exec":98.827,"verifier":21.663},"taskName":"cli_sdk_interop_bucket_lifecycle","jobId":"qbj5dyx","exec_duration":98.827},{"job_name":"2026-05-18__03-31-01","trial_name":"cli_sdk_interop_bucket_lifecycle__r4m8gEa","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":181.633,"latency_breakdown":{"env_setup":7.793,"agent_setup":42.715,"agent_exec":106.19,"verifier":11.642},"taskName":"cli_sdk_interop_bucket_lifecycle","jobId":"r4m8gEa","exec_duration":106.19}]},{"taskName":"concurrent_workspace_pool","instruction":"$10","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"concurrent_workspace_pool__nTx2FQf","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":238.294,"latency_breakdown":{"env_setup":3.855,"agent_setup":11.694,"agent_exec":196.87,"verifier":11.805},"taskName":"concurrent_workspace_pool","jobId":"nTx2FQf","exec_duration":196.87},{"job_name":"2026-05-18__02-53-44","trial_name":"concurrent_workspace_pool__9Pcf6fe","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":133.725,"latency_breakdown":{"env_setup":15.034,"agent_setup":11.833,"agent_exec":82.022,"verifier":11.33},"taskName":"concurrent_workspace_pool","jobId":"9Pcf6fe","exec_duration":82.022},{"job_name":"2026-05-18__03-31-01","trial_name":"concurrent_workspace_pool__cdZWn4U","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":141.419,"latency_breakdown":{"env_setup":7.903,"agent_setup":15.625,"agent_exec":63.14,"verifier":38.25},"taskName":"concurrent_workspace_pool","jobId":"cdZWn4U","exec_duration":63.14},{"job_name":"2026-05-18__01-40-46","trial_name":"concurrent_workspace_pool__hPhNoEm","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":383.741,"latency_breakdown":{"env_setup":3.684,"agent_setup":11.436,"agent_exec":331.158,"verifier":14.884},"taskName":"concurrent_workspace_pool","jobId":"hPhNoEm","exec_duration":331.158}]},{"taskName":"dual_role_workspace_split","instruction":"$11","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"dual_role_workspace_split__iXAxUF6","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":226.957,"latency_breakdown":{"env_setup":12.322,"agent_setup":21.714,"agent_exec":170.692,"verifier":8.576},"taskName":"dual_role_workspace_split","jobId":"iXAxUF6","exec_duration":170.692},{"job_name":"2026-05-18__02-53-44","trial_name":"dual_role_workspace_split__eNoaY9X","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":124.729,"latency_breakdown":{"env_setup":10.041,"agent_setup":14.418,"agent_exec":75.008,"verifier":8.274},"taskName":"dual_role_workspace_split","jobId":"eNoaY9X","exec_duration":75.008},{"job_name":"2026-05-18__03-31-01","trial_name":"dual_role_workspace_split__mLmtJ9e","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":98.529,"latency_breakdown":{"env_setup":4.228,"agent_setup":13.131,"agent_exec":47.112,"verifier":16.074},"taskName":"dual_role_workspace_split","jobId":"mLmtJ9e","exec_duration":47.112},{"job_name":"2026-05-18__01-40-46","trial_name":"dual_role_workspace_split__pV8gaRw","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":533.696,"latency_breakdown":{"env_setup":28.236,"agent_setup":16.76,"agent_exec":463.586,"verifier":11.357},"taskName":"dual_role_workspace_split","jobId":"pV8gaRw","exec_duration":463.586}]},{"taskName":"isolated_fork_writer_audit","instruction":"$12","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"isolated_fork_writer_audit__KJhYX5H","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":585.59,"latency_breakdown":{"env_setup":35.653,"agent_setup":21.295,"agent_exec":499.39,"verifier":15.349},"taskName":"isolated_fork_writer_audit","jobId":"KJhYX5H","exec_duration":499.39},{"job_name":"2026-05-18__02-53-44","trial_name":"isolated_fork_writer_audit__SiWrLy3","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":647.667,"latency_breakdown":{"env_setup":8.447,"agent_setup":12.888,"agent_exec":600.112,"verifier":12.262},"taskName":"isolated_fork_writer_audit","jobId":"SiWrLy3","exec_duration":600.112},{"job_name":"2026-05-18__03-31-01","trial_name":"isolated_fork_writer_audit__LmHYVeB","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":193.8,"latency_breakdown":{"env_setup":10.763,"agent_setup":14.973,"agent_exec":133.833,"verifier":13.047},"taskName":"isolated_fork_writer_audit","jobId":"LmHYVeB","exec_duration":133.833},{"job_name":"2026-05-18__01-40-46","trial_name":"isolated_fork_writer_audit__PwVh34E","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":704.38,"latency_breakdown":{"env_setup":62.856,"agent_setup":13.679,"agent_exec":600.157,"verifier":12.461},"taskName":"isolated_fork_writer_audit","jobId":"PwVh34E","exec_duration":600.157}]},{"taskName":"multi_agent_eval_orchestrator","instruction":"$13","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"multi_agent_eval_orchestrator__UaLhHc8","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":438.432,"latency_breakdown":{"env_setup":37.678,"agent_setup":14.877,"agent_exec":352.021,"verifier":17.478},"taskName":"multi_agent_eval_orchestrator","jobId":"UaLhHc8","exec_duration":352.021},{"job_name":"2026-05-18__02-53-44","trial_name":"multi_agent_eval_orchestrator__pVhnSan","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":667.471,"latency_breakdown":{"env_setup":8.34,"agent_setup":11.436,"agent_exec":600.107,"verifier":19.653},"taskName":"multi_agent_eval_orchestrator","jobId":"pVhnSan","exec_duration":600.107},{"job_name":"2026-05-18__03-31-01","trial_name":"multi_agent_eval_orchestrator__qv4PDNC","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":205.441,"latency_breakdown":{"env_setup":39.045,"agent_setup":15.584,"agent_exec":93.497,"verifier":33.419},"taskName":"multi_agent_eval_orchestrator","jobId":"qv4PDNC","exec_duration":93.497},{"job_name":"2026-05-18__01-40-46","trial_name":"multi_agent_eval_orchestrator__VqYBqt9","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":232.975,"latency_breakdown":{"env_setup":74.912,"agent_setup":12.549,"agent_exec":111.871,"verifier":16.708},"taskName":"multi_agent_eval_orchestrator","jobId":"VqYBqt9","exec_duration":111.871}]},{"taskName":"multipart_upload_completion","instruction":"$14","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"multipart_upload_completion__rQ5DK5e","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":279.051,"latency_breakdown":{"env_setup":3.726,"agent_setup":11.213,"agent_exec":237.391,"verifier":12.443},"taskName":"multipart_upload_completion","jobId":"rQ5DK5e","exec_duration":237.391},{"job_name":"2026-05-18__02-53-44","trial_name":"multipart_upload_completion__xUiDJYG","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":134.805,"latency_breakdown":{"env_setup":4.478,"agent_setup":10.828,"agent_exec":92.614,"verifier":12.881},"taskName":"multipart_upload_completion","jobId":"xUiDJYG","exec_duration":92.614},{"job_name":"2026-05-16__01-53-22","trial_name":"multipart_upload_completion__q5mFqGH","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":166.018,"latency_breakdown":{"env_setup":5.239,"agent_setup":20.822,"agent_exec":109.078,"verifier":19.308},"taskName":"multipart_upload_completion","jobId":"q5mFqGH","exec_duration":109.078},{"job_name":"2026-05-18__03-31-01","trial_name":"multipart_upload_completion__TPi7Arg","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":187.723,"latency_breakdown":{"env_setup":14.924,"agent_setup":11.583,"agent_exec":136.26,"verifier":11.564},"taskName":"multipart_upload_completion","jobId":"TPi7Arg","exec_duration":136.26}]},{"taskName":"object_user_metadata_persistence","instruction":"$15","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"object_user_metadata_persistence__7u48tvJ","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":95.351,"latency_breakdown":{"env_setup":5.108,"agent_setup":12.051,"agent_exec":55.943,"verifier":9.704},"taskName":"object_user_metadata_persistence","jobId":"7u48tvJ","exec_duration":55.943},{"job_name":"2026-05-18__02-53-44","trial_name":"object_user_metadata_persistence__TAnngcK","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":90.002,"latency_breakdown":{"env_setup":4.072,"agent_setup":11.038,"agent_exec":48.057,"verifier":11.897},"taskName":"object_user_metadata_persistence","jobId":"TAnngcK","exec_duration":48.057},{"job_name":"2026-05-16__01-53-22","trial_name":"object_user_metadata_persistence__H9di9rJ","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":124.551,"latency_breakdown":{"env_setup":7.139,"agent_setup":20.957,"agent_exec":66.688,"verifier":15.735},"taskName":"object_user_metadata_persistence","jobId":"H9di9rJ","exec_duration":66.688},{"job_name":"2026-05-18__03-31-01","trial_name":"object_user_metadata_persistence__kwYgFkR","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":91.885,"latency_breakdown":{"env_setup":4.084,"agent_setup":10.955,"agent_exec":49.305,"verifier":9.897},"taskName":"object_user_metadata_persistence","jobId":"kwYgFkR","exec_duration":49.305}]},{"taskName":"presigned_url_unauthenticated_download","instruction":"$16","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"presigned_url_unauthenticated_do__e9GAMHx","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":106.817,"latency_breakdown":{"env_setup":3.971,"agent_setup":12.091,"agent_exec":66.719,"verifier":11.06},"taskName":"presigned_url_unauthenticated_do","jobId":"e9GAMHx","exec_duration":66.719},{"job_name":"2026-05-18__02-53-44","trial_name":"presigned_url_unauthenticated_do__juRCfvE","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":130.173,"latency_breakdown":{"env_setup":4.181,"agent_setup":10.756,"agent_exec":90.24,"verifier":11.854},"taskName":"presigned_url_unauthenticated_do","jobId":"juRCfvE","exec_duration":90.24},{"job_name":"2026-05-16__01-53-22","trial_name":"presigned_url_unauthenticated_do__Tfy9qiT","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":134.055,"latency_breakdown":{"env_setup":7.461,"agent_setup":19.626,"agent_exec":77.546,"verifier":16.751},"taskName":"presigned_url_unauthenticated_do","jobId":"Tfy9qiT","exec_duration":77.546},{"job_name":"2026-05-18__03-31-01","trial_name":"presigned_url_unauthenticated_do__TsuM3i9","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":143.883,"latency_breakdown":{"env_setup":7.483,"agent_setup":11.671,"agent_exec":99.936,"verifier":10.863},"taskName":"presigned_url_unauthenticated_do","jobId":"TsuM3i9","exec_duration":99.936}]},{"taskName":"readonly_workspace_write_denial","instruction":"$17","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"readonly_workspace_write_denial__QV4Ss4g","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":110.535,"latency_breakdown":{"env_setup":4.39,"agent_setup":11.039,"agent_exec":71.723,"verifier":8.6},"taskName":"readonly_workspace_write_denial","jobId":"QV4Ss4g","exec_duration":71.723},{"job_name":"2026-05-18__02-53-44","trial_name":"readonly_workspace_write_denial__DSBJT6s","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":143.166,"latency_breakdown":{"env_setup":7.328,"agent_setup":11.601,"agent_exec":97.434,"verifier":10.037},"taskName":"readonly_workspace_write_denial","jobId":"DSBJT6s","exec_duration":97.434},{"job_name":"2026-05-18__03-31-01","trial_name":"readonly_workspace_write_denial__rMy9EEX","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":119.959,"latency_breakdown":{"env_setup":4.021,"agent_setup":13.074,"agent_exec":75.793,"verifier":8.174},"taskName":"readonly_workspace_write_denial","jobId":"rMy9EEX","exec_duration":75.793},{"job_name":"2026-05-18__01-40-46","trial_name":"readonly_workspace_write_denial__PvgUYUQ","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":102.547,"latency_breakdown":{"env_setup":6.944,"agent_setup":12.697,"agent_exec":61.162,"verifier":7.957},"taskName":"readonly_workspace_write_denial","jobId":"PvgUYUQ","exec_duration":61.162}]},{"taskName":"restored_fork_data_validation","instruction":"$18","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"restored_fork_data_validation__ntvbuLq","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":650.196,"latency_breakdown":{"env_setup":8.068,"agent_setup":12.527,"agent_exec":600.12,"verifier":14.746},"taskName":"restored_fork_data_validation","jobId":"ntvbuLq","exec_duration":600.12},{"job_name":"2026-05-18__02-53-44","trial_name":"restored_fork_data_validation__v7wHix3","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":638.036,"latency_breakdown":{"env_setup":6.629,"agent_setup":10.991,"agent_exec":600.158,"verifier":6.086},"taskName":"restored_fork_data_validation","jobId":"v7wHix3","exec_duration":600.158},{"job_name":"2026-05-18__03-31-01","trial_name":"restored_fork_data_validation__ajaT7ne","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":680.459,"latency_breakdown":{"env_setup":37.618,"agent_setup":14.162,"agent_exec":600.15,"verifier":14.366},"taskName":"restored_fork_data_validation","jobId":"ajaT7ne","exec_duration":600.15},{"job_name":"2026-05-18__01-40-46","trial_name":"restored_fork_data_validation__ut75PVE","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":null,"error":true,"latency_sec":69.724,"latency_breakdown":{"env_setup":46.475,"agent_setup":8.153,"agent_exec":null,"verifier":null},"taskName":"restored_fork_data_validation","jobId":"ut75PVE","exec_duration":69.724}]},{"taskName":"scoped_credentials_object_upload","instruction":"$19","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"scoped_credentials_object_upload__knGfYh5","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":293.512,"latency_breakdown":{"env_setup":4.361,"agent_setup":11.385,"agent_exec":255.502,"verifier":8.275},"taskName":"scoped_credentials_object_upload","jobId":"knGfYh5","exec_duration":255.502},{"job_name":"2026-05-18__02-53-44","trial_name":"scoped_credentials_object_upload__zJeJFjg","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":111.892,"latency_breakdown":{"env_setup":4.918,"agent_setup":12.346,"agent_exec":72.264,"verifier":8.437},"taskName":"scoped_credentials_object_upload","jobId":"zJeJFjg","exec_duration":72.264},{"job_name":"2026-05-18__03-31-01","trial_name":"scoped_credentials_object_upload__gLKEuNa","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":774.924,"latency_breakdown":{"env_setup":31.011,"agent_setup":12.936,"agent_exec":468.88,"verifier":248.362},"taskName":"scoped_credentials_object_upload","jobId":"gLKEuNa","exec_duration":468.88},{"job_name":"2026-05-18__01-40-46","trial_name":"scoped_credentials_object_upload__sQtAoPC","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":342.501,"latency_breakdown":{"env_setup":19.634,"agent_setup":12.744,"agent_exec":286.199,"verifier":8.212},"taskName":"scoped_credentials_object_upload","jobId":"sQtAoPC","exec_duration":286.199}]},{"taskName":"seeded_corpus_fork_dispatch","instruction":"$1a","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"seeded_corpus_fork_dispatch__G3K5N5Z","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":653.614,"latency_breakdown":{"env_setup":6.912,"agent_setup":11.154,"agent_exec":600.109,"verifier":21.736},"taskName":"seeded_corpus_fork_dispatch","jobId":"G3K5N5Z","exec_duration":600.109},{"job_name":"2026-05-18__02-53-44","trial_name":"seeded_corpus_fork_dispatch__qtYVwgB","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":771.927,"latency_breakdown":{"env_setup":6.786,"agent_setup":13.834,"agent_exec":600.138,"verifier":137.221},"taskName":"seeded_corpus_fork_dispatch","jobId":"qtYVwgB","exec_duration":600.138},{"job_name":"2026-05-18__03-31-01","trial_name":"seeded_corpus_fork_dispatch__LWGeGsS","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":null,"error":true,"latency_sec":29.284,"latency_breakdown":{"env_setup":6.275,"agent_setup":6.835,"agent_exec":null,"verifier":null},"taskName":"seeded_corpus_fork_dispatch","jobId":"LWGeGsS","exec_duration":29.284},{"job_name":"2026-05-18__01-40-46","trial_name":"seeded_corpus_fork_dispatch__n7emqR7","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":665.944,"latency_breakdown":{"env_setup":25.151,"agent_setup":12.878,"agent_exec":600.115,"verifier":11.862},"taskName":"seeded_corpus_fork_dispatch","jobId":"n7emqR7","exec_duration":600.115}]},{"taskName":"snapshot_inventory_aggregator","instruction":"$1b","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"snapshot_inventory_aggregator__qYMXScH","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":510.71,"latency_breakdown":{"env_setup":4.989,"agent_setup":10.967,"agent_exec":461.329,"verifier":19.798},"taskName":"snapshot_inventory_aggregator","jobId":"qYMXScH","exec_duration":461.329},{"job_name":"2026-05-18__02-53-44","trial_name":"snapshot_inventory_aggregator__uYcvi7v","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":694.425,"latency_breakdown":{"env_setup":4.325,"agent_setup":51.66,"agent_exec":600.146,"verifier":25.04},"taskName":"snapshot_inventory_aggregator","jobId":"uYcvi7v","exec_duration":600.146},{"job_name":"2026-05-18__03-31-01","trial_name":"snapshot_inventory_aggregator__2bReHKm","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":219.802,"latency_breakdown":{"env_setup":11.958,"agent_setup":13.688,"agent_exec":159.523,"verifier":20.319},"taskName":"snapshot_inventory_aggregator","jobId":"2bReHKm","exec_duration":159.523},{"job_name":"2026-05-18__01-40-46","trial_name":"snapshot_inventory_aggregator__kUgsn79","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":296.088,"latency_breakdown":{"env_setup":3.833,"agent_setup":10.931,"agent_exec":249.025,"verifier":18.824},"taskName":"snapshot_inventory_aggregator","jobId":"kUgsn79","exec_duration":249.025}]},{"taskName":"timestamped_checkpoint_tagging","instruction":"$1c","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"timestamped_checkpoint_tagging__DuzEKkr","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":647.029,"latency_breakdown":{"env_setup":11.921,"agent_setup":11.879,"agent_exec":600.127,"verifier":8.995},"taskName":"timestamped_checkpoint_tagging","jobId":"DuzEKkr","exec_duration":600.127},{"job_name":"2026-05-18__02-53-44","trial_name":"timestamped_checkpoint_tagging__txeyySE","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":308.804,"latency_breakdown":{"env_setup":21.448,"agent_setup":12.268,"agent_exec":248.853,"verifier":11.871},"taskName":"timestamped_checkpoint_tagging","jobId":"txeyySE","exec_duration":248.853},{"job_name":"2026-05-18__03-31-01","trial_name":"timestamped_checkpoint_tagging__acJKPnL","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":364.151,"latency_breakdown":{"env_setup":46.372,"agent_setup":15.626,"agent_exec":263.938,"verifier":24.225},"taskName":"timestamped_checkpoint_tagging","jobId":"acJKPnL","exec_duration":263.938},{"job_name":"2026-05-18__01-40-46","trial_name":"timestamped_checkpoint_tagging__Qgzn3d6","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":763.878,"latency_breakdown":{"env_setup":123.39,"agent_setup":18.114,"agent_exec":600.147,"verifier":8.294},"taskName":"timestamped_checkpoint_tagging","jobId":"Qgzn3d6","exec_duration":600.147}]},{"taskName":"typescript_sdk_putobject_workflow","instruction":"$1d","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"typescript_sdk_putobject_workflo__FiCBAK6","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":139.298,"latency_breakdown":{"env_setup":7.73,"agent_setup":12.387,"agent_exec":92.95,"verifier":7.877},"taskName":"typescript_sdk_putobject_workflo","jobId":"FiCBAK6","exec_duration":92.95},{"job_name":"2026-05-18__02-53-44","trial_name":"typescript_sdk_putobject_workflo__e6ytaEt","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":150.069,"latency_breakdown":{"env_setup":4.298,"agent_setup":10.682,"agent_exec":106.882,"verifier":12.225},"taskName":"typescript_sdk_putobject_workflo","jobId":"e6ytaEt","exec_duration":106.882},{"job_name":"2026-05-16__01-53-22","trial_name":"typescript_sdk_putobject_workflo__TN2obRe","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":165.131,"latency_breakdown":{"env_setup":9.616,"agent_setup":20.91,"agent_exec":108.425,"verifier":11.359},"taskName":"typescript_sdk_putobject_workflo","jobId":"TN2obRe","exec_duration":108.425},{"job_name":"2026-05-18__03-31-01","trial_name":"typescript_sdk_putobject_workflo__kSun7R4","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":109.938,"latency_breakdown":{"env_setup":13.187,"agent_setup":13.355,"agent_exec":57.72,"verifier":7.216},"taskName":"typescript_sdk_putobject_workflo","jobId":"kSun7R4","exec_duration":57.72}]},{"taskName":"workspace_create_upload_teardown","instruction":"$1e","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"workspace_create_upload_teardown__wDiurbc","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":79.962,"latency_breakdown":{"env_setup":3.676,"agent_setup":11.051,"agent_exec":42.925,"verifier":8.31},"taskName":"workspace_create_upload_teardown","jobId":"wDiurbc","exec_duration":42.925},{"job_name":"2026-05-18__02-53-44","trial_name":"workspace_create_upload_teardown__DybeLd5","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":134.96,"latency_breakdown":{"env_setup":8.201,"agent_setup":12.386,"agent_exec":86.955,"verifier":10.766},"taskName":"workspace_create_upload_teardown","jobId":"DybeLd5","exec_duration":86.955},{"job_name":"2026-05-18__03-31-01","trial_name":"workspace_create_upload_teardown__vfBBQhe","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":136.988,"latency_breakdown":{"env_setup":18.664,"agent_setup":13.824,"agent_exec":51.886,"verifier":10.273},"taskName":"workspace_create_upload_teardown","jobId":"vfBBQhe","exec_duration":51.886},{"job_name":"2026-05-18__01-40-46","trial_name":"workspace_create_upload_teardown__VtCwwQz","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":644.013,"latency_breakdown":{"env_setup":6.168,"agent_setup":14.392,"agent_exec":600.113,"verifier":9.988},"taskName":"workspace_create_upload_teardown","jobId":"VtCwwQz","exec_duration":600.113}]}]}]]}],["$L1f","$L20"],"$L21"]}],"loading":null,"isPartial":false}
-1f:["$","script","script-0",{"src":"/tigris-benchmark/_next/static/chunks/777f5ef34b6ca51a.js","async":true}]
-20:["$","script","script-1",{"src":"/tigris-benchmark/_next/static/chunks/be08138953094657.js","async":true}]
-21:["$","$L22",null,{"children":["$","$23",null,{"name":"Next.MetadataOutlet","children":"$@24"}]}]
-24:null
+0:{"buildId":"vkecOonMh6_K2VxmnHRdO","rsc":["$","$1","c",{"children":[["$","div",null,{"className":"min-h-screen bg-background text-foreground font-sans selection:bg-primary/20","children":[["$","div",null,{"className":"fixed inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(#2a2a2a_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-20 dark:opacity-40"}],["$","$L2",null,{"tasksData":[{"taskName":"agent_pool_lifecycle_manager","instruction":"$3","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"agent_pool_lifecycle_manager__CzmEZtB","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":159.036,"latency_breakdown":{"env_setup":8.711,"agent_setup":12.412,"agent_exec":102.646,"verifier":9.771},"taskName":"agent_pool_lifecycle_manager","jobId":"CzmEZtB","exec_duration":102.646},{"job_name":"2026-05-18__02-53-44","trial_name":"agent_pool_lifecycle_manager__DRYH5wJ","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":190.222,"latency_breakdown":{"env_setup":3.948,"agent_setup":10.511,"agent_exec":152.312,"verifier":9.072},"taskName":"agent_pool_lifecycle_manager","jobId":"DRYH5wJ","exec_duration":152.312},{"job_name":"2026-05-16__01-53-22","trial_name":"agent_pool_lifecycle_manager__tQfjJY3","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":464.535,"latency_breakdown":{"env_setup":11.359,"agent_setup":33.719,"agent_exec":393.258,"verifier":12.585},"taskName":"agent_pool_lifecycle_manager","jobId":"tQfjJY3","exec_duration":393.258},{"job_name":"2026-05-18__03-31-01","trial_name":"agent_pool_lifecycle_manager__57JVMuY","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":63.593,"latency_breakdown":{"env_setup":4.109,"agent_setup":10.974,"agent_exec":27.501,"verifier":6.232},"taskName":"agent_pool_lifecycle_manager","jobId":"57JVMuY","exec_duration":27.501}]},{"taskName":"boto3_object_roundtrip","instruction":"$4","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"boto3_object_roundtrip__nhYigKX","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":100.706,"latency_breakdown":{"env_setup":11.804,"agent_setup":15.253,"agent_exec":48.189,"verifier":11.131},"taskName":"boto3_object_roundtrip","jobId":"nhYigKX","exec_duration":48.189},{"job_name":"2026-05-18__02-53-44","trial_name":"boto3_object_roundtrip__XHvSus4","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":115.158,"latency_breakdown":{"env_setup":12.24,"agent_setup":16.763,"agent_exec":55.384,"verifier":12.454},"taskName":"boto3_object_roundtrip","jobId":"XHvSus4","exec_duration":55.384},{"job_name":"2026-05-16__01-53-22","trial_name":"boto3_object_roundtrip__unddazf","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":122.775,"latency_breakdown":{"env_setup":4.838,"agent_setup":25.598,"agent_exec":68.782,"verifier":11.181},"taskName":"boto3_object_roundtrip","jobId":"unddazf","exec_duration":68.782},{"job_name":"2026-05-18__03-31-01","trial_name":"boto3_object_roundtrip__N9Te6je","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":111.634,"latency_breakdown":{"env_setup":11.566,"agent_setup":15.7,"agent_exec":56.296,"verifier":11.889},"taskName":"boto3_object_roundtrip","jobId":"N9Te6je","exec_duration":56.296}]},{"taskName":"bucket_snapshot_enabled_creation","instruction":"$5","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"bucket_snapshot_enabled_creation__csuxMoe","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":95.548,"latency_breakdown":{"env_setup":11.799,"agent_setup":17.418,"agent_exec":42.909,"verifier":9.377},"taskName":"bucket_snapshot_enabled_creation","jobId":"csuxMoe","exec_duration":42.909},{"job_name":"2026-05-18__02-53-44","trial_name":"bucket_snapshot_enabled_creation__tYAYW2Y","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":97.816,"latency_breakdown":{"env_setup":12.164,"agent_setup":16.937,"agent_exec":45.752,"verifier":9.792},"taskName":"bucket_snapshot_enabled_creation","jobId":"tYAYW2Y","exec_duration":45.752},{"job_name":"2026-05-16__01-53-22","trial_name":"bucket_snapshot_enabled_creation__FKrUNag","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":131.146,"latency_breakdown":{"env_setup":11.326,"agent_setup":29.255,"agent_exec":59.778,"verifier":19.106},"taskName":"bucket_snapshot_enabled_creation","jobId":"FKrUNag","exec_duration":59.778},{"job_name":"2026-05-18__03-31-01","trial_name":"bucket_snapshot_enabled_creation__fy4663Z","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":92.178,"latency_breakdown":{"env_setup":11.498,"agent_setup":16.359,"agent_exec":33.689,"verifier":10.602},"taskName":"bucket_snapshot_enabled_creation","jobId":"fy4663Z","exec_duration":33.689}]},{"taskName":"bucket_ttl_policy_set","instruction":"$6","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"bucket_ttl_policy_set__iKxgR34","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":372.019,"latency_breakdown":{"env_setup":11.536,"agent_setup":13.829,"agent_exec":324.156,"verifier":9.498},"taskName":"bucket_ttl_policy_set","jobId":"iKxgR34","exec_duration":324.156},{"job_name":"2026-05-18__02-53-44","trial_name":"bucket_ttl_policy_set__axrCNWb","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":167.07,"latency_breakdown":{"env_setup":12.028,"agent_setup":17.376,"agent_exec":111.3,"verifier":10.1},"taskName":"bucket_ttl_policy_set","jobId":"axrCNWb","exec_duration":111.3},{"job_name":"2026-05-16__01-53-22","trial_name":"bucket_ttl_policy_set__Vs9RwqP","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":459.118,"latency_breakdown":{"env_setup":11.352,"agent_setup":28.042,"agent_exec":390.728,"verifier":16.398},"taskName":"bucket_ttl_policy_set","jobId":"Vs9RwqP","exec_duration":390.728},{"job_name":"2026-05-18__03-31-01","trial_name":"bucket_ttl_policy_set__RvLT2Q6","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":255.09,"latency_breakdown":{"env_setup":11.329,"agent_setup":15.583,"agent_exec":205.567,"verifier":9.353},"taskName":"bucket_ttl_policy_set","jobId":"RvLT2Q6","exec_duration":205.567}]},{"taskName":"bulk_concurrent_object_upload","instruction":"$7","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"bulk_concurrent_object_upload__pGGBRjV","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":111.041,"latency_breakdown":{"env_setup":10.63,"agent_setup":15.229,"agent_exec":61.215,"verifier":11.62},"taskName":"bulk_concurrent_object_upload","jobId":"pGGBRjV","exec_duration":61.215},{"job_name":"2026-05-18__02-53-44","trial_name":"bulk_concurrent_object_upload__mjeMhBw","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":136.36,"latency_breakdown":{"env_setup":4.111,"agent_setup":17.192,"agent_exec":88.3,"verifier":12.383},"taskName":"bulk_concurrent_object_upload","jobId":"mjeMhBw","exec_duration":88.3},{"job_name":"2026-05-16__01-53-22","trial_name":"bulk_concurrent_object_upload__PtLHa4W","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":153.433,"latency_breakdown":{"env_setup":3.657,"agent_setup":28.657,"agent_exec":92.421,"verifier":16.588},"taskName":"bulk_concurrent_object_upload","jobId":"PtLHa4W","exec_duration":92.421},{"job_name":"2026-05-18__03-31-01","trial_name":"bulk_concurrent_object_upload__wwPf7JF","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":101.815,"latency_breakdown":{"env_setup":4.741,"agent_setup":10.85,"agent_exec":60.222,"verifier":12.175},"taskName":"bulk_concurrent_object_upload","jobId":"wwPf7JF","exec_duration":60.222}]},{"taskName":"chained_checkpoint_restoration","instruction":"$8","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"chained_checkpoint_restoration__aqMMGss","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":936.631,"latency_breakdown":{"env_setup":3.993,"agent_setup":11.039,"agent_exec":600.111,"verifier":307.271},"taskName":"chained_checkpoint_restoration","jobId":"aqMMGss","exec_duration":600.111},{"job_name":"2026-05-18__02-53-44","trial_name":"chained_checkpoint_restoration__XSMuspe","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":714.937,"latency_breakdown":{"env_setup":9.795,"agent_setup":12.574,"agent_exec":580.196,"verifier":96.552},"taskName":"chained_checkpoint_restoration","jobId":"XSMuspe","exec_duration":580.196},{"job_name":"2026-05-18__03-31-01","trial_name":"chained_checkpoint_restoration__pdDJePo","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":411.792,"latency_breakdown":{"env_setup":4.185,"agent_setup":13.356,"agent_exec":369.736,"verifier":10.499},"taskName":"chained_checkpoint_restoration","jobId":"pdDJePo","exec_duration":369.736},{"job_name":"2026-05-18__01-40-46","trial_name":"chained_checkpoint_restoration__wCGXyjk","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":652.348,"latency_breakdown":{"env_setup":11.409,"agent_setup":15.867,"agent_exec":600.118,"verifier":10.193},"taskName":"chained_checkpoint_restoration","jobId":"wCGXyjk","exec_duration":600.118}]},{"taskName":"cli_object_prefix_listing","instruction":"$9","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"cli_object_prefix_listing__dNGZqVP","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":86.83,"latency_breakdown":{"env_setup":10.416,"agent_setup":10.838,"agent_exec":43.835,"verifier":8.459},"taskName":"cli_object_prefix_listing","jobId":"dNGZqVP","exec_duration":43.835},{"job_name":"2026-05-18__02-53-44","trial_name":"cli_object_prefix_listing__SwZ7kn8","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":139.12,"latency_breakdown":{"env_setup":31.823,"agent_setup":11.454,"agent_exec":74.564,"verifier":8.349},"taskName":"cli_object_prefix_listing","jobId":"SwZ7kn8","exec_duration":74.564},{"job_name":"2026-05-18__03-31-01","trial_name":"cli_object_prefix_listing__W8ibVab","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":101.664,"latency_breakdown":{"env_setup":13.057,"agent_setup":10.771,"agent_exec":54.044,"verifier":8.078},"taskName":"cli_object_prefix_listing","jobId":"W8ibVab","exec_duration":54.044},{"job_name":"2026-05-18__01-40-46","trial_name":"cli_object_prefix_listing__5sJZbCy","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":188.253,"latency_breakdown":{"env_setup":75.098,"agent_setup":10.932,"agent_exec":80.519,"verifier":8.53},"taskName":"cli_object_prefix_listing","jobId":"5sJZbCy","exec_duration":80.519}]},{"taskName":"cli_sdk_interop_bucket_lifecycle","instruction":"$a","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"cli_sdk_interop_bucket_lifecycle__hyaNAae","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":96.54,"latency_breakdown":{"env_setup":4.041,"agent_setup":11.109,"agent_exec":55.365,"verifier":11.693},"taskName":"cli_sdk_interop_bucket_lifecycle","jobId":"hyaNAae","exec_duration":55.365},{"job_name":"2026-05-18__02-53-44","trial_name":"cli_sdk_interop_bucket_lifecycle__SakppH5","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":167.977,"latency_breakdown":{"env_setup":8.119,"agent_setup":12.024,"agent_exec":120.139,"verifier":13.89},"taskName":"cli_sdk_interop_bucket_lifecycle","jobId":"SakppH5","exec_duration":120.139},{"job_name":"2026-05-16__01-53-22","trial_name":"cli_sdk_interop_bucket_lifecycle__qbj5dyx","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":169.623,"latency_breakdown":{"env_setup":4.55,"agent_setup":26.86,"agent_exec":98.827,"verifier":21.663},"taskName":"cli_sdk_interop_bucket_lifecycle","jobId":"qbj5dyx","exec_duration":98.827},{"job_name":"2026-05-18__03-31-01","trial_name":"cli_sdk_interop_bucket_lifecycle__r4m8gEa","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":181.633,"latency_breakdown":{"env_setup":7.793,"agent_setup":42.715,"agent_exec":106.19,"verifier":11.642},"taskName":"cli_sdk_interop_bucket_lifecycle","jobId":"r4m8gEa","exec_duration":106.19}]},{"taskName":"isolated_fork_writer_audit","instruction":"$b","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"isolated_fork_writer_audit__KJhYX5H","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":585.59,"latency_breakdown":{"env_setup":35.653,"agent_setup":21.295,"agent_exec":499.39,"verifier":15.349},"taskName":"isolated_fork_writer_audit","jobId":"KJhYX5H","exec_duration":499.39},{"job_name":"2026-05-18__02-53-44","trial_name":"isolated_fork_writer_audit__SiWrLy3","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":647.667,"latency_breakdown":{"env_setup":8.447,"agent_setup":12.888,"agent_exec":600.112,"verifier":12.262},"taskName":"isolated_fork_writer_audit","jobId":"SiWrLy3","exec_duration":600.112},{"job_name":"2026-05-18__03-31-01","trial_name":"isolated_fork_writer_audit__LmHYVeB","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":193.8,"latency_breakdown":{"env_setup":10.763,"agent_setup":14.973,"agent_exec":133.833,"verifier":13.047},"taskName":"isolated_fork_writer_audit","jobId":"LmHYVeB","exec_duration":133.833},{"job_name":"2026-05-18__01-40-46","trial_name":"isolated_fork_writer_audit__PwVh34E","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":704.38,"latency_breakdown":{"env_setup":62.856,"agent_setup":13.679,"agent_exec":600.157,"verifier":12.461},"taskName":"isolated_fork_writer_audit","jobId":"PwVh34E","exec_duration":600.157}]},{"taskName":"object_user_metadata_persistence","instruction":"$c","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"object_user_metadata_persistence__7u48tvJ","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":95.351,"latency_breakdown":{"env_setup":5.108,"agent_setup":12.051,"agent_exec":55.943,"verifier":9.704},"taskName":"object_user_metadata_persistence","jobId":"7u48tvJ","exec_duration":55.943},{"job_name":"2026-05-18__02-53-44","trial_name":"object_user_metadata_persistence__TAnngcK","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":90.002,"latency_breakdown":{"env_setup":4.072,"agent_setup":11.038,"agent_exec":48.057,"verifier":11.897},"taskName":"object_user_metadata_persistence","jobId":"TAnngcK","exec_duration":48.057},{"job_name":"2026-05-16__01-53-22","trial_name":"object_user_metadata_persistence__H9di9rJ","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":124.551,"latency_breakdown":{"env_setup":7.139,"agent_setup":20.957,"agent_exec":66.688,"verifier":15.735},"taskName":"object_user_metadata_persistence","jobId":"H9di9rJ","exec_duration":66.688},{"job_name":"2026-05-18__03-31-01","trial_name":"object_user_metadata_persistence__kwYgFkR","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":91.885,"latency_breakdown":{"env_setup":4.084,"agent_setup":10.955,"agent_exec":49.305,"verifier":9.897},"taskName":"object_user_metadata_persistence","jobId":"kwYgFkR","exec_duration":49.305}]},{"taskName":"presigned_url_unauthenticated_download","instruction":"$d","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"presigned_url_unauthenticated_do__e9GAMHx","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":106.817,"latency_breakdown":{"env_setup":3.971,"agent_setup":12.091,"agent_exec":66.719,"verifier":11.06},"taskName":"presigned_url_unauthenticated_do","jobId":"e9GAMHx","exec_duration":66.719},{"job_name":"2026-05-18__02-53-44","trial_name":"presigned_url_unauthenticated_do__juRCfvE","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":130.173,"latency_breakdown":{"env_setup":4.181,"agent_setup":10.756,"agent_exec":90.24,"verifier":11.854},"taskName":"presigned_url_unauthenticated_do","jobId":"juRCfvE","exec_duration":90.24},{"job_name":"2026-05-16__01-53-22","trial_name":"presigned_url_unauthenticated_do__Tfy9qiT","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":134.055,"latency_breakdown":{"env_setup":7.461,"agent_setup":19.626,"agent_exec":77.546,"verifier":16.751},"taskName":"presigned_url_unauthenticated_do","jobId":"Tfy9qiT","exec_duration":77.546},{"job_name":"2026-05-18__03-31-01","trial_name":"presigned_url_unauthenticated_do__TsuM3i9","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":143.883,"latency_breakdown":{"env_setup":7.483,"agent_setup":11.671,"agent_exec":99.936,"verifier":10.863},"taskName":"presigned_url_unauthenticated_do","jobId":"TsuM3i9","exec_duration":99.936}]},{"taskName":"readonly_workspace_write_denial","instruction":"$e","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"readonly_workspace_write_denial__QV4Ss4g","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":110.535,"latency_breakdown":{"env_setup":4.39,"agent_setup":11.039,"agent_exec":71.723,"verifier":8.6},"taskName":"readonly_workspace_write_denial","jobId":"QV4Ss4g","exec_duration":71.723},{"job_name":"2026-05-18__02-53-44","trial_name":"readonly_workspace_write_denial__DSBJT6s","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":143.166,"latency_breakdown":{"env_setup":7.328,"agent_setup":11.601,"agent_exec":97.434,"verifier":10.037},"taskName":"readonly_workspace_write_denial","jobId":"DSBJT6s","exec_duration":97.434},{"job_name":"2026-05-18__03-31-01","trial_name":"readonly_workspace_write_denial__rMy9EEX","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":119.959,"latency_breakdown":{"env_setup":4.021,"agent_setup":13.074,"agent_exec":75.793,"verifier":8.174},"taskName":"readonly_workspace_write_denial","jobId":"rMy9EEX","exec_duration":75.793},{"job_name":"2026-05-18__01-40-46","trial_name":"readonly_workspace_write_denial__PvgUYUQ","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":102.547,"latency_breakdown":{"env_setup":6.944,"agent_setup":12.697,"agent_exec":61.162,"verifier":7.957},"taskName":"readonly_workspace_write_denial","jobId":"PvgUYUQ","exec_duration":61.162}]},{"taskName":"snapshot_inventory_aggregator","instruction":"$f","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"snapshot_inventory_aggregator__qYMXScH","model":"gemini-3.1-pro","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":510.71,"latency_breakdown":{"env_setup":4.989,"agent_setup":10.967,"agent_exec":461.329,"verifier":19.798},"taskName":"snapshot_inventory_aggregator","jobId":"qYMXScH","exec_duration":461.329},{"job_name":"2026-05-18__02-53-44","trial_name":"snapshot_inventory_aggregator__uYcvi7v","model":"claude-4-6-sonnet","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":694.425,"latency_breakdown":{"env_setup":4.325,"agent_setup":51.66,"agent_exec":600.146,"verifier":25.04},"taskName":"snapshot_inventory_aggregator","jobId":"uYcvi7v","exec_duration":600.146},{"job_name":"2026-05-18__03-31-01","trial_name":"snapshot_inventory_aggregator__2bReHKm","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":219.802,"latency_breakdown":{"env_setup":11.958,"agent_setup":13.688,"agent_exec":159.523,"verifier":20.319},"taskName":"snapshot_inventory_aggregator","jobId":"2bReHKm","exec_duration":159.523},{"job_name":"2026-05-18__01-40-46","trial_name":"snapshot_inventory_aggregator__kUgsn79","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":296.088,"latency_breakdown":{"env_setup":3.833,"agent_setup":10.931,"agent_exec":249.025,"verifier":18.824},"taskName":"snapshot_inventory_aggregator","jobId":"kUgsn79","exec_duration":249.025}]},{"taskName":"typescript_sdk_putobject_workflow","instruction":"$10","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"typescript_sdk_putobject_workflo__FiCBAK6","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":139.298,"latency_breakdown":{"env_setup":7.73,"agent_setup":12.387,"agent_exec":92.95,"verifier":7.877},"taskName":"typescript_sdk_putobject_workflo","jobId":"FiCBAK6","exec_duration":92.95},{"job_name":"2026-05-18__02-53-44","trial_name":"typescript_sdk_putobject_workflo__e6ytaEt","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":150.069,"latency_breakdown":{"env_setup":4.298,"agent_setup":10.682,"agent_exec":106.882,"verifier":12.225},"taskName":"typescript_sdk_putobject_workflo","jobId":"e6ytaEt","exec_duration":106.882},{"job_name":"2026-05-16__01-53-22","trial_name":"typescript_sdk_putobject_workflo__TN2obRe","model":"gemini-3-flash","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":165.131,"latency_breakdown":{"env_setup":9.616,"agent_setup":20.91,"agent_exec":108.425,"verifier":11.359},"taskName":"typescript_sdk_putobject_workflo","jobId":"TN2obRe","exec_duration":108.425},{"job_name":"2026-05-18__03-31-01","trial_name":"typescript_sdk_putobject_workflo__kSun7R4","model":"gpt-5.2-codex","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":109.938,"latency_breakdown":{"env_setup":13.187,"agent_setup":13.355,"agent_exec":57.72,"verifier":7.216},"taskName":"typescript_sdk_putobject_workflo","jobId":"kSun7R4","exec_duration":57.72}]},{"taskName":"workspace_create_upload_teardown","instruction":"$11","trials":[{"job_name":"2026-05-18__02-16-28","trial_name":"workspace_create_upload_teardown__wDiurbc","model":"gemini-3.1-pro","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":79.962,"latency_breakdown":{"env_setup":3.676,"agent_setup":11.051,"agent_exec":42.925,"verifier":8.31},"taskName":"workspace_create_upload_teardown","jobId":"wDiurbc","exec_duration":42.925},{"job_name":"2026-05-18__02-53-44","trial_name":"workspace_create_upload_teardown__DybeLd5","model":"claude-4-6-sonnet","agent":"Pochi","passed":true,"reward":1,"error":false,"latency_sec":134.96,"latency_breakdown":{"env_setup":8.201,"agent_setup":12.386,"agent_exec":86.955,"verifier":10.766},"taskName":"workspace_create_upload_teardown","jobId":"DybeLd5","exec_duration":86.955},{"job_name":"2026-05-18__03-31-01","trial_name":"workspace_create_upload_teardown__vfBBQhe","model":"gpt-5.2-codex","agent":"Pochi","passed":false,"reward":0,"error":false,"latency_sec":136.988,"latency_breakdown":{"env_setup":18.664,"agent_setup":13.824,"agent_exec":51.886,"verifier":10.273},"taskName":"workspace_create_upload_teardown","jobId":"vfBBQhe","exec_duration":51.886},{"job_name":"2026-05-18__01-40-46","trial_name":"workspace_create_upload_teardown__VtCwwQz","model":"gemini-3-flash","agent":"Pochi","passed":false,"reward":0,"error":true,"latency_sec":644.013,"latency_breakdown":{"env_setup":6.168,"agent_setup":14.392,"agent_exec":600.113,"verifier":9.988},"taskName":"workspace_create_upload_teardown","jobId":"VtCwwQz","exec_duration":600.113}]}]}]]}],["$L12","$L13"],"$L14"]}],"loading":null,"isPartial":false}
+12:["$","script","script-0",{"src":"/tigris-benchmark/_next/static/chunks/777f5ef34b6ca51a.js","async":true}]
+13:["$","script","script-1",{"src":"/tigris-benchmark/_next/static/chunks/be08138953094657.js","async":true}]
+14:["$","$L15",null,{"children":["$","$16",null,{"name":"Next.MetadataOutlet","children":"$@17"}]}]
+17:null
