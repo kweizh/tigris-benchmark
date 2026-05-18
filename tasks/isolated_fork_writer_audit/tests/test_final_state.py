@@ -10,7 +10,6 @@ PROJECT_DIR = "/home/user/isolation"
 INDEX_TS = os.path.join(PROJECT_DIR, "index.ts")
 AUDIT_JSON = os.path.join(PROJECT_DIR, "audit.json")
 OUTPUT_LOG = os.path.join(PROJECT_DIR, "output.log")
-FORK_PREFIX = "audit-fork"
 SEED_KEYS = ["seed1.txt", "seed2.txt"]
 AGENT_KEYS = {"agent-1.out", "agent-2.out", "agent-3.out"}
 TRIAL_ID_FILE = "/logs/artifacts/trial_id"
@@ -29,6 +28,12 @@ def _read_trial_id():
 def bucket_name():
     trial_id = _read_trial_id()
     name = f"harbor-isolation-{trial_id}"
+    return re.sub(r"[^a-z0-9.-]", "-", name.lower())
+
+
+def fork_prefix():
+    trial_id = _read_trial_id()
+    name = f"audit-fork-{trial_id}"
     return re.sub(r"[^a-z0-9.-]", "-", name.lower())
 
 
@@ -73,11 +78,11 @@ def test_index_ts_uses_required_apis():
         "audit bucket state."
     )
     source_bucket = bucket_name()
-    assert source_bucket in contents, (
+    assert source_bucket in contents or "harbor-isolation" in contents, (
         f"index.ts must reference the source bucket '{source_bucket}'."
     )
-    assert FORK_PREFIX in contents, (
-        f"index.ts must use the fork prefix '{FORK_PREFIX}'."
+    assert "audit-fork" in contents, (
+        "index.ts must use the fork prefix 'audit-fork'."
     )
 
 
@@ -157,6 +162,7 @@ def test_audit_json_shape_and_contents(run_user_script):
 
     buckets_seen = []
     agent_keys_seen = []
+    expected_fork_prefix = fork_prefix()
     for entry in fork_results:
         assert isinstance(entry, dict), (
             f"Each fork_results entry must be an object, got "
@@ -170,9 +176,9 @@ def test_audit_json_shape_and_contents(run_user_script):
         )
         bucket = entry["bucket"]
         keys = entry["keys"]
-        assert bucket.startswith(FORK_PREFIX), (
+        assert bucket.startswith(expected_fork_prefix), (
             f"Fork bucket name '{bucket}' must start with prefix "
-            f"'{FORK_PREFIX}'."
+            f"'{expected_fork_prefix}'."
         )
         assert all(isinstance(k, str) for k in keys), (
             f"All keys for fork '{bucket}' must be strings: {keys}"

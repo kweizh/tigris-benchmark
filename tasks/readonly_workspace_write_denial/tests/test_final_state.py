@@ -62,6 +62,13 @@ async function safeHead(bucket, key) {
         status: res.error.$metadata?.httpStatusCode ?? null,
       };
     }
+    if (res.data === undefined) {
+      return {
+        error: "NotFound",
+        code: "NotFound",
+        status: 404,
+      };
+    }
     return { exists: true };
   }
   const res = await head(key, { config: { bucket } });
@@ -70,6 +77,13 @@ async function safeHead(bucket, key) {
       error: String(res.error.message || res.error),
       code: res.error.name || res.error.Code || res.error.code || null,
       status: res.error.$metadata?.httpStatusCode ?? null,
+    };
+  }
+  if (res.data === undefined) {
+    return {
+      error: "NotFound",
+      code: "NotFound",
+      status: 404,
     };
   }
   return { exists: true };
