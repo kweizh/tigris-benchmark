@@ -3,6 +3,7 @@
     "description": "Performance results of AI coding models on Tigris tasks, measuring success rate and execution time with high precision.",
     "github_repo": "https://github.com/kweizh/tigris-benchmark",
     "pending_models": [
-	"google/gemini-3-flash"
+	  "google/gemini-3-flash",
+      "anthropic/claude-4-6-sonnet"
     ]
 }
