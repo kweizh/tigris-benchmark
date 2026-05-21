@@ -56,8 +56,14 @@ export function TrajectoryPage({
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [iframeLoading, setIframeLoading] = useState(true);
+  const [devModeEnabled, setDevModeEnabled] = useState(process.env.NODE_ENV === "development");
 
-  const devModeEnabled = process.env.NODE_ENV === "development" || searchParams.get("dev") === "true";
+  useEffect(() => {
+    const isDev = process.env.NODE_ENV === "development" || 
+                  localStorage.getItem("devMode") === "true";
+    setDevModeEnabled(isDev);
+  }, []);
+
   const visibleTabsConfig = useMemo(
     () =>
       devModeEnabled

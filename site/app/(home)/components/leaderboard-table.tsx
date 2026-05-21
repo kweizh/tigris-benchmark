@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Search, Trophy, ListTree } from "lucide-react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -62,9 +62,14 @@ function ScoreCell({ value }: { value: number }) {
 
 export default function LeaderboardTable({ data }: { data: LeaderboardEntry[] }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const devMode = process.env.NODE_ENV === "development" || searchParams.get("dev") === "true";
+  const [devMode, setDevMode] = useState(process.env.NODE_ENV === "development");
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const isDev = process.env.NODE_ENV === "development" ||
+                  localStorage.getItem("devMode") === "true";
+    setDevMode(isDev);
+  }, []);
 
   const filteredData = useMemo(() => {
     let processedData = data;

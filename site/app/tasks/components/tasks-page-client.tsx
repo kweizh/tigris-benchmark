@@ -184,7 +184,7 @@ export function TasksPageClient({ tasksData }: TasksPageClientProps) {
     const initialAgents = (params.get("agent") || "").split(",").filter(Boolean);
     const initialSort = params.get("sort") || "default";
     const initialOrder = params.get("order") || "asc";
-    const initialDevMode = process.env.NODE_ENV === "development" || params.get("dev") === "true";
+    const initialDevMode = process.env.NODE_ENV === "development" || localStorage.getItem("devMode") === "true";
 
     setQueryQ(initialQ);
     setSearchQuery(initialQ);
